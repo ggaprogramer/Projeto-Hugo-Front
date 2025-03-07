@@ -1,0 +1,110 @@
+@import '@styles/utils.scss';
+
+.rodape{
+    width: 100%;
+    @include padding(3rem, 0rem, 3rem, 0rem);
+    @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 2rem);
+
+    &>span{
+        height: 0.3rem;
+        width: 100%;
+        background: $yellow-one-color;
+    }
+
+    &>div{
+        width: 90%;
+        margin: 0 auto;
+        @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: space-between, $align-items: flex-start, $gap: 5rem);
+        color: $black-one-color;
+
+        @media(max-width: 750px){
+            @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 5rem);
+        }
+    }
+
+    &>div:nth-of-type(2){
+        justify-content: center;
+    }
+
+    &>div:nth-of-type(2) a{
+        color: $black-one-color;
+        transition: .3s;
+        font-weight: bold;
+        display: inline-block;
+    }
+
+    p{
+        text-align: center;
+        width: 100%;
+    }
+
+    &>div:nth-of-type(2) a:hover{
+        transform: scale(1.05);
+    }
+
+    .logo-rodape{
+        transition: .3s;
+
+        &:hover{
+            transform: scale(1.03);
+        }
+
+        img{
+            max-width: 25rem;
+        }
+    }
+
+    .rodape-coluna{
+        @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 1.5rem);
+        max-width: 40rem;
+        text-align: justify;
+
+        img{
+            max-width: 20rem;
+        }
+
+        h2{
+            color: $black-one-color;
+            text-align: center;
+        }
+
+        a{
+            color: $black-one-color;
+            transition: .3s;
+            @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 0.5rem);
+
+            img{
+                max-width: 10rem;
+            }
+
+            p{
+                display: flex;
+                gap: 0.5rem;
+            }
+
+            &:hover{
+                transform: scale(1.03);
+
+                span{
+                    width: 100%;
+                }
+            }
+
+            span{
+                height: 0.3rem;
+                width: 0%;
+                display: inline-block;
+                background: $yellow-one-color;
+                border-radius: 1rem;
+                transition: .3s;
+            }
+        }
+    }
+
+    div.coluna-contato{
+        img{
+            max-width: 2rem;
+        }
+    }
+
+}

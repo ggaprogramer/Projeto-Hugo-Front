@@ -1,0 +1,94 @@
+@import '@styles/utils.scss';
+
+.title-primary{
+    @extend .title-primary;
+    text-align: center;
+}
+
+.title-secoundary{
+    @extend .title-secoundary;
+    text-align: center;
+    font-size: 3rem;
+}
+
+.auth-page{
+    @extend .global-styles;
+    @include border(0rem, solid, white);
+    @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center);
+    width: 100%;
+    min-height: 85vh;
+    @include spacing(2rem, 0rem);
+
+    .auth-page-box{
+        @extend .global-styles;
+        @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center);
+        width: 60%;
+
+        img{
+            max-width: 50rem;
+        }
+    }
+
+    @media(max-width: 1000px){
+        @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center);
+
+        .auth-page-box{
+            order: 1;
+            width: 100%;
+
+            img{
+                width: 100%;
+            }
+        }
+
+        &>form:nth-of-type(1){
+            width: 100%;
+        }
+    }
+}
+
+.html{
+    @media(max-width: 500px){
+        font-size: 50% !important;
+    }
+}
+
+.container{
+    @extend .global-styles;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.container-top{
+    background: $yellow-one-color;
+    @extend .global-styles;
+    width: 100%;
+    min-height: 15vh;
+}
+
+.container-bottom{
+    background: $gray-two-color;
+    @extend .global-styles;
+    width: 100%;
+    min-height: 85vh;
+    @include display-flex;
+}
+
+.container-bottom-child{
+    @extend .global-styles;
+    @include transform-translate(0, -10rem);
+    @include border(0rem, white, solid);
+    @include shadow;
+    background: $gray-one-color;
+    width: 85%;
+    margin: 0 auto;
+    min-height: 90vh;
+}
+
+.loader{
+    @include loader($side: 5rem, $thickness: 0.5rem, $color: $blue-one-color, $top-color: white);
+    display: inline-block;
+} 
+
+
+

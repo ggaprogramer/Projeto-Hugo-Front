@@ -1,0 +1,374 @@
+@import '@styles/utils.scss';
+
+.container{
+    width: 100%;
+
+    .home{
+        width: 90%;
+        min-height: 87vh;
+        margin: 0 auto;
+        @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 5rem);
+
+        @media (max-width: 1000px){
+            flex-direction: column;
+            padding-top: 6rem;
+        }
+
+        img{
+            max-width: 50rem;
+
+            @media(max-width: 670px){
+                width: 100%;
+            }
+        }
+
+        h1{
+            font-size: 4rem;
+        }
+
+        p{
+            font-size: 1.6rem;
+        }
+
+        div{
+            @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
+            max-width: 70rem;
+
+            a{
+                background: $yellow-one-color;
+                color: $black-one-color;
+                font-weight: bold;
+                transition: .3s;
+                font-size: 1.6rem;
+                @include border-radius(3rem, 3rem, 3rem, 3rem);
+                @include padding(1.5rem, 4rem, 1.5rem, 4rem);
+    
+                &:hover{
+                    @include transform-scale(1.05);
+                }
+            }
+        }
+    }
+
+
+    .metricas{
+        min-height: 20vh;
+        background: $yellow-one-color;
+        @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: center, $align-items: center, $gap: 10rem);
+        @include padding(3rem, 3rem, 3rem, 3rem);
+
+        .metrica{
+            max-width: 20rem;
+            @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 1rem);
+            text-align: center;
+            gap: 1rem;
+            font-weight: bold;
+
+            i{
+                color: $yellow-one-color;
+            }
+
+            h2{
+                font-size: 3rem;
+                color: $blue-one-color;
+            }
+
+            img{
+                max-width: 8rem;
+            }
+        }
+
+    }
+
+
+    .bio{
+        min-height: 60vh;
+        width: 100%;
+        padding: 3rem;
+        @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 6rem);
+
+        img{
+            max-width: 45rem;
+
+            @media(max-width: 670px){
+                width: 100%;
+            }
+        }
+
+        div{
+            @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
+            max-width: 60rem;
+            text-align: left;
+
+            a{
+                background: $yellow-one-color;
+                color: $black-one-color;
+                font-weight: bold;
+                transition: .3s;
+                font-size: 1.6rem;
+                @include border-radius(3rem, 3rem, 3rem, 3rem);
+                @include padding(1.5rem, 4rem, 1.5rem, 4rem);
+
+                &:hover{
+                    @include transform-scale(1.05);
+                }
+            }
+        }
+
+        @media(max-width: 1000px){
+            flex-direction: column;
+            img{
+                order: 2;
+            }
+        }
+    }
+
+
+    .servicos{
+        background: $yellow-one-color;
+        width: 100%;
+        padding: 5rem 2rem;
+        min-height: 60vh;
+        @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 4rem);
+
+        h2{
+            font-size: 4rem;
+            text-align: center;
+        }
+
+        h3{
+            font-size: 3rem;
+            text-align: center;
+        }
+
+        &>div{
+            @include display-grid($columns: 2, $gap: 3rem, $align-items: center, $justify-items: center);
+            text-align: center;
+
+            @media(max-width: 800px){
+                grid-template-columns: repeat(1, 1fr);
+            }
+
+            img{
+                max-width: 10rem;
+            }
+
+            .servico{
+                border-radius: 2rem;
+                box-shadow: 0.2rem 0.2rem 2rem rgba(0, 0, 0, 0.3);
+                padding: 2rem;
+                @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 2rem);
+
+                img{
+                    max-width: 10rem;
+                }
+            }
+        }
+    }
+
+
+    .instrucoes{
+        width: 100%;
+        padding: 3rem 0;
+        min-height: 50vh;
+        @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 4rem);
+        color: $blue-one-color;
+        @include padding(3rem, 3rem, 3rem, 3rem);
+
+        h2{
+            font-size: 4rem;
+            text-align: center;
+        }
+
+        &>div{
+            @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: center, $align-items: flex-start, $gap: 5rem);
+
+            .instrucao{
+                @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 2rem);
+                max-width: 20rem;
+                text-align: center;
+                font-weight: bold;
+
+                img{
+                    max-width: 7rem;
+                }
+            }
+        }
+    }
+
+
+    .passos{
+        background: $yellow-one-color;
+        width: 100%;
+        padding: 2rem;
+        min-height: 80vh;
+        @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 5rem);
+        color: $black-one-color;
+
+        &>img{
+            max-width: 60rem;
+            order: 2;
+
+            @media(max-width: 670px){
+                width: 100%;
+            }
+        }
+
+        @media(max-width: 900px){
+            flex-direction: column;
+        }
+
+        &>div{
+            @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 2rem);
+            max-width: 65rem;
+
+            p:nth-of-type(1){
+                text-align: justify;
+            }
+
+            p:nth-of-type(n + 1){
+                @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 1rem);
+            }
+    
+            img{
+                max-width: 2rem;
+            }
+        }
+    }
+
+    .perguntas{
+        width: 100%;
+        @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 3rem);
+        color: var(--cor-preto);
+        gap: 2rem;
+        padding: 4rem 0;
+        background: #eee;
+
+        h2{
+            color: var(--cor-preto);
+            font-size: 4rem;
+            text-align: center;
+        }
+
+        &>div{
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        .pergunta{
+            /* background: var(--cor-principal-linear); */
+            border: 0.2rem solid #f9f8f8;
+
+            h3{
+                padding: 3rem;
+                border-bottom: 0.2rem solid var(--cor-branco);
+                position: relative;
+                cursor: pointer;
+                background: #f9f8f8;
+
+                img{
+                    max-width: 1.7rem;
+                    position: absolute;
+                    right: 2rem;
+                    top: 3rem;
+                }
+
+                img.simbolo-menos{
+                    display: none;
+                }
+
+                img.ocultar{
+                    display: none;
+                }
+
+                img.desocultar{
+                    display: inline-block;
+                }
+            }
+
+            &>p{
+                font-size: 1.7rem;
+                transition: .3s;
+                height: 0rem;
+                overflow: hidden;
+                background: #f9f8f8;
+
+                &.desocultar{
+                    height: 10rem;
+                    padding: 2rem 3rem;
+
+                    @media(max-width: 880px){
+                        height: 15rem;
+                    }
+
+                    @media(max-width: 600px){
+                        height: 20rem;
+                    }
+
+                    @media(max-width: 400px){
+                        height: 25rem;
+                    }
+
+                    @media(max-width: 350px){
+                        height: 30rem;
+                    }
+                }
+            }
+            
+        }
+    }
+
+    .banner{
+        width: 100%;
+        padding: 2rem;
+        background: linear-gradient(270deg, rgba(18,128,255,1) 33%, rgba(105,168,205,1) 72%);
+        min-height: 35vh;
+        @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 0rem);
+        position: relative;
+
+        img{
+            position: absolute;
+
+            &:nth-of-type(1){
+                left: 0;
+            }
+    
+            &:nth-of-type(2){
+                right: 0;
+            }
+        }
+    
+        &>div{
+            width: 90%;
+            margin: 0 auto;
+            @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 3rem);
+        }
+    
+        h2{
+            font-size: 4rem;
+            color: $white-one-color;
+            text-align: center;
+        }
+    
+        a{
+            background: $yellow-one-color;
+            color: $black-one-color;
+            font-weight: bold;
+            transition: .3s;
+            font-size: 1.6rem;
+            @include border-radius(3rem, 3rem, 3rem, 3rem);
+            @include padding(1.5rem, 4rem, 1.5rem, 4rem);
+
+            &:hover{
+                @include transform-scale(1.05);
+            }
+        }
+    }
+
+}
+
+.html{
+    @media(max-width: 500px){
+        font-size: 50% !important;
+    }
+}

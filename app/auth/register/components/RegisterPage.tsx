@@ -1,0 +1,296 @@
+"use client";
+
+import '../style.scss';
+import '@auth/styles/style.scss';
+import Link from 'next/link';
+import React, { FormEvent, useState, useRef, useMemo, useEffect } from 'react';
+import InputForm from '../components/InputForm';
+import SelectForm from '../components/SelectForm';
+import DivInterestsForm from '../components/DivInterestsForm';
+import PasswordInputForm from '../components/PasswordInputForm';
+import {RegisterFormValues} from '../interfaces';
+import {Errors} from '../../interfaces';
+import ErrorAuth from '../../components/ErrorAuth'
+import { useRouter } from 'next/navigation';
+import {responseRegisterForm, bodyRequestRegisterForm} from '@auth/register/interfaces';
+
+export default function RegisterPage() {
+    const urlBack = process.env.NEXT_PUBLIC_BACK_URL;
+
+    const router = useRouter();
+
+    const buttonRegister = useRef<HTMLButtonElement>(null);
+    const loader = useRef<HTMLSpanElement>(null);
+
+    const viewLoader = () => {
+        buttonRegister?.current?.setAttribute('style', 'display: none');
+        loader?.current?.setAttribute('style', 'display: inline-block');
+    }
+    const disableLoader = () => {
+        buttonRegister?.current?.setAttribute('style', 'display: inline-block');
+        loader?.current?.setAttribute('style', 'display: none');
+    }
+
+    const [etapasForm, setEtapasForm] = useState(1);
+    const [errors, setErrors] = useState<Errors[]>([]);
+    const ages: string[] = useMemo<string[]>(() => {
+        const lista: string[] = [];
+        for(let i = 15; i < 100; i++){
+            lista.push(i + "");
+        }
+        return lista;
+    }, []);
+
+    const [formInputs, setFormInputs] = useState<RegisterFormValues>({
+        name: '',
+        username: '',
+        email: '',
+        interests: [],
+        phone: '',
+        age: '',
+        password1: '',
+        password2: '',
+        termos: false,
+    });
+    const formRegister = useRef<HTMLFormElement>(null);
+
+    const [viewPassword, setViewPassword] = useState<Boolean>(false);
+
+    const makeRegister = async () => {
+        try{
+            const body: bodyRequestRegisterForm = {
+                username: formInputs.username,
+                password1: formInputs.password1,
+                password2: formInputs.password2,
+                email: formInputs.email,
+                roles: ['USER'],
+                phone: formInputs.phone,
+                age: formInputs.age,
+                interests: formInputs.interests,
+            }
+            viewLoader();
+            const response = await fetch(`${urlBack}/auth/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+            const data: responseRegisterForm = await response.json();
+            if(data.status === 'ERROR' && data.type){
+                errors.push({type: data.type, description: data.message});
+                errors.push({type: 'lenErrors', description: '1'});
+                disableLoader();
+            }
+            else if(data.status === 'SUCCESS'){
+                // TODO enviar uma mensagem de sucesso pra página de login
+                router.push('/auth/login');
+            } else{
+                disableLoader();
+            }
+        } catch{
+            disableLoader();
+            errors.push({type: 'system', description: 'Houve um erro na comunicação com o servidor.'});
+        }
+    }
+
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        let errors: Errors[] = [];
+        if(etapasForm == 1){
+            setEtapasForm((etapasForm) => etapasForm + 1);
+        } else if(etapasForm == 2){
+            let lenErrors: number = 0;
+            if(formInputs && !formInputs.name){
+                errors.push({type: 'name', description: 'Nenhum nome foi enviado.'});
+                lenErrors+=1;
+            }
+            if(formInputs && !formInputs.username){
+                errors.push({type: 'username', description: 'Nenhum usuário foi enviado.'});
+                lenErrors+=1;
+            }
+            if(formInputs && formInputs.username && formInputs.username.length < 5){
+                errors.push({type: 'username', description: 'O nome do usuário deve ter no mínimo 5 caracteres.'});
+                lenErrors+=1;
+            }
+            if(formInputs && !formInputs.email){
+                errors.push({type: 'email', description: 'Nenhum e-mail foi enviado.'});
+                lenErrors+=1;
+            }
+            if(formInputs && formInputs.interests.length === 0){
+                errors.push({type: 'interests', description: 'Nenhum interesse foi enviado.'});
+                lenErrors+=1;
+            }
+            if(formInputs && !formInputs.phone){
+                errors.push({type: 'phone', description: 'Nenhum número de celular foi enviado.'});
+                lenErrors+=1;
+            }
+            if(formInputs && !formInputs.age){
+                errors.push({type: 'age', description: 'Nenhuma idade foi enviada.'});
+                lenErrors+=1;
+            }
+            if(formInputs && !formInputs.password1){
+                errors.push({type: 'password1', description: 'A primeira senha não foi enviada'});
+                lenErrors+=1;
+            }
+            if(formInputs && !formInputs.password2){
+                errors.push({type: 'password2', description: 'A segunda senha não foi enviada'});
+                lenErrors+=1;
+            }
+            if(formInputs && formInputs.password1 && formInputs.password2 && formInputs.password1 != formInputs.password2){
+                errors.push({type: 'password1', description: 'As senhas tem que ser iguais.'});
+                lenErrors+=1;
+            }
+            if(formInputs && formInputs.password1 && formInputs.password2 && formInputs.password1.length < 8){
+                errors.push({type: 'password1', description: 'A senha precisa ter no mínimo 8 caracteres.'});
+                lenErrors+=1;
+            }
+            if(formInputs && !formInputs.termos){
+                errors.push({type: 'termos', description: 'Para criar a conta, você precisa aceitar os termos.'});
+                lenErrors+=1;
+            }
+            if(lenErrors > 0){
+                errors.push({type: 'lenErrors', description: lenErrors + ''});
+            } 
+            setErrors(errors);
+            if(errors.length === 0) makeRegister();
+        } else{
+            setEtapasForm(1);
+        }
+    };
+
+    const handleBtnVoltar = () => {
+        setEtapasForm(1);
+    };
+
+    const handleViewPassowrd = () => {
+        setViewPassword((viewPassword) => viewPassword ? false : true);
+    }
+
+    return (
+        <form ref={formRegister} className='auth-form' onSubmit={handleSubmit}>
+            <h2 className='title-secoundary title-auth'>
+                <img src="/logo.png" 
+                alt="Registro - Terapia" />
+                Registro {etapasForm === 1 ? '(1/2)' : '(2/2)'}
+            </h2>
+            {
+                etapasForm === 1
+                ?
+                <>
+                    <InputForm
+                    inputType='text' 
+                    name='name'  
+                    placeholder='Nome Completo:'  
+                    value={formInputs.name} 
+                    errors={errors} 
+                    formInputs={formInputs}
+                    setFormInputs={setFormInputs}
+                    />
+
+                    <InputForm
+                    inputType='text' 
+                    name='username'  
+                    placeholder='Usuário:'  
+                    value={formInputs.username} 
+                    errors={errors} 
+                    formInputs={formInputs}
+                    setFormInputs={setFormInputs}
+                    />   
+
+                    <InputForm
+                    inputType='email' 
+                    name='email'  
+                    placeholder='Email:'  
+                    value={formInputs.email} 
+                    errors={errors} 
+                    formInputs={formInputs}
+                    setFormInputs={setFormInputs}
+                    />     
+
+                    <DivInterestsForm
+                    formRegister={formRegister}
+                    formInputs={formInputs}
+                    setFormInputs={setFormInputs}
+                    errors={errors}
+                    />   
+                    
+                </>
+                :
+                <>
+                    <InputForm
+                    inputType='text' 
+                    name='phone'  
+                    placeholder='Celular:'  
+                    value={formInputs.phone} 
+                    errors={errors} 
+                    formInputs={formInputs}
+                    setFormInputs={setFormInputs}
+                    />   
+
+                    <SelectForm
+                    name='age'  
+                    value={formInputs.age} 
+                    errors={errors} 
+                    formInputs={formInputs}
+                    setFormInputs={setFormInputs}
+                    opcoes={null}
+                    ages={ages}
+                    placeholder='Idade:'
+                    />  
+
+                    <PasswordInputForm
+                    inputType={!viewPassword ? 'password' : 'text'}
+                    name='password1'  
+                    placeholder='Senha:'  
+                    value={formInputs.password1} 
+                    errors={errors} 
+                    formInputs={formInputs}
+                    setFormInputs={setFormInputs}
+                    />   
+
+                    <PasswordInputForm
+                    inputType={!viewPassword ? 'password' : 'text'}
+                    name='password2'  
+                    placeholder='Repetir senha:'  
+                    value={formInputs.password2} 
+                    errors={errors} 
+                    formInputs={formInputs}
+                    setFormInputs={setFormInputs}
+                    />
+
+                    <label className='inputs-extras'>
+                        <input onChange={handleViewPassowrd} type="checkbox"/>
+                        <p>
+                            Mostrar senhas.
+                        </p>
+                    </label>
+                    <span className='row'></span>
+                    <label className='inputs-extras'>
+                        <input name='termos' 
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormInputs({...formInputs, termos: e.target.checked})} 
+                        type="checkbox" checked={formInputs.termos ? true : false}/>
+                        <p>
+                            Você concorda com os nossos termos?
+                        </p>
+                    </label>
+                    <ErrorAuth errors={errors} type='termos'/>
+                </>
+            }
+            <div id='botoes-form'>
+                {etapasForm === 2
+                && 
+                <button className='button-voltar-etapa' onClick={handleBtnVoltar}>
+                    Voltar
+                </button>}
+                <button type='submit' ref={buttonRegister}>
+                    {etapasForm === 1 ? 'Próxima Etapa' : 'Criar Conta'}
+                </button>
+                <span ref={loader} className='loader'></span>
+            </div>
+            <ErrorAuth errors={errors} type='lenErrors'/>
+            <ErrorAuth errors={errors} type="system"/>
+            <Link href='/auth/login'>Tem uma conta? Faça login</Link>
+        </form>
+    )
+}

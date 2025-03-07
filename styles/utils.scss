@@ -1,0 +1,94 @@
+@import 'global';
+
+@mixin display-flex(
+  $flex-direction: row,
+  $flex-wrap: nowrap,
+  $justify-content: center,
+  $align-items: center,
+  $gap: 20px
+) {
+  display: flex;
+  flex-direction: $flex-direction;
+  flex-wrap: $flex-wrap;
+  justify-content: $justify-content;
+  align-items: $align-items;
+  gap: $gap;
+}
+
+@mixin display-grid($columns: 4, $gap: 20px, $align-items: center, $justify-items: center) {
+    display: grid;
+    grid-template-columns: repeat($columns, 1fr);
+    gap: $gap;
+    align-items: $align-items;
+    justify-items: $justify-items;
+}
+
+@mixin border($width: 0.2rem, $color: red, $style: solid, $radius: 1rem){
+  border-width: $width;
+  border-color: $color;
+  border-style: $style;
+  border-radius: $radius;
+}
+
+@mixin border-radius($tl: 1rem, $tr: 1rem, $bl: 1rem, $br: 1rem){
+  border-top-left-radius: $tl;
+  border-top-right-radius: $tr;
+  border-bottom-left-radius: $bl;
+  border-bottom-right-radius: $br;
+}
+
+@mixin shadow($x: 0.2rem, $y: 0.2rem, $z: 2rem, $color: black){
+  box-shadow: $x $y $z $color;
+}
+
+@mixin transform-scale($scale: 0.5){
+  transform: scale($scale);
+}
+
+@mixin transform-rotate($rotate: 45deg){
+  transform: rotate($rotate);
+}
+
+@mixin transform-translate($translateX: 0.2rem, $translateY: 0.2rem){
+  transform: translate($translateX, $translateY);
+}
+
+@mixin spacing($padding: 0rem, $margin: 0rem){
+  @if $padding > 0rem{
+    padding: $padding;
+  }
+  @if $margin > 0rem{
+    margin: $margin;
+  }
+}
+
+@mixin padding($padding-top: 0rem, $padding-right: 0rem, $padding-bottom: 0rem, $padding-left: 0rem){
+  padding-top: $padding-top;
+  padding-right: $padding-right;
+  padding-bottom: $padding-bottom;
+  padding-left: $padding-left;
+}
+
+@mixin margin($margin-top: 0rem, $margin-right: 0rem, $margin-bottom: 0rem, $margin-left: 0rem){
+  margin-top: $margin-top;
+  margin-right: $margin-right;
+  margin-bottom: $margin-bottom;
+  margin-left: $margin-left;
+}
+
+
+@mixin loader($side: 5rem, $thickness: 0.5rem, $color: black, $top-color: cyan){
+  width: $side;
+  height: $side;
+  display: inline-block;
+  border-radius: 50%;
+  border: $thickness solid $color;
+  border-top-color: $top-color;
+  animation: loader 1s linear infinite;
+}
+
+@keyframes loader{
+  100%{
+    @include transform-rotate($rotate: 360deg)
+  }
+}

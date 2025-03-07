@@ -1,0 +1,20 @@
+@import '@styles/utils.scss';
+
+.auth-form{
+    input{
+        width: 100%;
+        @include padding(1.5rem, 1rem, 1.5rem, 1rem);
+        @include border(0.2rem, black, solid);
+    
+        &::placeholder{
+            color: black;
+        }
+
+        transition: .3s;
+
+        &:focus{
+            @include transform-scale(1.01);
+            @include border(0.2rem, rgb(1, 151, 151), solid);
+        }
+    }
+}

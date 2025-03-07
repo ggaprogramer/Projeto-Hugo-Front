@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+$blue-one-color: #3f98ff;
+$blue-two-color: #82cffd;
+
+$yellow-one-color: #ffdb60;
+
+$gray-two-color: #dbd8d3;
+$gray-one-color: #f1f2f6;
+
+$white-one-color: #fff;
+$black-one-color: #000;
+
+$font-primary: "Afacad Flux", serif;
+$font-secoundary: "Montserrat", serif;
+$font-terciary: "Open Sans", serif;
+
+.title-primary{
+    @extend .global-styles;
+    font-family: $font-primary;
+    font-size: 4rem;
+}
+
+.title-secoundary{
+    @extend .global-styles;
+    font-family: $font-secoundary;
+    font-size: 2.5rem;
+}
+
+.paragrafy{
+    font-family: $font-terciary;
+}
+
+.global-styles, *{
+    margin: 0;
+    padding: 0;
+    outline: none;
+    border: none;
+    box-sizing: border-box;
+    list-style: none;
+    border-collapse: collapse;
+    text-decoration: none;
+    font-family: $font-secoundary;
+}
+
+.html{
+    font-size: 62.5%;
+}
+
+#body{
+    @extend .global-styles;
+    font-size: 1.5rem;
+    width: 100%;
+}
+
+
+

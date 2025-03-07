@@ -1,0 +1,223 @@
+@import '@styles/utils.scss';
+
+#btn-whatsapp-fixed{
+    position: fixed;
+    right: 3rem;
+    bottom: 3rem;
+    max-width: 7rem;
+    cursor: pointer;
+    transition: .3s;
+    z-index: 100000;
+
+    &:hover{
+        transform: scale(1.05);
+    }
+}
+
+.cabecalho-invisivel{
+    min-height: 11rem;
+}
+
+.cabecalho{
+    @media(max-width: 1300px){
+        display: none;
+    }
+
+    z-index: 100000;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: $blue-one-color;
+
+    &>div{
+        width: 90%;
+        margin: 0 auto;
+        @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: space-between, $align-items: center, $gap: 2rem);
+        @include padding(3rem, 2rem, 3rem, 2rem);
+
+        a{
+            @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: space-between, $align-items: center, $gap: 1.5rem);
+            transition: .3s;
+    
+            &:hover{
+                @include transform-scale(1.1);
+            }
+    
+            h2{
+                color: $white-one-color;
+            }
+    
+            img{
+                max-width: 6rem;
+            }
+        }
+    
+        nav{
+            @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: space-between, $align-items: center, $gap: 2rem);
+            
+            a{
+                color: $white-one-color;
+                font-size: 1.7rem;
+                font-weight: bold;
+                transition: .3s;
+                @include transform-translate(0, 0.5rem);
+                @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 0.5rem);
+    
+                &:hover{
+                    @include transform-scale(1.1);
+                }
+    
+                &:hover span{
+                    width: 100%;
+                }
+    
+                span{
+                    background: $white-one-color;;
+                    width: 0%;
+                    height: 0.3rem;
+                    display: inline-block;
+                    transition: .3s;
+                    @include border-radius(1rem, 1rem, 1rem, 1rem);
+                }
+            }
+        }
+
+        div.botoes{
+            @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 2rem);
+            
+            a, button{
+                cursor: pointer;
+                background: $yellow-one-color;
+                color: $black-one-color;
+                font-weight: bold;
+                transition: .3s;
+                font-size: 1.6rem;
+                @include border-radius(3rem, 3rem, 3rem, 3rem);
+                @include padding(1.5rem, 4rem, 1.5rem, 4rem);
+    
+                &:hover{
+                    @include transform-scale(1.05);
+                }
+            }
+        }
+
+    }
+}
+
+.cabecalho-mobile{
+    display: none;
+    @media(max-width: 1300px){
+        display: block;
+    }
+    
+    z-index: 100000;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: $blue-one-color;
+
+    .botao-mobile{
+        @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 1rem);
+        width: 4rem;
+        height: 4rem;
+        cursor: pointer;
+
+        span{
+            width: 100%;
+            height: 0.4rem;
+            background: $yellow-one-color;
+            @include border-radius();
+            display: inline-block;
+        }
+    }
+
+    &>div:nth-of-type(1){
+        width: 90%;
+        margin: 0 auto;
+        @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: space-between, $align-items: center, $gap: 2rem);
+        @include padding(3rem, 2rem, 3rem, 2rem);
+
+        a{
+            @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: space-between, $align-items: center, $gap: 1.5rem);
+            transition: .3s;
+    
+            &:hover{
+                @include transform-scale(1.1);
+            }
+    
+            h2{
+                color: $white-one-color;
+            }
+    
+            img{
+                max-width: 6rem;
+            }
+        }
+
+    }
+
+    &>div:nth-of-type(2){
+        width: 90%;
+        margin: 0 auto;
+        transition: .3s;
+        @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
+
+        height: 0rem;
+        padding: 0;
+        overflow: hidden;
+        &.mobile-expand{
+            height: 40rem;
+            @include padding(2rem, 2rem, 2rem, 2rem);
+        }
+    
+        nav{
+            @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 2rem);
+            
+            a{
+                color: $white-one-color;
+                font-size: 1.7rem;
+                font-weight: bold;
+                transition: .3s;
+                @include transform-translate(0, 0.5rem);
+                @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 0.5rem);
+    
+                &:hover{
+                    @include transform-scale(1.1);
+                }
+    
+                &:hover span{
+                    width: 100%;
+                }
+    
+                span{
+                    background: $white-one-color;;
+                    width: 0%;
+                    height: 0.3rem;
+                    display: inline-block;
+                    transition: .3s;
+                    @include border-radius(1rem, 1rem, 1rem, 1rem);
+                }
+            }
+        }
+
+        div.botoes{
+            @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: center, $align-items: center, $gap: 2rem);
+            
+            a, button{
+                cursor: pointer;
+                background: $yellow-one-color;
+                color: $black-one-color;
+                font-weight: bold;
+                transition: .3s;
+                font-size: 1.6rem;
+                @include border-radius(3rem, 3rem, 3rem, 3rem);
+                @include padding(1.5rem, 4rem, 1.5rem, 4rem);
+    
+                &:hover{
+                    @include transform-scale(1.05);
+                }
+            }
+        }
+
+    }
+}

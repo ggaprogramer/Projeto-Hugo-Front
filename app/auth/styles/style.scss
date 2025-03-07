@@ -1,0 +1,97 @@
+@import '@styles/utils.scss';
+
+.title-primary{
+    @extend .title-primary;
+    text-align: center;
+}
+
+.title-secoundary{
+    @extend .title-secoundary;
+    text-align: center;
+    font-size: 3rem;
+}
+
+.title-auth{
+    @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 1rem);
+
+    img{
+        max-width: 5rem;
+    }
+}
+
+.auth-form{
+    @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center);
+    /* @include border; */
+    width: 40%;
+    
+    button{
+        font-family: $font-secoundary;
+        max-width: 20rem;
+        text-align: center;
+        @include padding(1.5rem, 3rem, 1.5rem, 3rem);
+        background: $blue-one-color;
+        color: white;
+        font-weight: bold;
+        border: none;
+        font-size: 1.7rem;
+        cursor: pointer;
+
+        transition: .3s;
+        &:hover{
+            @include transform-scale(1.05);
+        }
+    }
+
+    a{
+        color: black;
+        text-decoration: none;
+
+        transition: .3s;
+        &:hover{
+            text-decoration: underline;
+        }
+    }
+
+    .row{
+        width: 100%;
+        height: 0.3rem;
+        background: black;
+    }
+
+    .inputs-extras{
+        @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: center, $gap: 0.5rem);
+        width: 100%;
+
+        input{
+            width: 2rem;
+        }
+    }
+    
+}
+
+#botoes-form{
+    @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: center, $align-items: center, $gap: 1rem);
+
+    button{
+        &.button-voltar-etapa{
+            background: $yellow-one-color; 
+        }
+    }
+}
+
+.error{
+    width: 100%;
+    text-align: left;
+    color: red;
+}
+
+.error-text-center{
+    width: 100%;
+    text-align: center;
+    color: red;
+}
+
+.loader{
+    @include loader($side: 5rem, $thickness: 0.5rem, $color: $blue-one-color, $top-color: white);
+    display: none;
+} 
