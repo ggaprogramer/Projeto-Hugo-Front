@@ -23,6 +23,11 @@
     @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center);
     /* @include border; */
     width: 40%;
+
+    &>p{
+        width: 100%;
+        text-align: left;
+    }
     
     button{
         font-family: $font-secoundary;
