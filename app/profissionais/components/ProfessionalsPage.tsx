@@ -1,6 +1,4 @@
 import {ProfessionalsPagePropsInterface} from '../interfaces';
-import Header from '@home/Header';
-import Footer from '@home/Footer';
 import FilterProfessionals from './FilterProfessionals';
 import '../styles/professionals.scss';
 import '../styles/filters-professionals.scss';
@@ -11,7 +9,6 @@ export default function ProfessionalsPage(props: ProfessionalsPagePropsInterface
 
     return (
         <>
-            <Header userIsAuthenticated={userIsAuthenticated}/>
             <div className='container-professionals'>
                 <div>
                     <h1>
@@ -236,7 +233,6 @@ export default function ProfessionalsPage(props: ProfessionalsPagePropsInterface
                     </div>
                 </div>
             </div>
-            <Footer userIsAuthenticated={userIsAuthenticated}/>
         </>
     )
 }

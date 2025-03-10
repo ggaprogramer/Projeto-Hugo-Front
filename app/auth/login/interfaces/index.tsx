@@ -1,4 +1,5 @@
 import {Errors} from '@auth/interfaces';
+import {TypeProfile} from '@auth/register/interfaces';
 
 export interface LoginFormValues{
     email: string;
@@ -21,6 +22,7 @@ export interface responseFormLogin{
     message: string;
     type: string | null;
     token: string | null;
+    typeProfile: TypeProfile | null;
 }
 
 export interface bodyRequestFormLogin{

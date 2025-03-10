@@ -43,7 +43,10 @@ export interface RegisterFormValues {
     password1: string;
     password2: string;
     termos: Boolean;
+    typeProfile: TypeProfile;
 }
+
+export type TypeProfile = 'PROFESSIONAL' | 'PROFILE';
 
 export interface responseRegisterForm {
     status: string;
@@ -52,13 +55,17 @@ export interface responseRegisterForm {
 }
 
 export interface bodyRequestRegisterForm{
+    name: string;
     username: string;
     password1: string;
     password2: string;
     email: string;
-    roles: ["USER"];
+    roles: Roles[];
     phone: string;
     dateBirth: string;
     interests: string[];
     gender: string;
+    typeProfile: TypeProfile;
 }
+
+export type Roles = 'USER' | 'PROFESSIONAL' | 'PROFILE';

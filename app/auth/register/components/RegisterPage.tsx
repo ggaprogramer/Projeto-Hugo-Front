@@ -12,7 +12,7 @@ import {RegisterFormValues} from '../interfaces';
 import {Errors} from '../../interfaces';
 import ErrorAuth from '../../components/ErrorAuth'
 import { useRouter } from 'next/navigation';
-import {responseRegisterForm, bodyRequestRegisterForm} from '@auth/register/interfaces';
+import {responseRegisterForm, bodyRequestRegisterForm, TypeProfile, Roles} from '@auth/register/interfaces';
 
 export default function RegisterPage() {
     const urlBack = process.env.NEXT_PUBLIC_BACK_URL;
@@ -45,6 +45,7 @@ export default function RegisterPage() {
         password1: '',
         password2: '',
         termos: false,
+        typeProfile: 'PROFILE',
     });
     const formRegister = useRef<HTMLFormElement>(null);
 
@@ -52,16 +53,20 @@ export default function RegisterPage() {
 
     const makeRegister = async () => {
         try{
+            const roles = ['USER'] as Roles[];
+            roles.push(formInputs.typeProfile);
             const body: bodyRequestRegisterForm = {
+                name: formInputs.name,
                 username: formInputs.username,
                 password1: formInputs.password1,
                 password2: formInputs.password2,
                 email: formInputs.email,
-                roles: ['USER'],
+                roles: roles,
                 phone: formInputs.phone,
                 dateBirth: formInputs.dateBirth,
                 interests: formInputs.interests,
                 gender: formInputs.gender,
+                typeProfile: formInputs.typeProfile,
             }
             viewLoader();
             const response = await fetch(`${urlBack}/auth/register`, {
@@ -189,6 +194,10 @@ export default function RegisterPage() {
         setViewPassword((viewPassword) => viewPassword ? false : true);
     }
 
+    const handleTypeProfile = (e: React.ChangeEvent<HTMLInputElement>) => [
+        setFormInputs({...formInputs, typeProfile: e.target.value as TypeProfile})
+    ]
+
     return (
         <form ref={formRegister} className='auth-form' onSubmit={handleSubmit}>
             <h2 className='title-secoundary title-auth'>
@@ -200,6 +209,29 @@ export default function RegisterPage() {
                 etapasForm === 1
                 ?
                 <>
+                    <div className='inputs-type-profile'>
+                        <p>Escolha uma das opções abaixo:</p>
+                        <div>
+                            <input onChange={handleTypeProfile} type="radio" 
+                            name='type-profile' id='t-professional' value='PROFESSIONAL'/>
+                            <input onChange={handleTypeProfile} type="radio" 
+                            name='type-profile' id='t-profile' value='PROFILE'/>
+                            {
+                                formInputs.typeProfile === 'PROFESSIONAL'
+                                ?
+                                <label className='selected' htmlFor="t-professional">Sou um profissional</label>
+                                :
+                                <label htmlFor="t-professional">Sou um profissional</label>
+                            }
+                            {
+                                formInputs.typeProfile === 'PROFILE'
+                                ?
+                                <label className='selected' htmlFor="t-profile">Sou um usuário</label>
+                                :
+                                <label htmlFor="t-profile">Sou um usuário</label>
+                            }
+                        </div>
+                    </div>
                     <InputForm
                     inputType='text' 
                     name='name'  

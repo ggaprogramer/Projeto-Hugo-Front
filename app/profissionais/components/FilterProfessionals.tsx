@@ -12,6 +12,7 @@ export default function FilterProfessionals(){
         precoMinimo: '',
         precoMaximo: '',
         especialidade: 'todas',
+        interesse: 'todos',
         genero: 'T',
         disponibilidade: 'TO',
     });
@@ -27,6 +28,8 @@ export default function FilterProfessionals(){
             setFormInputs({...formInputs, precoMaximo: value});
         } else if(name === 'especialidade') {
             setFormInputs({...formInputs, especialidade: value});
+        } else if(name === 'interesse') {
+            setFormInputs({...formInputs, interesse: value});
         } else if(name === 'genero') {
             setFormInputs({...formInputs, genero: value as GeneroFiltersProfessionals});
         } else if(name === 'disponibilidade') {
@@ -75,15 +78,15 @@ export default function FilterProfessionals(){
                     <p>Abordagem terapêutica:</p>
                     <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleFormInputs('abordagem', e.target.value)} 
                     value={formInputs.abordagem} name="abordagem" id="abordagem">
-                        <option value="todas">Todas as abordagens</option>
-                        <option value="tcc">Terapia Cognitivo-Comportamental (TCC)</option>
-                        <option value="psicanalítica">Psicoterapia Psicanalítica</option>
-                        <option value="humanista">Terapia Humanista</option>
-                        <option value="sistemica">Terapia Sistêmica</option>
-                        <option value="comportamental">Terapia Comportamental</option>
-                        <option value="act">Terapia de Aceitação e Compromisso (ACT)</option>
-                        <option value="dbt">Terapia Dialética Comportamental (DBT)</option>
-                        <option value="gestalt">Terapia Gestalt</option>
+                        <option value="TODAS">Todas as abordagens</option>
+                        <option value="TCC">Terapia Cognitivo-Comportamental (TCC)</option>
+                        <option value="PSICANALITICA">Psicoterapia Psicanalítica</option>
+                        <option value="HUMANISTA">Terapia Humanista</option>
+                        <option value="SISTEMICA">Terapia Sistêmica</option>
+                        <option value="COMPORTAMENTAL">Terapia Comportamental</option>
+                        <option value="ACT">Terapia de Aceitação e Compromisso (ACT)</option>
+                        <option value="DBT">Terapia Dialética Comportamental (DBT)</option>
+                        <option value="GESTALT">Terapia Gestalt</option>
                     </select>
                 </div>
                 <div className='filtro-preco'>
@@ -131,17 +134,39 @@ export default function FilterProfessionals(){
                     <p>Especialidade:</p>
                     <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleFormInputs('especialidade', e.target.value)} 
                     value={formInputs.especialidade} name="especialidade" id="especialidade">
-                        <option value="todas">Todas as especialidades</option>
-                        <option value="psicologia_clinica">Psicologia Clínica</option>
-                        <option value="psicologia_organizacional">Psicologia Organizacional</option>
-                        <option value="psicologia_escolar">Psicologia Escolar</option>
-                        <option value="psicologia_juridica">Psicologia Jurídica</option>
-                        <option value="neuropsicologia">Neuropsicologia</option>
-                        <option value="psicoterapia">Psicoterapia</option>
-                        <option value="psicologia_social">Psicologia Social</option>
-                        <option value="psicologia_da_saude">Psicologia da Saúde</option>
-                        <option value="psicologia_infantil">Psicologia Infantil</option>
-                        <option value="psicologia_educacional">Psicologia Educacional</option>
+                        <option value="TODAS">Todas as especialidades</option>
+                        <option value="PSICOLOGIA_CLINICA">Psicologia Clínica</option>
+                        <option value="PSICOLOGIA_ORGANIZACIONAL">Psicologia Organizacional</option>
+                        <option value="PSICOLOGIA_ESCOLAR">Psicologia Escolar</option>
+                        <option value="PSICOLOGIA_JURIDICA">Psicologia Jurídica</option>
+                        <option value="NEUROPSICOLOGIA">Neuropsicologia</option>
+                        <option value="PSICOTERAPIA">Psicoterapia</option>
+                        <option value="PSICOLOGIA_SOCIAL">Psicologia Social</option>
+                        <option value="PSICOLOGIA_DA_SAUDE">Psicologia da Saúde</option>
+                        <option value="PSICOLOGIA_INFANTIL">Psicologia Infantil</option>
+                        <option value="PSICOLOGIA_EDUCACIONAL">Psicologia Educacional</option>
+                    </select>
+                </div>
+                <div className='filtro-interesse'>
+                    <p>Interesse:</p>
+                    <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleFormInputs('interesse', e.target.value)} 
+                    value={formInputs.interesse} name="interesse" id="interesse">
+                        <option value="TODOS">Todos os interesses</option>
+                        <option value="TERAPIA">Terapia</option>
+                        <option value="PSICOLOGIA">Psicologia</option>
+                        <option value="TERAPIA_COGNITIVO_COMPORTAMENTAL">Terapia Cognitivo Comportamental</option>
+                        <option value="PSICOTERAPIA">Psicoterapia</option>
+                        <option value="TERAPIA_EMOCIONAL">Terapia Emocional</option>
+                        <option value="SAUDE_MENTAL">Saúde Mental</option>
+                        <option value="ANSIEDADE">Ansiedade</option>
+                        <option value="DEPRESSAO">Depressão</option>
+                        <option value="RELACIONAMENTOS">Relacionamentos</option>
+                        <option value="AUTOESTIMA">Autoestima</option>
+                        <option value="MINDFULNESS">Mindfulness</option>
+                        <option value="ESTRESSE">Estresse</option>
+                        <option value="TRAUMA">Trauma</option>
+                        <option value="ADOLESCENCIA">Adolescência</option>
+                        <option value="PSICANALISE">Psicanálise</option>
                     </select>
                 </div>
                 <div className='filtro-disponilidade'>

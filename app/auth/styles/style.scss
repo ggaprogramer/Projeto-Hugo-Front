@@ -71,6 +71,31 @@
             width: 2rem;
         }
     }
+
+    .inputs-type-profile{
+        @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 2rem);
+        width: 100%;
+
+        input{
+            display: none;
+        }
+
+        div{
+            @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: center, $align-items: center, $gap: 2rem);
+
+            label{
+                font-weight: bold;
+                @include border(0.2rem, $black-one-color, solid, 10rem);
+                @include padding(1rem, 2rem, 1rem, 2rem);
+    
+    
+                &.selected{
+                    background: $black-one-color;
+                    color: $white-one-color;
+                }
+            }
+        }
+    }
     
 }
 

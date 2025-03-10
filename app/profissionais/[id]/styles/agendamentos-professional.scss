@@ -1,0 +1,39 @@
+@import '@styles/utils.scss';
+
+.info-agendamentos{
+    @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 1rem);
+
+    .custom-calendar{
+        width: 100%;
+        border: 1px solid red;
+
+        .tableheader{
+            th{
+                display: flex !important;
+                flex-flow: row nowrap !important; 
+                justify-content: flex-start !important;
+                align-items: flex-start !important;
+            }
+            /* display: flex !important;
+            flex-flow: row nowrap !important; */
+
+        }
+
+        span{
+            font-size: 1.6rem !important;
+        }
+    }
+}
+
+#pr_id_15_panel > div > div > div.p-datepicker-header > div{
+    display: flex !important;
+    gap: 0.5rem !important;
+}
+
+#pr_id_15_panel > div > div > div.p-datepicker-header > div > button{
+    font-size: 1.6rem !important;
+}
+
+#pr_id_15_panel > div > div > div.p-datepicker-header{
+    padding: 1rem 0 !important;
+}

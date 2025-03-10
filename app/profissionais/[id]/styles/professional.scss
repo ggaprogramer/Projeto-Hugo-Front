@@ -1,0 +1,171 @@
+@import '@styles/utils.scss';
+
+.container-professional{
+    width: 100%;
+    background: $gray-two-color;
+
+    &>div{
+        @include padding(3rem, 0rem, 3rem, 0rem);
+        width: 90%;
+        margin: 0 auto;
+        min-height: 90vh;
+        border: 1px solid red;
+        @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 3rem);
+
+        .info-professional-one{
+            border: 1px solid red;
+            width: 30rem;
+            background: $white-one-color;
+            @include border-radius(3rem, 3rem, 3rem, 3rem);
+
+            .photo{
+                @include padding(1rem, 1rem, 1rem, 1rem);
+                img{
+                    width: 100%;
+                }
+            }
+
+            .info-one-intern{
+                border: 1px solid red;
+                @include padding(2rem, 2rem, 2rem, 2rem);
+                @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 2rem);
+
+                &>div{
+                    width: 100%;
+                }
+
+                .info-first{
+                    @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 1rem);
+                }
+
+                .avaliacao{
+                    @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: center, $align-items: center, $gap: 2rem);
+
+                    div{
+                        @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 0.5rem);
+                    }
+
+                    img{
+                        max-width: 2rem;
+                    }
+                }
+
+                .info-consultation{
+                    @include padding(1rem, 0rem, 1rem, 0rem);
+                    @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 1.5rem);
+
+                    img{
+                        max-width: 3rem;
+                    }
+
+                    .info-preco, .info-disponibilidade, .info-plataforma{
+                        @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 2rem);
+                        div{
+                            @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 0.5rem);
+                        }
+                    }
+
+                    .info-disponibilidade{
+                        p{
+                            color: rgb(2, 197, 2);
+                            font-weight: bold;
+                        }
+                    }
+
+                    .info-botoes{
+                        width: 100%;
+                        @include display-flex($flex-direction: column, $flex-wrap: wrap, $justify-content: center, $align-items: center, $gap: 1.5rem);
+            
+                        button{
+                            cursor: pointer;
+                            background: $blue-one-color;
+                            color: $white-one-color;
+                            font-weight: bold;
+                            transition: .3s;
+                            font-size: 1.6rem;
+                            @include border-radius(3rem, 3rem, 3rem, 3rem);
+                            @include padding(1.5rem, 4rem, 1.5rem, 4rem);
+                
+                            &:hover{
+                                @include transform-scale(1.05);
+                            }
+
+                            &:nth-of-type(2){
+                                @include border(0.2rem,  $blue-one-color, solid, 10rem);
+                                background: transparent;
+                                color: $blue-one-color;
+                            }
+                        }
+                    }
+
+                    .info-midia{
+                        @include padding(1rem, 0rem, 1rem, 0rem);
+                        width: 100%;
+                        @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: space-around, $align-items: center, $gap: 1.5rem);
+
+                        button{
+                            background: transparent;
+                            transition: .3s;
+                            cursor: pointer;
+
+                            img{
+                                max-width: 2.5rem;
+                            }
+
+                            &:hover{
+                                transform: scale(1.05);
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+
+        .info-professional-two{
+            border: 1px solid red;
+            background: $white-one-color;
+            @include border-radius(3rem, 3rem, 3rem, 3rem);
+            @include padding(1rem, 2rem, 1rem, 2rem);
+            @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
+            width: 60rem;
+
+            &>div{
+                width: 100%;
+            }
+
+            .info-navegacao{
+                @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: center, $gap: 2rem);
+
+                button{
+                    @include padding(1rem, 1rem, 1rem, 1rem);
+                    font-size: 1.7rem;
+                    max-width: 20rem;
+                    background: transparent;
+                    @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 1rem);
+                    cursor: pointer;
+                    font-weight: bold;
+                    transition: .3s;
+
+                    &:hover{
+                        transform: scale(1.05);
+                    }
+
+                    span{
+                        width: 100%;
+                        height: 0.3rem;
+                        background: transparent;
+                    }
+
+                    &.selected{
+                        color: $blue-one-color;
+
+                        span{
+                            background: $blue-one-color;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -12,6 +12,7 @@ import React, { FormEvent, useState, useRef, useMemo, useEffect } from 'react';
 import useFetch from '@hooks/useFetch';
 import { useRouter, useSearchParams } from "next/navigation";
 import {responseFormLogin, bodyRequestFormLogin} from '@auth/login/interfaces';
+import {TypeProfile} from '@auth/register/interfaces';
 
 export default function LoginPage() {
     const urlBack = process.env.NEXT_PUBLIC_BACK_URL;
@@ -47,7 +48,7 @@ export default function LoginPage() {
         setViewPassword((viewPassword) => viewPassword ? false : true);
     }
 
-    const loginSuccess = async (redirect: string | null, token: string | null, lembrarSenha: boolean) => {
+    const loginSuccess = async (redirect: string | null, token: string | null, lembrarSenha: boolean, typeProfile: TypeProfile | null) => {
         
         if(token){
             const response = await fetch(`${urlFront}/auth/login/api`, {
@@ -61,7 +62,10 @@ export default function LoginPage() {
             if(response.ok){
                 if(redirect) {
                     router.push(redirect);
-                } else{
+                } else if(typeProfile === 'PROFILE'){
+                    router.push('/');
+                } else {
+                    // TODO redirecionar o profissional para a sua dashboard para o mesmo terminar o cadastro
                     router.push('/');
                 }
             } else{
@@ -96,7 +100,7 @@ export default function LoginPage() {
                 disableLoader();
             } else if(data.status === 'SUCCESS' && data.token){
                 const redirect: string | null = searchParams.get("redirect");
-                loginSuccess(redirect, data.token, body.lembrarSenha);
+                loginSuccess(redirect, data.token, body.lembrarSenha, data.typeProfile);
             } else{
                 disableLoader();
             }

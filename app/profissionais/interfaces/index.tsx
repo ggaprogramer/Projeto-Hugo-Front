@@ -8,6 +8,7 @@ export interface FiltersProfessionals {
     precoMinimo: string;
     precoMaximo: string;
     especialidade: string;
+    interesse: string;
     genero: GeneroFiltersProfessionals;
     disponibilidade: DisponibilidadeFiltersProfessionals;
 }

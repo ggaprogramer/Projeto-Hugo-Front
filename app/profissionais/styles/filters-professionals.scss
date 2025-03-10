@@ -16,7 +16,7 @@
     .aba-filtros{
         @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: center, $align-items: center, $gap: 3rem);
 
-        .filtro-nome, .filtro-abordagem, .filtro-especialidade{
+        .filtro-nome, .filtro-abordagem, .filtro-especialidade, .filtro-interesse{
             @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 1rem);
 
             @media(max-width: 640px){
