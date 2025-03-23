@@ -1,0 +1,81 @@
+@import '@styles/utils.scss';
+
+.info-bio{
+    @include padding(0rem, 0.5rem, 2rem, 0.5rem);
+    @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
+
+    .area-description{
+        @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 1rem);
+        text-align: justify;
+    }
+
+    .area-especialidades, .abordagens{
+        @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 1rem);
+
+        div{
+            @include padding(1rem, 0rem, 1rem, 0rem);
+            @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: flex-start, $align-items: center, $gap: 1.5rem);
+
+            @media(max-width: 940px){
+                justify-content: center;
+            }
+
+            span{
+                @include padding(1rem, 3rem, 1rem, 3rem);
+                @include border-radius(2rem, 2rem, 2rem, 2rem);
+                font-weight: bold;
+                font-size: 1.2rem;
+            }
+        }
+    }
+
+    .area-especialidades{
+        span{
+            background: $yellow-two-color;
+            color: $yellow-three-color;
+        }
+    }
+
+    .abordagens{
+        span{
+            background: $blue-two-color;
+            color: $blue-three-color;
+        }
+    }
+
+    .formacao-academica{
+        @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
+
+        .formacoes{
+            @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 1rem);
+
+            .formacao{
+                @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: center, $gap: 1rem);
+
+                img{
+                    max-width: 3rem;
+                }
+
+                div{
+                    @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 0.5rem);
+                }
+            }
+        }
+    }
+
+    .formacao-idiomas{
+        @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
+
+        .idiomas{
+            @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 1rem);
+
+            .idioma{
+                @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 1rem);
+
+                img{
+                    max-width: 3rem;
+                }
+            }               
+        }
+    }
+}

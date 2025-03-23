@@ -31,6 +31,9 @@ export default function InputForm(props: InputFormRegister){
         else if(name == 'password2'){
             setFormInputs({...formInputs, password2: e.target.value});
         }
+        else if(name == 'date-birth'){
+            setFormInputs({...formInputs, dateBirth: e.target.value});
+        }
     }
     
     if(props.name === 'phone'){

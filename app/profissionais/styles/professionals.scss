@@ -1,0 +1,190 @@
+@import '@styles/utils.scss';
+
+.container-professionals{
+    width: 100%;
+    background: $gray-two-color;
+    @include padding(3rem, 2rem, 3rem, 2rem);
+
+    &>div{
+        width: 90%;
+        margin: 0 auto;
+        min-height: 90vh;
+        @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 3rem);
+
+        &>h2{
+            width: 100%;
+            text-align: left;
+        }
+
+        .professionals{
+            @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 2rem);
+
+            .professional{
+                width: 100%;
+                @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 2rem);
+                background: $white-one-color;
+                @include padding(2rem, 2rem, 2rem, 2rem);
+
+                @media(max-width: 940px){
+                    flex-direction: column;
+                }
+
+                .photo{
+                    width: 30rem;
+                    img{
+                        border-radius: 50%;
+                        width: 100%;
+                    }
+
+                    @media(max-width: 940px){
+                        width: 15rem;
+                    }
+                }
+
+                .bio-breve{
+                    width: 100%;
+                    @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 1rem);
+
+                    @media(max-width: 940px){
+                        align-items: center;
+                        text-align: center;
+                    }
+
+                    .descricao{
+                        font-size: 1.6rem;
+                    }
+
+                    h3{
+                        font-size: 2.5rem;
+                    }
+
+                    .avaliacao{
+                        @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: center, $align-items: center, $gap: 2rem);
+    
+                        div{
+                            @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 0.5rem);
+                        }
+    
+                        img{
+                            max-width: 2rem;
+                        }
+                    }
+
+                    .categorias{
+                        @include padding(1rem, 0rem, 1rem, 0rem);
+                        @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: flex-start, $align-items: center, $gap: 1.5rem);
+
+                        @media(max-width: 940px){
+                            justify-content: center;
+                        }
+
+                        span{
+                            background: $yellow-one-color;
+                            @include padding(1rem, 3rem, 1rem, 3rem);
+                            @include border-radius(2rem, 2rem, 2rem, 2rem);
+                            font-weight: bold;
+                            font-size: 1.2rem;
+                        }
+                    }
+                }
+
+                .info{
+                    width: 50rem;
+                    @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 2rem);
+
+                    @media(max-width: 940px){
+                        align-items: center;
+                    }
+
+                    @media(max-width: 530px){
+                        width: 100%;
+                    }
+
+                    img{
+                        max-width: 2rem;
+                    }
+
+                    &>p:nth-of-type(1){
+                        font-size: 2rem;
+
+                        strong{
+                            font-size: 3rem;
+                        }
+                    }
+
+                    &>p:nth-of-type(3){
+                        @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 0.5rem);
+                    }
+
+                    div{
+                        width: 100%;
+                        @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 1rem);
+                        
+                        a{
+                            width: 100%;
+                            font-weight: bold;
+                            text-align: center;
+                            cursor: pointer;
+                            transition: .3s;
+
+                            &:hover{
+                                transform: scale(1.05);
+                            }
+                        }
+
+                        &>a:nth-of-type(1){
+                            @include border-radius(10rem, 10rem, 10rem, 10rem);
+                            background: $blue-one-color;
+                            @include padding(1.5rem, 3rem, 1.5rem, 3rem);
+                            color: $white-one-color;
+                        }
+
+                        &>a:nth-of-type(2){
+                            @include border(0.2rem, $blue-one-color, solid, 10rem);
+                            background: transparent;
+                            @include padding(1.5rem, 3rem, 1.5rem, 3rem);
+                            color: $blue-one-color;
+                        }
+                    }
+                }
+            
+            }
+        }
+
+        .navegacao{
+            @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: center, $align-items: center, $gap: 0rem);
+
+            a{
+                @include padding(1rem, 2rem, 1rem, 2rem);
+                background: transparent;
+                @include border(0.2rem, $blue-one-color, solid, 0rem);
+                color: $blue-one-color;
+                @include font-weight(500);
+                transition: .3s;
+
+                &:hover{
+                    transform: scale(1.05);
+                }
+
+                &.selected{
+                    background: $blue-one-color;
+                    color: $white-one-color;
+                }
+            }
+
+            &>a:nth-of-type(1){
+                @include border-radius(10rem, 0rem, 10rem, 0rem);
+            }
+
+            &>a:last-child{
+                @include border-radius(0rem, 10rem, 0rem, 10rem);
+            }
+        }
+    }
+}
+
+.html{
+    @media(max-width: 1190px){
+        font-size: 50% !important;
+    }
+}

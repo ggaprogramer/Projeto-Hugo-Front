@@ -12,7 +12,7 @@ import {RegisterFormValues} from '../interfaces';
 import {Errors} from '../../interfaces';
 import ErrorAuth from '../../components/ErrorAuth'
 import { useRouter } from 'next/navigation';
-import {responseRegisterForm, bodyRequestRegisterForm} from '@auth/register/interfaces';
+import {responseRegisterForm, bodyRequestRegisterForm, TypeProfile, Roles} from '@auth/register/interfaces';
 
 export default function RegisterPage() {
     const urlBack = process.env.NEXT_PUBLIC_BACK_URL;
@@ -33,24 +33,19 @@ export default function RegisterPage() {
 
     const [etapasForm, setEtapasForm] = useState(1);
     const [errors, setErrors] = useState<Errors[]>([]);
-    const ages: string[] = useMemo<string[]>(() => {
-        const lista: string[] = [];
-        for(let i = 15; i < 100; i++){
-            lista.push(i + "");
-        }
-        return lista;
-    }, []);
 
     const [formInputs, setFormInputs] = useState<RegisterFormValues>({
         name: '',
         username: '',
         email: '',
         interests: [],
+        gender: '',
         phone: '',
-        age: '',
+        dateBirth: '',
         password1: '',
         password2: '',
         termos: false,
+        typeProfile: 'PROFILE',
     });
     const formRegister = useRef<HTMLFormElement>(null);
 
@@ -58,15 +53,20 @@ export default function RegisterPage() {
 
     const makeRegister = async () => {
         try{
+            const roles = ['USER'] as Roles[];
+            roles.push(formInputs.typeProfile);
             const body: bodyRequestRegisterForm = {
+                name: formInputs.name,
                 username: formInputs.username,
                 password1: formInputs.password1,
                 password2: formInputs.password2,
                 email: formInputs.email,
-                roles: ['USER'],
+                roles: roles,
                 phone: formInputs.phone,
-                age: formInputs.age,
+                dateBirth: formInputs.dateBirth,
                 interests: formInputs.interests,
+                gender: formInputs.gender,
+                typeProfile: formInputs.typeProfile,
             }
             viewLoader();
             const response = await fetch(`${urlBack}/auth/register`, {
@@ -94,6 +94,22 @@ export default function RegisterPage() {
         }
     }
 
+    const calcularIdade = (dataNascimento: string) => {
+        const hoje = new Date(); // Data atual
+        const nascimento = new Date(dataNascimento); // Data de nascimento
+    
+        let idade = hoje.getFullYear() - nascimento.getFullYear();
+        const mesAtual = hoje.getMonth();
+        const mesNascimento = nascimento.getMonth();
+    
+        // Verifica se ainda não fez aniversário este ano
+        if (mesAtual < mesNascimento || (mesAtual === mesNascimento && hoje.getDate() < nascimento.getDate())) {
+            idade--;
+        }
+    
+        return idade;
+    }
+
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         let errors: Errors[] = [];
@@ -117,6 +133,10 @@ export default function RegisterPage() {
                 errors.push({type: 'email', description: 'Nenhum e-mail foi enviado.'});
                 lenErrors+=1;
             }
+            if(formInputs && !formInputs.gender){
+                errors.push({type: 'gender', description: 'Nenhum gênero foi enviado.'});
+                lenErrors+=1;
+            }
             if(formInputs && formInputs.interests.length === 0){
                 errors.push({type: 'interests', description: 'Nenhum interesse foi enviado.'});
                 lenErrors+=1;
@@ -125,10 +145,17 @@ export default function RegisterPage() {
                 errors.push({type: 'phone', description: 'Nenhum número de celular foi enviado.'});
                 lenErrors+=1;
             }
-            if(formInputs && !formInputs.age){
-                errors.push({type: 'age', description: 'Nenhuma idade foi enviada.'});
+            if(formInputs && !formInputs.dateBirth){
+                errors.push({type: 'date-birth', description: 'Nenhuma data de aniversário foi enviada.'});
                 lenErrors+=1;
+            } else {
+                let age: number = calcularIdade(formInputs.dateBirth);
+                if(age < 15){
+                    errors.push({type: 'date-birth', description: 'Você precisa ter no mínimo 15 anos para poder acessar a plataforma.'});
+                    lenErrors+=1;
+                }
             }
+            
             if(formInputs && !formInputs.password1){
                 errors.push({type: 'password1', description: 'A primeira senha não foi enviada'});
                 lenErrors+=1;
@@ -167,6 +194,10 @@ export default function RegisterPage() {
         setViewPassword((viewPassword) => viewPassword ? false : true);
     }
 
+    const handleTypeProfile = (e: React.ChangeEvent<HTMLInputElement>) => [
+        setFormInputs({...formInputs, typeProfile: e.target.value as TypeProfile})
+    ]
+
     return (
         <form ref={formRegister} className='auth-form' onSubmit={handleSubmit}>
             <h2 className='title-secoundary title-auth'>
@@ -178,10 +209,33 @@ export default function RegisterPage() {
                 etapasForm === 1
                 ?
                 <>
+                    <div className='inputs-type-profile'>
+                        <p>Escolha uma das opções abaixo:</p>
+                        <div>
+                            <input onChange={handleTypeProfile} type="radio" 
+                            name='type-profile' id='t-professional' value='PROFESSIONAL'/>
+                            <input onChange={handleTypeProfile} type="radio" 
+                            name='type-profile' id='t-profile' value='PROFILE'/>
+                            {
+                                formInputs.typeProfile === 'PROFESSIONAL'
+                                ?
+                                <label className='selected' htmlFor="t-professional">Sou um profissional</label>
+                                :
+                                <label htmlFor="t-professional">Sou um profissional</label>
+                            }
+                            {
+                                formInputs.typeProfile === 'PROFILE'
+                                ?
+                                <label className='selected' htmlFor="t-profile">Sou um usuário</label>
+                                :
+                                <label htmlFor="t-profile">Sou um usuário</label>
+                            }
+                        </div>
+                    </div>
                     <InputForm
                     inputType='text' 
                     name='name'  
-                    placeholder='Nome Completo:'  
+                    placeholder='Nome completo:'  
                     value={formInputs.name} 
                     errors={errors} 
                     formInputs={formInputs}
@@ -206,7 +260,21 @@ export default function RegisterPage() {
                     errors={errors} 
                     formInputs={formInputs}
                     setFormInputs={setFormInputs}
-                    />     
+                    />    
+
+                    <SelectForm
+                    name='gender'  
+                    placeholder='Selecione o seu gênero:'  
+                    value={formInputs.gender} 
+                    errors={errors} 
+                    options={[
+                        {value: 'MASCULINO', label: 'Masculino'},
+                        {value: 'FEMININO', label: 'Feminino'},
+                        {value: 'OUTROS', label: 'Outros'}
+                    ]}
+                    formInputs={formInputs}
+                    setFormInputs={setFormInputs}
+                    />   
 
                     <DivInterestsForm
                     formRegister={formRegister}
@@ -228,16 +296,16 @@ export default function RegisterPage() {
                     setFormInputs={setFormInputs}
                     />   
 
-                    <SelectForm
-                    name='age'  
-                    value={formInputs.age} 
+                    <p>Data de nascimento:</p>
+                    <InputForm
+                    inputType='date' 
+                    name='date-birth'  
+                    placeholder=''  
+                    value={formInputs.dateBirth} 
                     errors={errors} 
                     formInputs={formInputs}
                     setFormInputs={setFormInputs}
-                    opcoes={null}
-                    ages={ages}
-                    placeholder='Idade:'
-                    />  
+                    />   
 
                     <PasswordInputForm
                     inputType={!viewPassword ? 'password' : 'text'}

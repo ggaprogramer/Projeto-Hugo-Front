@@ -1,20 +1,20 @@
 "use client";
 
-import {RegisterFormValues, InputFormRegister, SelectFormInterface} from '../interfaces';
-import {OptionType, Errors} from '../../interfaces';
+import {RegisterFormValues, SelectFormInterface} from '../interfaces';
+import {Errors} from '../../interfaces';
+import {OptionsSelect} from '../interfaces';
 import '@auth/styles/select.scss';
 import ErrorAuth from '../../components/ErrorAuth';
 
 export default function SelectForm(props: SelectFormInterface){
     const errors: Errors[] = props.errors;
+    const options: OptionsSelect[] = props.options;
     const formInputs: RegisterFormValues = props.formInputs;
     const setFormInputs: Function = props.setFormInputs;
-    const ages: string[] | null = props.ages;
-    const multiple: boolean = props.name === 'interests' ? true : false;
 
     const handleInputFormRegister = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>, type: string) => {
-        if(type === 'age'){
-            setFormInputs({...formInputs, age: e.target.value});
+        if(type === 'gender'){
+            setFormInputs({...formInputs, gender: e.target.value});
         }
     }
 
@@ -22,15 +22,13 @@ export default function SelectForm(props: SelectFormInterface){
         <>
             <select 
                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleInputFormRegister(e, props.name)}
-                value={props.value} 
-                multiple={multiple} name={props.name}>
-                <option value="" disabled>{props.placeholder}</option>
-                {ages?.map((age) => {
+                value={props.value} name={props.name}>
+                <option>{props.placeholder}</option>
+                {options?.map((option) => {
                     return (
-                        <option key={age} value={age}>{age}</option>
+                        <option key={option.value} value={option.value}>{option.label}</option>
                     )
-                })};
-                    
+                })} 
             </select>
             <ErrorAuth errors={errors} type={props.name}/>
         </>

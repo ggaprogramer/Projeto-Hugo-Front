@@ -20,12 +20,16 @@ export interface DivInterestsFormInterface{
 export interface SelectFormInterface{
     name: string;
     value: string | string[];
+    placeholder: string;
     errors: Errors[];
+    options: OptionsSelect[];
     formInputs: RegisterFormValues;
     setFormInputs: Function;
-    opcoes: OptionType[] | null;
-    ages: string[] | null;
-    placeholder: string;
+}
+
+export type OptionsSelect = {
+    value: string;
+    label: string;
 }
 
 export interface RegisterFormValues {
@@ -33,12 +37,16 @@ export interface RegisterFormValues {
     username: string;
     email: string;
     interests: string[];
+    gender: string;
     phone: string;
-    age: string;
+    dateBirth: string;
     password1: string;
     password2: string;
     termos: Boolean;
+    typeProfile: TypeProfile;
 }
+
+export type TypeProfile = 'PROFESSIONAL' | 'PROFILE';
 
 export interface responseRegisterForm {
     status: string;
@@ -47,12 +55,17 @@ export interface responseRegisterForm {
 }
 
 export interface bodyRequestRegisterForm{
+    name: string;
     username: string;
     password1: string;
     password2: string;
     email: string;
-    roles: ["USER"];
+    roles: Roles[];
     phone: string;
-    age: string;
+    dateBirth: string;
     interests: string[];
+    gender: string;
+    typeProfile: TypeProfile;
 }
+
+export type Roles = 'USER' | 'PROFESSIONAL' | 'PROFILE';

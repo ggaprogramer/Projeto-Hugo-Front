@@ -72,6 +72,8 @@ export default function DivInterestsForm(props: DivInterestsFormInterface){
         }
     }
 
+    const placeholder = formInputs.typeProfile === 'PROFILE' ? 'Selecione seus interesses:' : 'Selecione seus interesses de atuação:';
+
     return (
         <>
             <div id='interests-box' onMouseLeave={handleInputInterestsLeave}>
@@ -85,7 +87,7 @@ export default function DivInterestsForm(props: DivInterestsFormInterface){
                     formInputs.interests && formInputs.interests.length === 1
                     ? `1 interesse selecionado` 
                     : `${formInputs.interests.length === 0
-                        ? 'Selecione seu interesse'
+                        ? placeholder
                         : `${formInputs.interests.length} interesses selecionados` 
                     }`
                 }/>
