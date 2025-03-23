@@ -1,39 +1,56 @@
 @import '@styles/utils.scss';
 
 .info-agendamentos{
-    @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 1rem);
+    @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 1.5rem);
+    @include padding(0rem, 0rem, 2rem, 0rem);
 
     .custom-calendar{
         width: 100%;
-        border: 1px solid red;
 
-        .tableheader{
-            th{
-                display: flex !important;
-                flex-flow: row nowrap !important; 
-                justify-content: flex-start !important;
-                align-items: flex-start !important;
+        .selected{
+            @include border(0.2rem,  $blue-one-color, solid, 0rem);
+        }
+    }
+
+    .horarios{
+        width: 100%;
+        @include padding(1rem, 0rem, 1rem, 0rem);
+        @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: flex-start, $align-items: center, $gap: 1rem);
+
+        .horario{
+            @include padding(1rem, 2rem, 1rem, 2rem);
+            @include border(0.2rem,  $blue-two-color, solid, 1rem);
+            color: $blue-three-color;
+            cursor: pointer;
+            transition: .3s;
+
+            &:hover{
+                @include transform-scale(1.05);
             }
-            /* display: flex !important;
-            flex-flow: row nowrap !important; */
-
         }
 
-        span{
-            font-size: 1.6rem !important;
+        .horario.selecionado{
+            @include border(0.2rem,  transparent, solid, 1rem);
+            color: $white-one-color;
+            background: $blue-one-color;
+            font-weight: bold;
+        }
+    }
+
+    &>button{
+        background: transparent;
+        cursor: pointer;
+        width: 100%;
+        @include padding(1rem, 2rem, 1rem, 2rem);
+        color: $white-one-color;
+        background: $blue-one-color;
+        font-weight: bold;
+        @include border-radius(3rem, 3rem, 3rem, 3rem);
+        transition: .3s;
+
+        &:hover{
+            @include transform-scale(1.02);
         }
     }
 }
 
-#pr_id_15_panel > div > div > div.p-datepicker-header > div{
-    display: flex !important;
-    gap: 0.5rem !important;
-}
-
-#pr_id_15_panel > div > div > div.p-datepicker-header > div > button{
-    font-size: 1.6rem !important;
-}
-
-#pr_id_15_panel > div > div > div.p-datepicker-header{
-    padding: 1rem 0 !important;
-}

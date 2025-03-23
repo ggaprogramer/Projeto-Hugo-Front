@@ -9,11 +9,9 @@
         width: 90%;
         margin: 0 auto;
         min-height: 90vh;
-        border: 1px solid red;
         @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 3rem);
 
         .info-professional-one{
-            border: 1px solid red;
             width: 30rem;
             background: $white-one-color;
             @include border-radius(3rem, 3rem, 3rem, 3rem);
@@ -22,11 +20,18 @@
                 @include padding(1rem, 1rem, 1rem, 1rem);
                 img{
                     width: 100%;
+
+                    @media (max-width: 900px){
+                        max-width: 20rem;
+                    }
+                }
+
+                @media (max-width: 900px){
+                    @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 3rem);
                 }
             }
 
             .info-one-intern{
-                border: 1px solid red;
                 @include padding(2rem, 2rem, 2rem, 2rem);
                 @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 2rem);
 
@@ -36,10 +41,15 @@
 
                 .info-first{
                     @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 1rem);
+
+                    @media (max-width: 900px){
+                       justify-content: center;
+                       align-items: center;
+                    }
                 }
 
                 .avaliacao{
-                    @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: center, $align-items: center, $gap: 2rem);
+                    @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: flex-start, $align-items: center, $gap: 2rem);
 
                     div{
                         @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 0.5rem);
@@ -48,6 +58,10 @@
                     img{
                         max-width: 2rem;
                     }
+
+                    @media (max-width: 900px){
+                        justify-content: center;
+                     }
                 }
 
                 .info-consultation{
@@ -118,12 +132,24 @@
                         }
                     }
 
+                    @media (max-width: 900px){
+                        justify-content: center;
+                        align-items: center;
+                    }
+
                 }
+            }
+
+            @media (max-width: 900px){
+                width: 60rem;
+            }
+
+            @media (max-width: 680px){
+                width: 100%;
             }
         }
 
         .info-professional-two{
-            border: 1px solid red;
             background: $white-one-color;
             @include border-radius(3rem, 3rem, 3rem, 3rem);
             @include padding(1rem, 2rem, 1rem, 2rem);
@@ -135,7 +161,7 @@
             }
 
             .info-navegacao{
-                @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: center, $gap: 2rem);
+                @include display-flex($flex-direction: row, $flex-wrap: wnorap, $justify-content: flex-start, $align-items: center, $gap: 2rem);
 
                 button{
                     @include padding(1rem, 1rem, 1rem, 1rem);
@@ -165,7 +191,27 @@
                         }
                     }
                 }
+
+                @media(max-width: 380px){
+                    flex-flow: column nowrap;
+                    gap: 0rem;
+                }
+            }
+
+            @media (max-width: 680px){
+                width: 100%;
             }
         }
+
+        @media (max-width: 900px){
+            flex-flow: column nowrap;
+            align-items: center;
+        }
+    }
+}
+
+.html{
+    @media(max-width: 480px){
+        font-size: 50% !important;
     }
 }
