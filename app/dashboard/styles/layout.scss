@@ -1,0 +1,42 @@
+@import '@styles/utils.scss';
+
+.container{
+    width: 100%;
+    min-height: 85vh;
+    @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 2rem);
+    @include padding(2rem, 2rem, 2rem, 2rem);
+    background: $gray-two-color;
+
+    .barra-lateral{
+        width: 40rem;
+        background: $white-one-color;
+        @include padding(2rem, 2rem, 2rem, 2rem);
+        @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
+        @include border-radius(2rem, 2rem, 2rem, 2rem);
+
+        button{
+            width: 100%;
+            @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: center, $gap: 1rem);
+            transition: .3s;
+            cursor: pointer;
+            background: transparent;
+            font-size: 1.7rem;
+            @include padding(1rem, 2rem, 1rem, 2rem);
+            @include border-radius(2rem, 2rem, 2rem, 2rem);
+
+            &:hover{
+                @include transform-scale(1.02);
+            }
+
+            &.selected{
+                background: $gray-three-color;
+            }
+        }
+    }
+
+    .barra-principal{
+        border: 1px solid red;
+        width: 100%;
+        min-height: 85vh;
+    }
+}

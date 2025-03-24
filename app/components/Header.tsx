@@ -40,7 +40,7 @@ export default function Header(props: HeaderHomePropsInterface){
                             <Link href='/auth/login'>Login</Link>
                             :
                             <>
-                                <Link href=''>Dashboard</Link>
+                                <Link href='/dashboard/perfil'>Dashboard</Link>
                                 <Logout/>
                             </>
                         }
@@ -70,7 +70,7 @@ export default function Header(props: HeaderHomePropsInterface){
                             <Link href='/auth/login'>Login</Link>
                             :
                             <>
-                                <Link href=''>Dashboard</Link>
+                                <Link href='/dashboard/perfil'>Dashboard</Link>
                                 <Logout/>
                             </>
                         }

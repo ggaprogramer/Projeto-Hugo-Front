@@ -1,0 +1,59 @@
+@import '@styles/utils.scss';
+
+.perfil{
+    width: 100%;
+    @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
+    @include padding(2rem, 2rem, 2rem, 2rem);
+    background: $white-one-color;
+    @include border-radius(2rem, 2rem, 2rem, 2rem);
+
+    .perfil-cabecalho{
+        width: 100%;
+        @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: space-between, $align-items: center, $gap: 2rem);
+
+        button{
+            @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 1rem);
+            @include border-radius(2rem, 2rem, 2rem, 2rem);
+            @include padding(1rem, 2rem, 1rem, 2rem);
+            background: $yellow-one-color;
+            font-weight: bold;
+            font-size: 1.5rem;
+            transition: .3s;
+            cursor: pointer;
+
+            &:hover{
+                @include transform-scale(1.02);
+            }
+        }
+    }
+
+    .perfil-box{
+        @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
+        width: 100%;
+
+        .perfil-foto{
+            @include padding(0rem, 2rem, 0rem, 0rem);
+            @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 1.5rem);
+
+            img{
+                @include border(0.2rem,  $yellow-one-color, solid, 2rem);
+                width: 20rem;
+                height: 20rem;
+                border-radius: 50%;
+            }
+        }
+
+        .perfil-info{
+            width: 100%;
+            @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 4rem);
+
+            div{
+                @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 1rem);
+
+                img{
+                    max-width: 2rem;
+                }
+            }
+        }
+    }
+}
