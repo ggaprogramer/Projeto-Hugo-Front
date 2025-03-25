@@ -190,7 +190,7 @@ export default function RegisterPage() {
         setEtapasForm(1);
     };
 
-    const handleViewPassowrd = () => {
+    const handleViewPassword = () => {
         setViewPassword((viewPassword) => viewPassword ? false : true);
     }
 
@@ -328,7 +328,7 @@ export default function RegisterPage() {
                     />
 
                     <label className='inputs-extras'>
-                        <input onChange={handleViewPassowrd} type="checkbox"/>
+                        <input onChange={handleViewPassword} type="checkbox"/>
                         <p>
                             Mostrar senhas.
                         </p>
