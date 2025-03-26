@@ -1,12 +1,14 @@
 'use client';
 
+import { ProfileInfo } from '../perfil/interfaces';
 import React, { Suspense } from 'react';
 import { FaUser } from "react-icons/fa";
 import { FaCalendarAlt } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import {useState} from 'react';
 
-export default function DashboardNavigation({children}: Readonly<{children: React.ReactNode}>) {
+export default function DashboardNavigation(props: {children: Readonly<React.ReactNode>}) {
+    const children = props.children;
     const [navigation, setNavigation] = useState<Number>(0);
 
     return (

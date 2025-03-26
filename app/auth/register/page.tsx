@@ -7,7 +7,7 @@ import RegisterPage from './components/RegisterPage';
 export default async function Register() {
     const authToken = cookies().get('auth-token');
     
-    const userIsAuthenticated: boolean | undefined = await functionIsAuthenticated(authToken?.value);
+    const userIsAuthenticated: string | undefined = await functionIsAuthenticated(authToken?.value);
 
     if(!userIsAuthenticated) {
         return (

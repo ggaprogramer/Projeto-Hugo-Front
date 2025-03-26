@@ -6,7 +6,7 @@ import {useMemo, useState, useRef} from 'react';
 import ErrorAuth from '@auth/components/ErrorAuth';
 
 export default function DivInterestsAtualizarPerfil(props: DivInterestsAtualizarFormInterface){
-    const formRegister = props.formRegister;
+    const formAtualizar = props.formAtualizar;
     const formInputs = props.formInputs;
     const setFormInputs = props.setFormInputs;
     const errors: Errors[] = props.errors;
@@ -52,7 +52,7 @@ export default function DivInterestsAtualizarPerfil(props: DivInterestsAtualizar
 
     const handleChangeInputsInterestsAll = (e: React.ChangeEvent<HTMLInputElement>) => {
         if(e.target.checked){
-            const checkboxes = formRegister?.current?.querySelectorAll<HTMLInputElement>('.interests-checkbox');
+            const checkboxes = formAtualizar?.current?.querySelectorAll<HTMLInputElement>('.interests-checkbox');
             let arrayValores: string[] = [];
             if(checkboxes){
                 arrayValores = Array.from(checkboxes).map((checkbox) => checkbox.value.toUpperCase());
@@ -64,7 +64,7 @@ export default function DivInterestsAtualizarPerfil(props: DivInterestsAtualizar
     }
 
     const handleChangeInputsInterests = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const checkboxes = formRegister?.current?.querySelectorAll<HTMLInputElement>('.interests-checkbox');
+        const checkboxes = formAtualizar?.current?.querySelectorAll<HTMLInputElement>('.interests-checkbox');
         let arrayValores: string[] = [];
         if(checkboxes){
             arrayValores = Array.from(checkboxes).filter((checkbox) => checkbox.checked).map((checkbox) => checkbox.value.toUpperCase());

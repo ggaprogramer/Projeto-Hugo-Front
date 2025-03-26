@@ -5,17 +5,17 @@ export interface QuestionInterface{
 }
 
 export interface HomePagePropsInterface {
-    userIsAuthenticated: boolean | undefined;
+    userIsAuthenticated: string | undefined;
 }
 
 export interface HeaderHomePropsInterface {
-    userIsAuthenticated: boolean | undefined;
+    userIsAuthenticated: string | undefined;
 }
 
 export interface MainHomePropsInterface {
-    userIsAuthenticated: boolean | undefined;
+    userIsAuthenticated: string | undefined;
 }
 
 export interface FooterHomePropsInterface {
-    userIsAuthenticated: boolean | undefined;
+    userIsAuthenticated: string | undefined;
 }

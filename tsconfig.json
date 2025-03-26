@@ -23,6 +23,7 @@
       "@interfaces/*": ["./interfaces/*"],  
       "@auth/*": ["./app/auth/*"],  
       "@home/*": ["./app/components/*"],  
+      "@dashboard/*": ["./app/dashboard/*"],  
 		}
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

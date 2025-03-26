@@ -10,8 +10,10 @@ export default async function isAuthenticated(token: string | undefined){
             body: JSON.stringify({token: token}),
             cache: 'no-store',
         });
-        const isAuthenticated = response.ok;
-        if(isAuthenticated) return true;
-        return false;
+        const data = await response.json();
+        const getToken = data?.token;
+
+        if(response.ok && getToken) return getToken;
+        return undefined;
     }
 }
