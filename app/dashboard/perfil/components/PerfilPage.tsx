@@ -14,6 +14,7 @@ import { ProfileInfo } from '../interfaces';
 
 export default function PerfilPage(props: {profileInfo: ProfileInfo}){
     const profileInfo: ProfileInfo = props.profileInfo;
+    console.log(profileInfo);
 
     const urlBack = process.env.NEXT_PUBLIC_BACK_URL;
 
@@ -210,7 +211,7 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
                     <div className="perfil-foto">
                         <img src="/user.png" alt="" />
                         <h2>
-                            John Doe
+                            {profileInfo.name}
                         </h2>
                     </div>
                     <div className="perfil-info">
@@ -219,7 +220,7 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
                                 Nome: 
                             </p>
                             <strong>
-                                Guilherme
+                                {profileInfo.name}
                             </strong>
                         </div>
                         <div>
@@ -227,7 +228,7 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
                                 E-mail: 
                             </p>
                             <strong>
-                                email@gmail.com
+                                {profileInfo.email}
                             </strong>
                         </div>
                         <div>
@@ -235,7 +236,7 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
                                 Celular: 
                             </p>
                             <strong>
-                                +55 11 11111-1111
+                                {profileInfo.phone}
                             </strong>
                         </div>
                     </div>
@@ -245,7 +246,7 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
                                 Usuário: 
                             </p>
                             <strong>
-                                username
+                                {profileInfo.username}
                             </strong>
                         </div>
                         <div>
@@ -253,7 +254,7 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
                                 Aniversário: 
                             </p>
                             <strong>
-                                11/03/2001
+                                {profileInfo.dateBirth}
                             </strong>
                         </div>
                         <div>
@@ -261,7 +262,13 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
                                 Confirmação de e-mail: 
                             </p>
                             <strong>
-                                <img src="/check.png" alt="" />
+                                {
+                                    profileInfo.confirmacaoEmail
+                                    ?
+                                    <img src="/check.png" alt="" />
+                                    :
+                                    <img src="/block.png" alt="" />
+                                }
                             </strong>
                         </div>
                     </div>
@@ -271,7 +278,7 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
                                 Sexo: 
                             </p>
                             <strong>
-                                masculino
+                                {profileInfo.gender}
                             </strong>
                         </div>
                         <div>
@@ -279,7 +286,9 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
                                 Interesses: 
                             </p>
                             <strong>
-                                Jogos, Artes
+                                {profileInfo.interests.map((interest) => {
+                                    return <p>{interest}</p>
+                                })}
                             </strong>
                         </div>
                     </div>

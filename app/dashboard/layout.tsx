@@ -15,8 +15,6 @@ export default async function Dashboard({children}: Readonly<{children: React.Re
     const userIsAuthenticated: string | undefined = await functionIsAuthenticated(authToken?.value);
 
     if(userIsAuthenticated) {
-        const profileInfo: ProfileInfo = await getInfoProfile(userIsAuthenticated);
-
         return (
             <>
                 <Header userIsAuthenticated={userIsAuthenticated}/>

@@ -23,6 +23,7 @@
       "@interfaces/*": ["./interfaces/*"],  
       "@auth/*": ["./app/auth/*"],  
       "@home/*": ["./app/components/*"],  
+      "@app/*": ["./app/*"],  
       "@dashboard/*": ["./app/dashboard/*"],  
 		}
   },

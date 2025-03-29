@@ -54,6 +54,10 @@
                     max-width: 2rem;
                 }
             }
+
+            strong{
+                @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 0.5rem);
+            }
         }
     }
 }

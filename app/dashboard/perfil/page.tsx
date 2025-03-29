@@ -14,13 +14,11 @@ export default async function Dashboard() {
     const userIsAuthenticated: string | undefined = await functionIsAuthenticated(authToken?.value);
 
     if(userIsAuthenticated) {
-        const profileInfo: ProfileInfo = await getInfoProfile(userIsAuthenticated);
+        const profileInfo: ProfileInfo = await getInfoProfile(authToken?.value);
 
         return (
             <>
-                <Header userIsAuthenticated={userIsAuthenticated}/>
                 <PerfilPage profileInfo={profileInfo}/>
-                <Footer userIsAuthenticated={userIsAuthenticated}/>
             </>
         );
     } else {

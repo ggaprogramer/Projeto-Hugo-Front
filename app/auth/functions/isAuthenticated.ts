@@ -4,7 +4,9 @@ export default async function isAuthenticated(token: string | undefined){
         const response = await fetch(`${urlBack}/auth/is-authenticated`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
             },
             credentials: 'include',
             body: JSON.stringify({token: token}),
@@ -14,6 +16,5 @@ export default async function isAuthenticated(token: string | undefined){
         const getToken = data?.token;
 
         if(response.ok && getToken) return getToken;
-        return undefined;
     }
 }
