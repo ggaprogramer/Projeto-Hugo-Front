@@ -15,6 +15,7 @@ export interface DivInterestsFormInterface{
     formRegister: React.RefObject<HTMLFormElement>;
     setFormInputs: Function;
     errors: Errors[];
+    interests: interestsInterface[];
 }
 
 export interface SelectFormInterface{
@@ -69,3 +70,9 @@ export interface bodyRequestRegisterForm{
 }
 
 export type Roles = 'USER' | 'PROFESSIONAL' | 'PROFILE';
+
+
+export interface interestsInterface {
+    value: string;
+    label: string;
+}

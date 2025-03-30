@@ -3,7 +3,7 @@
 import '../style.scss';
 import '@auth/styles/style.scss';
 import Link from 'next/link';
-import React, { FormEvent, useState, useRef, useMemo, useEffect } from 'react';
+import React, { FormEvent, useState, useRef, useMemo, useEffect, useTransition } from 'react';
 import InputForm from '../components/InputForm';
 import SelectForm from '../components/SelectForm';
 import DivInterestsForm from '../components/DivInterestsForm';
@@ -12,10 +12,24 @@ import {RegisterFormValues} from '../interfaces';
 import {Errors} from '../../interfaces';
 import ErrorAuth from '../../components/ErrorAuth'
 import { useRouter } from 'next/navigation';
-import {responseRegisterForm, bodyRequestRegisterForm, TypeProfile, Roles} from '@auth/register/interfaces';
+import extractProfileInterests from '../functions/extractProfileInterests';
+import extractProfessionalInterests from '../functions/extractProfessionalInterests';
+import {responseRegisterForm, bodyRequestRegisterForm, TypeProfile, Roles, interestsInterface} from '@auth/register/interfaces';
 
 export default function RegisterPage() {
     const urlBack = process.env.NEXT_PUBLIC_BACK_URL;
+
+    let [interestsResponse, setInterestsResponse] = useState<interestsInterface[][] | null>(null);
+    let [interests, setInterests] = useState<interestsInterface[] | null>(null);
+
+    useEffect(() => {
+        const resolveFetch = async () => {
+            const profileInterests: interestsInterface[] = await extractProfileInterests();
+            const professionalInterests: interestsInterface[] = await extractProfessionalInterests();
+            setInterestsResponse([profileInterests, professionalInterests]);
+        }
+        resolveFetch();
+    }, []);
 
     const router = useRouter();
 
@@ -50,6 +64,14 @@ export default function RegisterPage() {
     const formRegister = useRef<HTMLFormElement>(null);
 
     const [viewPassword, setViewPassword] = useState<Boolean>(false);
+
+    useEffect(() => {
+        if(interestsResponse && formInputs.typeProfile === 'PROFESSIONAL'){
+            setInterests(interestsResponse[1]);
+        } else if(interestsResponse) {
+            setInterests(interestsResponse[0]);
+        }
+    }, [formInputs, interestsResponse]);
 
     const makeRegister = async () => {
         try{
@@ -275,13 +297,18 @@ export default function RegisterPage() {
                     formInputs={formInputs}
                     setFormInputs={setFormInputs}
                     />   
-
-                    <DivInterestsForm
-                    formRegister={formRegister}
-                    formInputs={formInputs}
-                    setFormInputs={setFormInputs}
-                    errors={errors}
-                    />   
+                    
+                    {   
+                        interests !== null &&
+                        interests.length !== 0 &&
+                        <DivInterestsForm
+                        formRegister={formRegister}
+                        formInputs={formInputs}
+                        setFormInputs={setFormInputs}
+                        errors={errors}
+                        interests={interests}
+                        /> 
+                    }
                     
                 </>
                 :
@@ -351,9 +378,16 @@ export default function RegisterPage() {
                 <button className='button-voltar-etapa' onClick={handleBtnVoltar}>
                     Voltar
                 </button>}
-                <button type='submit' ref={buttonRegister}>
-                    {etapasForm === 1 ? 'Próxima Etapa' : 'Criar Conta'}
-                </button>
+                {   
+                    interests !== null &&
+                    interests.length !== 0 
+                    ?
+                    <button type='submit' ref={buttonRegister}>
+                        {etapasForm === 1 ? 'Próxima Etapa' : 'Criar Conta'}
+                    </button>
+                    :
+                    <span className='loader-interests'></span>  
+                }
                 <span ref={loader} className='loader'></span>
             </div>
             <ErrorAuth errors={errors} type='lenErrors'/>

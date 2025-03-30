@@ -11,15 +11,29 @@ import {Errors} from '@auth/interfaces';
 import { useRouter } from 'next/navigation';
 import ErrorAuth from '@auth/components/ErrorAuth'
 import { ProfileInfo } from '../interfaces';
+import extractProfileInterests from '@auth/register/functions/extractProfileInterests';
+import extractProfessionalInterests from '@auth/register/functions/extractProfessionalInterests';
+import {interestsInterface} from '@auth/register/interfaces';
 
 export default function PerfilPage(props: {profileInfo: ProfileInfo}){
     const profileInfo: ProfileInfo = props.profileInfo;
-    console.log(profileInfo);
 
     const urlBack = process.env.NEXT_PUBLIC_BACK_URL;
 
     const buttonAtualizar = useRef<HTMLButtonElement>(null);
     const loader = useRef<HTMLSpanElement>(null);
+
+    let [interestsResponse, setInterestsResponse] = useState<interestsInterface[][] | null>(null);
+    let [interests, setInterests] = useState<interestsInterface[] | null>(null);
+
+    useEffect(() => {
+        const resolveFetch = async () => {
+            const profileInterests: interestsInterface[] = await extractProfileInterests();
+            const professionalInterests: interestsInterface[] = await extractProfessionalInterests();
+            setInterestsResponse([profileInterests, professionalInterests]);
+        }
+        resolveFetch();
+    }, []);
     
     const viewLoader = () => {
         buttonAtualizar?.current?.setAttribute('style', 'display: none');
@@ -46,6 +60,18 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
     });
     const [errors, setErrors] = useState<Errors[]>([]);
 
+    useEffect(() => {
+        setFormInputs({...formInputs, interests: profileInfo.interests});
+    }, [profileInfo]);
+
+    useEffect(() => {
+        if(interestsResponse && formInputs.typeProfile === 'PROFESSIONAL'){
+            setInterests(interestsResponse[1]);
+        } else if(interestsResponse) {
+            setInterests(interestsResponse[0]);
+        }
+    }, [formInputs, interestsResponse]);
+
     const [viewPassword, setViewPassword] = useState<Boolean>(false);
 
     const [stateUpgrade, setStateUpgrade] = useState<Number>(0);
@@ -64,6 +90,12 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
         }
     
         return idade;
+    }
+
+    function transformarData(data: string) {
+        const partes = data.split('/');
+        
+        return `${partes[2]}-${partes[1]}-${partes[0]}`;
     }
 
     const handleViewPassword = () => {
@@ -202,16 +234,20 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
                     <h1>
                         Meu Perfil
                     </h1>
-                    <button onClick={() => setStateUpgrade(1)}>
-                        <FaPencilAlt/>
-                        Alterar Dados
-                    </button>
+                    {
+                        interests 
+                        &&
+                        <button onClick={() => setStateUpgrade(1)}>
+                            <FaPencilAlt/>
+                            Alterar Dados
+                        </button>
+                    }
                 </div>
                 <div className="perfil-box">
                     <div className="perfil-foto">
                         <img src="/user.png" alt="" />
                         <h2>
-                            {profileInfo.name}
+                            {profileInfo.name?.split(' ')[0]}
                         </h2>
                     </div>
                     <div className="perfil-info">
@@ -287,7 +323,7 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
                             </p>
                             <strong>
                                 {profileInfo.interests.map((interest) => {
-                                    return <p>{interest}</p>
+                                    return <p key={interest.value}>{interest.label}</p>
                                 })}
                             </strong>
                         </div>
@@ -303,13 +339,13 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
                     <div>
                         <div>
                             <label htmlFor="name">Nome:</label>
-                            <input type="text" name="name" id="name" 
+                            <input type="text" name="name" id="name" value={profileInfo.name}
                             onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeForm(e, 'name')} />
                             <ErrorAuth errors={errors} type='name'/>
                         </div>
                         <div>
                             <label htmlFor="username">Usuário:</label>
-                            <input type="text" name="username" id="username" 
+                            <input type="text" name="username" id="username" value={profileInfo.username}
                             onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeForm(e, 'username')} />
                             <ErrorAuth errors={errors} type='username'/>
                         </div>
@@ -317,7 +353,7 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
                     <div>
                         <div>
                             <label htmlFor="email">E-mail:</label>
-                            <input type="email" name="email" id="email" 
+                            <input type="email" name="email" id="email" value={profileInfo.email}
                             onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeForm(e, 'email')}/>
                             <ErrorAuth errors={errors} type='email'/>
                         </div>
@@ -326,7 +362,7 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
                             <IMaskInput
                                 id='phone'
                                 name='phone'
-                                mask="+55 (00) 00000-0000"
+                                mask="+55 (00) 00000-0000" value={profileInfo.phone}
                                 onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeForm(e, 'phone')}
                             />
                             <ErrorAuth errors={errors} type='phone'/>
@@ -335,7 +371,8 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
                     <div>
                         <div>
                             <label htmlFor="gender">Sexo:</label>
-                            <select name="gender" id="gender" onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleChangeForm(e, 'gender')}>
+                            <select name="gender" id="gender" value={profileInfo.gender}
+                            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleChangeForm(e, 'gender')}>
                                 <option value="MASCULINO">Masculino</option>
                                 <option value="FEMININO">Feminino</option>
                                 <option value="OUTROS">Outros</option>
@@ -344,22 +381,28 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
                         </div>
                         <div>
                             <label htmlFor="date-birth">Aniversário:</label>
-                            <input type="date" name="date-birth" id="date-birth" 
+                            <input type="date" name="date-birth" id="date-birth" value={transformarData(profileInfo.dateBirth)}
                             onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeForm(e, 'date-birth')} />
                             <ErrorAuth errors={errors} type='dateBirth'/>
                         </div>
                     </div>
-                    <div>
+                    {
+                        interests 
+                        &&
                         <div>
-                            <p>Interesses:</p>
-                            <DivInterestsAtualizarPerfil
-                            formAtualizar={formAtualizar}
-                            formInputs={formInputs}
-                            setFormInputs={setFormInputs}
-                            errors={errors}/>
-                            <ErrorAuth errors={errors} type='interests'/>
+                            <div>
+                                <p>Interesses:</p>
+                                <DivInterestsAtualizarPerfil
+                                formAtualizar={formAtualizar}
+                                formInputs={formInputs}
+                                setFormInputs={setFormInputs}
+                                options={interests}
+                                valueInterests={profileInfo.interests}
+                                errors={errors}/>
+                                <ErrorAuth errors={errors} type='interests'/>
+                            </div>
                         </div>
-                    </div>
+                    }
                     <h3>
                         Mudar a senha
                     </h3>

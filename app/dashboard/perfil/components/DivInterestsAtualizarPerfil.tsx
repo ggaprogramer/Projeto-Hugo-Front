@@ -2,36 +2,16 @@
 
 import {DivInterestsAtualizarFormInterface} from '../interfaces';
 import {OptionType, Errors} from '@auth/interfaces';
-import {useMemo, useState, useRef} from 'react';
+import {useMemo, useState, useRef, useEffect} from 'react';
 import ErrorAuth from '@auth/components/ErrorAuth';
+import {interestsInterface} from '@auth/register/interfaces';
 
 export default function DivInterestsAtualizarPerfil(props: DivInterestsAtualizarFormInterface){
     const formAtualizar = props.formAtualizar;
     const formInputs = props.formInputs;
     const setFormInputs = props.setFormInputs;
     const errors: Errors[] = props.errors;
-
-    const opcoes = useMemo<OptionType[]>(() => {
-        return (
-            [
-                { value: 'TERAPIA', label: 'Terapia' },
-                { value: 'PSICOLOGIA', label: 'Psicologia' },
-                { value: 'TERAPIA_COGNITIVO_COMPORTAMENTAL', label: 'Terapia Cognitivo-Comportamental' },
-                { value: 'PSICOTERAPIA', label: 'Psicoterapia' },
-                { value: 'TERAPIA_EMOCIONAL', label: 'Terapia Emocional' },
-                { value: 'SAUDE_MENTAL', label: 'Saúde Mental' },
-                { value: 'ANSIEDADE', label: 'Ansiedade' },
-                { value: 'DEPRESSAO', label: 'Depressão' },
-                { value: 'RELACIONAMENTOS', label: 'Relacionamentos' },
-                { value: 'AUTOESTIMA', label: 'Autoestima' },
-                { value: 'MINDFULNESS', label: 'Mindfulness' },
-                { value: 'ESTRESSE', label: 'Estresse' },
-                { value: 'TRAUMA', label: 'Trauma' },
-                { value: 'PSICANALISE', label: 'Psicanálise' },
-                { value: 'ADOLESCENCIA', label: 'Adolescência' },
-            ]
-        )
-    }, []);
+    const options = props.options;
 
     const [interestsSearch, setInterestsSearch] = useState('');
     const [interestsDropbox, setInterestsDropbox] = useState(0);
@@ -100,25 +80,27 @@ export default function DivInterestsAtualizarPerfil(props: DivInterestsAtualizar
                             <input type="checkbox" 
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                 handleChangeInputsInterestsAll(e);
-                            }} checked={formInputs.interests.length === opcoes.length ? true : false}/>
+                            }} checked={formInputs.interests.length === options.length ? true : false}/>
                             <p>
                             Selecione todas as opções
                             </p>
                         </label>
                     }
-                    {opcoes.map((opcao) => {
-                        if(opcao.value.toLowerCase().indexOf(interestsSearch.toLowerCase()) != -1){
+                    {options.map((opcao: interestsInterface) => {
+                        const value: string = opcao.value;
+                        const label: string = opcao.label;
+                        if(value.toLowerCase().indexOf(interestsSearch.toLowerCase()) != -1){
                             return (
-                                <label key={opcao.value.toUpperCase()}>
+                                <label key={value.toUpperCase()}>
                                     <input type="checkbox" 
                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                         handleChangeInputsInterests(e);
                                     }} 
                                     name='interests' 
-                                    checked={formInputs.interests.indexOf(opcao.value.toUpperCase()) !== -1 ? true : false}
-                                    className='interests-checkbox' value={opcao.value.toUpperCase()} />
+                                    checked={formInputs.interests.map(interests => interests.value).indexOf(value.toUpperCase()) !== -1 ? true : false}
+                                    className='interests-checkbox' value={value.toUpperCase()} />
                                     <p>
-                                    {opcao.label}
+                                    {label}
                                     </p>
                                 </label>
                             )

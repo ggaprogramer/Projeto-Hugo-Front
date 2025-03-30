@@ -1,9 +1,12 @@
 import {Errors} from '@auth/interfaces';
+import {interestsInterface} from '@auth/register/interfaces';
 
 export interface DivInterestsAtualizarFormInterface{
     formInputs: FormAtualizarValues;
     formAtualizar: React.RefObject<HTMLFormElement>;
     setFormInputs: Function;
+    valueInterests: interestsInterface[];
+    options: interestsInterface[];
     errors: Errors[];
 }
 
@@ -11,7 +14,7 @@ export interface FormAtualizarValues {
     name: string;
     username: string;
     email: string;
-    interests: string[];
+    interests: interestsInterface[];
     gender: string;
     phone: string;
     dateBirth: string;
@@ -31,7 +34,7 @@ export interface BodyRequestAtualizarForm{
     email: string;
     phone: string;
     dateBirth: string;
-    interests: string[];
+    interests: interestsInterface[];
     gender: string;
     typeProfile: TypeProfile;
 }
@@ -46,7 +49,7 @@ export interface ProfileInfo {
     name: string;
     username: string;
     email: string;
-    interests: string[];
+    interests: interestsInterface[];
     gender: string;
     phone: string;
     dateBirth: string;

@@ -84,6 +84,7 @@
             @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: center, $align-items: center, $gap: 2rem);
 
             label{
+                cursor: pointer;
                 font-weight: bold;
                 @include border(0.2rem, $black-one-color, solid, 10rem);
                 @include padding(1rem, 2rem, 1rem, 2rem);
@@ -124,4 +125,8 @@
 .loader{
     @include loader($side: 5rem, $thickness: 0.5rem, $color: $blue-one-color, $top-color: white);
     display: none;
+} 
+
+.loader-interests{
+    @include loader($side: 5rem, $thickness: 0.5rem, $color: $blue-one-color, $top-color: white);
 } 

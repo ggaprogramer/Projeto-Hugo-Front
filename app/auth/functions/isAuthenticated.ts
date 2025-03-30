@@ -6,7 +6,6 @@ export default async function isAuthenticated(token: string | undefined){
             headers: {
                 'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json',
-                'Accept': 'application/json',
             },
             credentials: 'include',
             body: JSON.stringify({token: token}),

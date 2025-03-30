@@ -1,5 +1,3 @@
-import { ProfileInfo } from '../perfil/interfaces';
-
 export default async function getInfoProfile(token: string | undefined){
     if(token){
         const urlBack = process.env.NEXT_PUBLIC_BACK_URL;
@@ -8,7 +6,6 @@ export default async function getInfoProfile(token: string | undefined){
             headers: {
                 'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json',
-                'Accept': 'application/json',
             },
             credentials: 'include',
             cache: 'no-store',
