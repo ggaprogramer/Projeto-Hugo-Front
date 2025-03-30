@@ -1,0 +1,31 @@
+@import '@styles/utils.scss';
+
+.message{
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    min-height: 5vh;
+    font-weight: bold;
+    z-index: 1000000;
+    @include padding(1rem, 2rem, 1rem, 2rem);
+    @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 0.7rem);
+
+    &.info{
+        /* background: #cbe5fe;
+        color: #205787; */
+        background: #fff3cd;
+        color: #978d69;
+    }
+
+    &.success{
+        background: #d4edda;
+        color: #4f7d61;
+    }
+
+    &.error{
+        background: #f7d7da;
+        color: #7b434d;
+    }
+}

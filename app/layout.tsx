@@ -5,11 +5,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="pt-BR" className="html">
-      <body id="body">
+    return (
+      <html lang="pt-BR" className="html">
+        <body id="body">
         {children}
-      </body>
-    </html>
-  );
+        </body>
+      </html>
+    );
 }

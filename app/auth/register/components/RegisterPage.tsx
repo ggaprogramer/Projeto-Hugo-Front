@@ -74,6 +74,7 @@ export default function RegisterPage() {
     }, [formInputs, interestsResponse]);
 
     const makeRegister = async () => {
+        let errors: Errors[] = [];
         try{
             const roles = ['USER'] as Roles[];
             roles.push(formInputs.typeProfile);
@@ -100,9 +101,10 @@ export default function RegisterPage() {
             });
             const data: responseRegisterForm = await response.json();
             if(data.status === 'ERROR' && data.type){
+                disableLoader();
                 errors.push({type: data.type, description: data.message});
                 errors.push({type: 'lenErrors', description: '1'});
-                disableLoader();
+                setErrors(errors);
             }
             else if(data.status === 'SUCCESS'){
                 // TODO enviar uma mensagem de sucesso pra página de login
@@ -113,6 +115,7 @@ export default function RegisterPage() {
         } catch{
             disableLoader();
             errors.push({type: 'system', description: 'Houve um erro na comunicação com o servidor.'});
+            setErrors(errors);
         }
     }
 

@@ -19,3 +19,9 @@ export interface MainHomePropsInterface {
 export interface FooterHomePropsInterface {
     userIsAuthenticated: string | undefined;
 }
+
+export interface MessageBox {
+    type: MessageType,
+    message: string,
+}
+export type MessageType = 'INFO' | 'ERROR' | 'SUCCESS';

@@ -53,6 +53,12 @@
                 img{
                     max-width: 2rem;
                 }
+
+                div{
+                    @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 0.5rem);
+                    max-height: 15rem;
+                    overflow: auto;
+                }
             }
 
             strong{
@@ -75,7 +81,7 @@
 
         div{
             width: 100%;
-            @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 2rem);
+            @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
             
 
             div{
@@ -95,7 +101,7 @@
         }
     
         .error, .error-text-center{
-            text-align: center;
+            text-align: left;
             color: red;
             font-size: 1.4rem;
         }
@@ -168,3 +174,8 @@
         @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: center, $gap: 1rem);
     }
 }
+
+.loader{
+    @include loader($side: 5rem, $thickness: 0.5rem, $color: $blue-one-color, $top-color: white);
+    display: none;
+} 

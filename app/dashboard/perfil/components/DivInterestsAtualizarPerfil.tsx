@@ -30,13 +30,27 @@ export default function DivInterestsAtualizarPerfil(props: DivInterestsAtualizar
         }
     }
 
+    const filterInterests = (values: string[]) => {
+        const array: interestsInterface[] = [];
+        for(let value of values){
+            for(let option of options){
+                if(option.value === value){
+                    array.push(option);
+                    break;
+                }
+            }
+        }
+        return array;
+    }
+
     const handleChangeInputsInterestsAll = (e: React.ChangeEvent<HTMLInputElement>) => {
         if(e.target.checked){
             const checkboxes = formAtualizar?.current?.querySelectorAll<HTMLInputElement>('.interests-checkbox');
-            let arrayValores: string[] = [];
+            let values: string[] = [];
             if(checkboxes){
-                arrayValores = Array.from(checkboxes).map((checkbox) => checkbox.value.toUpperCase());
-                setFormInputs({...formInputs, interests: arrayValores});
+                values = Array.from(checkboxes).map((checkbox) => checkbox.value.toUpperCase());
+                const interestsFormated = filterInterests(values);
+                setFormInputs({...formInputs, interests: interestsFormated});
             }
         } else{
             setFormInputs({...formInputs, interests: []});
@@ -45,10 +59,11 @@ export default function DivInterestsAtualizarPerfil(props: DivInterestsAtualizar
 
     const handleChangeInputsInterests = (e: React.ChangeEvent<HTMLInputElement>) => {
         const checkboxes = formAtualizar?.current?.querySelectorAll<HTMLInputElement>('.interests-checkbox');
-        let arrayValores: string[] = [];
+        let values: string[] = [];
         if(checkboxes){
-            arrayValores = Array.from(checkboxes).filter((checkbox) => checkbox.checked).map((checkbox) => checkbox.value.toUpperCase());
-            setFormInputs({...formInputs, interests: arrayValores});
+            values = Array.from(checkboxes).filter((checkbox) => checkbox.checked).map((checkbox) => checkbox.value.toUpperCase());
+            const interestsFormated = filterInterests(values);
+            setFormInputs({...formInputs, interests: interestsFormated});
         }
     }
 

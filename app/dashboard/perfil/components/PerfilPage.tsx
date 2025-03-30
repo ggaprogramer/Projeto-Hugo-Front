@@ -14,9 +14,41 @@ import { ProfileInfo } from '../interfaces';
 import extractProfileInterests from '@auth/register/functions/extractProfileInterests';
 import extractProfessionalInterests from '@auth/register/functions/extractProfessionalInterests';
 import {interestsInterface} from '@auth/register/interfaces';
+import Message from '@app/components/Message';
+import {MessageType} from '@app/interfaces';
 
-export default function PerfilPage(props: {profileInfo: ProfileInfo}){
-    const profileInfo: ProfileInfo = props.profileInfo;
+export default function PerfilPage(props: {profileInfo: ProfileInfo, authToken: string | undefined}){
+    const extractProfileInfo: ProfileInfo = props.profileInfo;
+    const [profileInfo, setProfileInfo] = useState(extractProfileInfo);
+
+    const [viewMessageConfig, setViewMessageConfig] = useState<{
+        status: boolean
+        message: string,
+        type: MessageType
+    }>({
+        status: false,
+        message: '',
+        type: 'INFO'
+    });
+    const viewMessage = (message: string, type: MessageType) => {
+        setViewMessageConfig({message: message, type: type, status: true });
+    }
+
+    useEffect(() => {
+        let id: NodeJS.Timeout;
+    
+        if (viewMessageConfig.status) {
+            id = setTimeout(() => {
+                setViewMessageConfig(prev => ({ ...prev, status: false }));
+            }, 5000);
+        }
+    
+        return () => {
+            if (id) clearTimeout(id);
+        };
+    }, [viewMessageConfig]);
+
+    const authToken = props.authToken ? props.authToken : '';
 
     const urlBack = process.env.NEXT_PUBLIC_BACK_URL;
 
@@ -52,7 +84,6 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
         interests: [],
         gender: '',
         phone: '',
-        dateBirth: '',
         password: '',
         password1: '',
         password2: '',
@@ -60,8 +91,27 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
     });
     const [errors, setErrors] = useState<Errors[]>([]);
 
+    const updateProfileInfo = () => {
+        setProfileInfo({
+            ...profileInfo,
+            name: formInputs.name,
+            username: formInputs.username,
+            email: formInputs.email,
+            interests: formInputs.interests,
+            gender: formInputs.gender,
+            phone: formInputs.phone
+        })
+    }
+
     useEffect(() => {
-        setFormInputs({...formInputs, interests: profileInfo.interests});
+        setFormInputs({...formInputs, 
+            interests: profileInfo.interests,
+            name: profileInfo.name,
+            username: profileInfo.username,
+            email: profileInfo.email,
+            gender: profileInfo.gender,
+            phone: profileInfo.phone,
+        });
     }, [profileInfo]);
 
     useEffect(() => {
@@ -72,31 +122,25 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
         }
     }, [formInputs, interestsResponse]);
 
+    const handleCancel = () => {
+        setFormInputs({...formInputs, 
+            interests: profileInfo.interests,
+            name: profileInfo.name,
+            username: profileInfo.username,
+            email: profileInfo.email,
+            gender: profileInfo.gender,
+            phone: profileInfo.phone,
+            password: '',
+            password1: '',
+            password2: '',
+        });
+        setStateUpgrade(0);
+        setErrors([]);
+    }
+
     const [viewPassword, setViewPassword] = useState<Boolean>(false);
 
     const [stateUpgrade, setStateUpgrade] = useState<Number>(0);
-
-    const calcularIdade = (dataNascimento: string) => {
-        const hoje = new Date(); // Data atual
-        const nascimento = new Date(dataNascimento); // Data de nascimento
-    
-        let idade = hoje.getFullYear() - nascimento.getFullYear();
-        const mesAtual = hoje.getMonth();
-        const mesNascimento = nascimento.getMonth();
-    
-        // Verifica se ainda não fez aniversário este ano
-        if (mesAtual < mesNascimento || (mesAtual === mesNascimento && hoje.getDate() < nascimento.getDate())) {
-            idade--;
-        }
-    
-        return idade;
-    }
-
-    function transformarData(data: string) {
-        const partes = data.split('/');
-        
-        return `${partes[2]}-${partes[1]}-${partes[0]}`;
-    }
 
     const handleViewPassword = () => {
         setViewPassword((viewPassword) => viewPassword ? false : true);
@@ -121,9 +165,6 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
         else if(name == 'phone'){
             setFormInputs({...formInputs, phone: e.target.value});
         }
-        else if(name == 'date-birth'){
-            setFormInputs({...formInputs, dateBirth: e.target.value});
-        }
         else if(name == 'password'){
             setFormInputs({...formInputs, password: e.target.value});
         }
@@ -134,9 +175,6 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
             setFormInputs({...formInputs, password2: e.target.value});
         }
     }
-
-    console.log(formInputs);
-    console.log(errors);
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -149,7 +187,6 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
             !formInputs.gender && 
             formInputs.interests.length === 0 &&
             !formInputs.phone &&
-            !formInputs.dateBirth &&
             !formInputs.password &&
             !formInputs.password1 &&
             !formInputs.password2
@@ -163,12 +200,9 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
             lenErrors+=1;
         }
 
-        if(formInputs && formInputs.dateBirth){
-            let age: number = calcularIdade(formInputs.dateBirth);
-            if(age < 15){
-                errors.push({type: 'date-birth', description: 'Você precisa ter no mínimo 15 anos para poder acessar a plataforma.'});
-                lenErrors+=1;
-            }
+        if(formInputs.interests.length === 0){
+            errors.push({type: 'interests', description: 'Você não pode deixar a lista de interesses vazia. Escolha no mínimo 1.'});
+            lenErrors+=1;
         }
         
         if(formInputs && formInputs.password1 && formInputs.password2 && formInputs.password1 != formInputs.password2){
@@ -187,16 +221,17 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
     }
 
     const makeUpgrade = async () => {
+        let errors: Errors[] = [];
         try{
             const body: BodyRequestAtualizarForm = {
                 name: formInputs.name,
                 username: formInputs.username,
+                password: formInputs.password,
                 password1: formInputs.password1,
                 password2: formInputs.password2,
                 email: formInputs.email,
                 phone: formInputs.phone,
-                dateBirth: formInputs.dateBirth,
-                interests: formInputs.interests,
+                interests: formInputs.interests.map(interests => interests.value),
                 gender: formInputs.gender,
                 typeProfile: formInputs.typeProfile,
             }
@@ -204,26 +239,29 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
             const response = await fetch(`${urlBack}/profile/update`, {
                 method: 'PUT',
                 headers: {
+                    'Authorization': 'Bearer ' + authToken,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(body)
             });
             const data: ResponseAtualizarForm = await response.json();
             if(data.status === 'ERROR' && data.type){
+                disableLoader();
                 errors.push({type: data.type, description: data.message});
                 errors.push({type: 'lenErrors', description: '1'});
-                disableLoader();
+                setErrors(errors);
             }
             else if(data.status === 'SUCCESS'){
-                // TODO enviar uma mensagem de sucesso
-                
-
+                disableLoader();
+                updateProfileInfo();
+                viewMessage('O seu perfil foi atualizado com sucesso', 'SUCCESS');
             } else{
                 disableLoader();
             }
         } catch{
             disableLoader();
             errors.push({type: 'system', description: 'Houve um erro na comunicação com o servidor.'});
+            setErrors(errors);
         }
     }
 
@@ -314,18 +352,18 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
                                 Sexo: 
                             </p>
                             <strong>
-                                {profileInfo.gender}
+                                {`${profileInfo.gender.charAt(0).toUpperCase()}${profileInfo.gender.substring(1).toLocaleLowerCase()}`}
                             </strong>
                         </div>
                         <div>
                             <p>
                                 Interesses: 
                             </p>
-                            <strong>
+                            <div>
                                 {profileInfo.interests.map((interest) => {
-                                    return <p key={interest.value}>{interest.label}</p>
+                                    return <strong key={interest.value}>{interest.label}</strong>
                                 })}
-                            </strong>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -339,13 +377,13 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
                     <div>
                         <div>
                             <label htmlFor="name">Nome:</label>
-                            <input type="text" name="name" id="name" value={profileInfo.name}
+                            <input type="text" name="name" id="name" value={formInputs.name}
                             onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeForm(e, 'name')} />
                             <ErrorAuth errors={errors} type='name'/>
                         </div>
                         <div>
                             <label htmlFor="username">Usuário:</label>
-                            <input type="text" name="username" id="username" value={profileInfo.username}
+                            <input type="text" name="username" id="username" value={formInputs.username}
                             onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeForm(e, 'username')} />
                             <ErrorAuth errors={errors} type='username'/>
                         </div>
@@ -353,7 +391,7 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
                     <div>
                         <div>
                             <label htmlFor="email">E-mail:</label>
-                            <input type="email" name="email" id="email" value={profileInfo.email}
+                            <input type="email" name="email" id="email" value={formInputs.email}
                             onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeForm(e, 'email')}/>
                             <ErrorAuth errors={errors} type='email'/>
                         </div>
@@ -362,7 +400,7 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
                             <IMaskInput
                                 id='phone'
                                 name='phone'
-                                mask="+55 (00) 00000-0000" value={profileInfo.phone}
+                                mask="+55 (00) 00000-0000" value={formInputs.phone}
                                 onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeForm(e, 'phone')}
                             />
                             <ErrorAuth errors={errors} type='phone'/>
@@ -371,7 +409,7 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
                     <div>
                         <div>
                             <label htmlFor="gender">Sexo:</label>
-                            <select name="gender" id="gender" value={profileInfo.gender}
+                            <select name="gender" id="gender" value={formInputs.gender}
                             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleChangeForm(e, 'gender')}>
                                 <option value="MASCULINO">Masculino</option>
                                 <option value="FEMININO">Feminino</option>
@@ -379,30 +417,23 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
                             </select>
                             <ErrorAuth errors={errors} type='sexo'/>
                         </div>
-                        <div>
-                            <label htmlFor="date-birth">Aniversário:</label>
-                            <input type="date" name="date-birth" id="date-birth" value={transformarData(profileInfo.dateBirth)}
-                            onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeForm(e, 'date-birth')} />
-                            <ErrorAuth errors={errors} type='dateBirth'/>
-                        </div>
-                    </div>
-                    {
-                        interests 
-                        &&
-                        <div>
+                        {
+                            interests 
+                            &&
                             <div>
-                                <p>Interesses:</p>
-                                <DivInterestsAtualizarPerfil
-                                formAtualizar={formAtualizar}
-                                formInputs={formInputs}
-                                setFormInputs={setFormInputs}
-                                options={interests}
-                                valueInterests={profileInfo.interests}
-                                errors={errors}/>
-                                <ErrorAuth errors={errors} type='interests'/>
+                                <div>
+                                    <p>Interesses:</p>
+                                    <DivInterestsAtualizarPerfil
+                                    formAtualizar={formAtualizar}
+                                    formInputs={formInputs}
+                                    setFormInputs={setFormInputs}
+                                    options={interests}
+                                    valueInterests={formInputs.interests}
+                                    errors={errors}/>
+                                </div>
                             </div>
-                        </div>
-                    }
+                        }
+                    </div>
                     <h3>
                         Mudar a senha
                     </h3>
@@ -411,20 +442,20 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
                             <label htmlFor="password">Senha antiga:</label>
                             <input type={viewPassword ? 'text' : 'password'} name="password" id="password" 
                             onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeForm(e, 'password')}/>
+                            <ErrorAuth errors={errors} type='password'/>
                         </div>
-                        <ErrorAuth errors={errors} type='password'/>
                         <div>
                             <label htmlFor="password1">Nova senha:</label>
                             <input type={viewPassword ? 'text' : 'password'} name="password1" id="password1" 
                             onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeForm(e, 'password1')}/>
+                            <ErrorAuth errors={errors} type='password1'/>
                         </div>
-                        <ErrorAuth errors={errors} type='password1'/>
                         <div>
                             <label htmlFor="password2">Repetir nova senha:</label>
                             <input type={viewPassword ? 'text' : 'password'} name="password2" id="password2"
                             onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeForm(e, 'password2')}/>
+                            <ErrorAuth errors={errors} type='password2'/>
                         </div>
-                        <ErrorAuth errors={errors} type='password2'/>
                     </div>
                     <label className='inputs-extras'>
                         <input onChange={handleViewPassword} type="checkbox"/>
@@ -437,12 +468,14 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo}){
                         <ErrorAuth errors={errors} type='system'/>
                     </div>
                     <div className="botoes">
-                        <button onClick={() => setStateUpgrade(0)}>Cancelar</button>
+                        <button onClick={handleCancel}>Cancelar</button>
                         <button ref={buttonAtualizar} type="submit">Salvar alterações</button>
+                        <span ref={loader} className="loader"></span>
                     </div>
                 </div>
             </form>
             }
+            {viewMessageConfig.status && <Message message={viewMessageConfig.message} type={viewMessageConfig.type}/>}
         </>
     )
 }

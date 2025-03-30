@@ -18,7 +18,7 @@ export default async function Dashboard() {
 
         return (
             <>
-                <PerfilPage profileInfo={profileInfo}/>
+                <PerfilPage profileInfo={profileInfo} authToken={authToken?.value}/>
             </>
         );
     } else {

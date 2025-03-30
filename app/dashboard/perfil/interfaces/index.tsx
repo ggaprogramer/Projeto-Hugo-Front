@@ -17,7 +17,6 @@ export interface FormAtualizarValues {
     interests: interestsInterface[];
     gender: string;
     phone: string;
-    dateBirth: string;
     password: string;
     password1: string;
     password2: string;    
@@ -29,12 +28,12 @@ export type TypeProfile = 'PROFESSIONAL' | 'PROFILE';
 export interface BodyRequestAtualizarForm{
     name: string;
     username: string;
+    password: string;
     password1: string;
     password2: string;
     email: string;
     phone: string;
-    dateBirth: string;
-    interests: interestsInterface[];
+    interests: string[];
     gender: string;
     typeProfile: TypeProfile;
 }
