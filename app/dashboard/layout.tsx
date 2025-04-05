@@ -2,8 +2,6 @@ import React, { Suspense } from 'react';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import functionIsAuthenticated from '@auth/functions/isAuthenticated';
-import Header from '@home/Header';
-import Footer from '@home/Footer';
 import './styles/layout.scss';
 import DashboardNavigation from './components/DashboardNavigation';
 
@@ -15,9 +13,7 @@ export default async function Dashboard({children}: Readonly<{children: React.Re
     if(userIsAuthenticated) {
         return (
             <>
-                <Header userIsAuthenticated={userIsAuthenticated}/>
                 <DashboardNavigation children={children}/>
-                <Footer userIsAuthenticated={userIsAuthenticated}/>
             </>
         );
     } else {

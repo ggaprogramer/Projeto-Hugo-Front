@@ -2,6 +2,7 @@ import Link from 'next/link';
 import {FooterHomePropsInterface} from '../interfaces';
 import '../styles/footer.scss';
 import FooterNav from './FooterNav';
+import {FooterNavPropsInterface} from '../interfaces';
 
 export default function Footer(props: FooterHomePropsInterface){
     const userIsAuthenticated = props.userIsAuthenticated;
@@ -11,11 +12,11 @@ export default function Footer(props: FooterHomePropsInterface){
             <footer className="rodape">
                 <div>
                     <div className="rodape-coluna">
-                        <Link href='' className="logo-rodape">
-                        <img src="/logo.png" alt=""/>
+                        <Link href='/' className="logo-rodape">
+                            <img src="/logo.png" alt=""/>
                         </Link>
                     </div>
-                    <FooterNav/>
+                    {<FooterNav userIsAuthenticated={userIsAuthenticated}/>}
                     <div className="rodape-coluna coluna-contato">
                         <h2>
                             Informações para contato

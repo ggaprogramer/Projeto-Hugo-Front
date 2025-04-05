@@ -12,11 +12,19 @@ export interface HeaderHomePropsInterface {
     userIsAuthenticated: string | undefined;
 }
 
+export interface HeaderNavPropsInterface {
+    userIsAuthenticated: string | undefined;
+}
+
 export interface MainHomePropsInterface {
     userIsAuthenticated: string | undefined;
 }
 
 export interface FooterHomePropsInterface {
+    userIsAuthenticated: string | undefined;
+}
+
+export interface FooterNavPropsInterface {
     userIsAuthenticated: string | undefined;
 }
 

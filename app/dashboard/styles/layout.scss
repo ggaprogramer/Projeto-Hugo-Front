@@ -1,6 +1,6 @@
 @import '@styles/utils.scss';
 
-.container{
+.container-dashboard{
     width: 100%;
     min-height: 85vh;
     @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 2rem);

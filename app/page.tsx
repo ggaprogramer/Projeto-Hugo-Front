@@ -8,6 +8,8 @@ export default async function Home() {
     const userIsAuthenticated: string | undefined = await functionIsAuthenticated(authToken?.value);
 
     return (
-      <HomePage userIsAuthenticated={userIsAuthenticated} />
+      <>
+        <HomePage userIsAuthenticated={userIsAuthenticated} />
+      </>
     );
 }

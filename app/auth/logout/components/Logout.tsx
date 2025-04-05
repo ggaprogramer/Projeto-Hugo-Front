@@ -18,6 +18,7 @@ export default function Logout(){
         });
         if(response.ok){
             router.push('/auth/login');
+            window.location.reload();
         } else {
             router.push('/');
         }

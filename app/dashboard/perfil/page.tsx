@@ -6,7 +6,7 @@ import getInfoProfile from '@app/dashboard/functions/getInfoProfile';
 import { ProfileInfo } from './interfaces';
 import PerfilPage from './components/PerfilPage';
 
-export default async function Dashboard() {
+export default async function Perfil() {
     const authToken = cookies().get('auth-token');
     
     const userIsAuthenticated: string | undefined = await functionIsAuthenticated(authToken?.value);

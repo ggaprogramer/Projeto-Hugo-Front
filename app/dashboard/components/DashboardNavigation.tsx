@@ -12,7 +12,7 @@ export default function DashboardNavigation(props: {children: Readonly<React.Rea
     const [navigation, setNavigation] = useState<Number>(0);
 
     return (
-        <div className='container'>
+        <div className='container-dashboard'>
             <div className='barra-lateral'>
                 {
                     navigation === 0

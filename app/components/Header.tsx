@@ -32,7 +32,7 @@ export default function Header(props: HeaderHomePropsInterface){
                             Terapia
                         </h2>
                     </Link>
-                    <HeaderNav/>
+                    {<HeaderNav userIsAuthenticated={userIsAuthenticated}/>}
                     <div className='botoes'>
                         {
                             !userIsAuthenticated 
@@ -62,12 +62,14 @@ export default function Header(props: HeaderHomePropsInterface){
                     </div>
                 </div>
                 <div ref={botaoMobileDiv}>
-                    <HeaderNav/>
+                {<HeaderNav userIsAuthenticated={userIsAuthenticated}/>}
                     <div className='botoes'>
                         {
                             !userIsAuthenticated 
                             ?
-                            <Link href='/auth/login'>Login</Link>
+                            <Link href="/auth/login" onClick={() => window.location.reload()}>
+                                Login
+                            </Link>
                             :
                             <>
                                 <Link href='/dashboard/perfil'>Dashboard</Link>

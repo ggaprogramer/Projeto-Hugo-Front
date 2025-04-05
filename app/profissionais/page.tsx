@@ -10,9 +10,7 @@ export default async function Professional() {
 
     return (
       <>
-        <Header userIsAuthenticated={userIsAuthenticated}/>
         <ProfessionalsPage userIsAuthenticated={userIsAuthenticated} />
-        <Footer userIsAuthenticated={userIsAuthenticated}/>
       </>
     );
 }
