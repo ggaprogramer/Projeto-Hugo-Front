@@ -4,11 +4,10 @@ import { FaPencilAlt } from "react-icons/fa";
 import '../styles/perfil.scss';
 import { IMaskInput } from 'react-imask';
 import DivInterestsAtualizarPerfil from './DivInterestsAtualizarPerfil';
-import Link from 'next/link';
 import React, { FormEvent, useState, useRef, useMemo, useEffect } from 'react';
-import {FormAtualizarValues, BodyRequestAtualizarForm, ResponseAtualizarForm} from '../interfaces';
+import {FormAtualizarValues, BodyRequestAtualizarForm, ResponseAtualizarForm, ResponseGetUrlPhoto} from '../interfaces';
 import {Errors} from '@auth/interfaces';
-import { useRouter } from 'next/navigation';
+import getUrlPhoto from '@app/dashboard/functions/getUrlPhoto';
 import ErrorAuth from '@auth/components/ErrorAuth'
 import { ProfileInfo } from '../interfaces';
 import extractProfileInterests from '@auth/register/functions/extractProfileInterests';
@@ -21,6 +20,7 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo, authToken: 
     const extractProfileInfo: ProfileInfo = props.profileInfo;
     const [profileInfo, setProfileInfo] = useState(extractProfileInfo);
 
+    // Mensagem - Início
     const [viewMessageConfig, setViewMessageConfig] = useState<{
         status: boolean
         message: string,
@@ -47,6 +47,7 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo, authToken: 
             if (id) clearTimeout(id);
         };
     }, [viewMessageConfig]);
+    // Mensagem - Fim
 
     const authToken = props.authToken ? props.authToken : '';
 
@@ -84,6 +85,7 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo, authToken: 
         interests: [],
         gender: '',
         phone: '',
+        file: null,
         password: '',
         password1: '',
         password2: '',
@@ -92,15 +94,21 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo, authToken: 
     const [errors, setErrors] = useState<Errors[]>([]);
 
     const updateProfileInfo = () => {
-        setProfileInfo({
-            ...profileInfo,
-            name: formInputs.name,
-            username: formInputs.username,
-            email: formInputs.email,
-            interests: formInputs.interests,
-            gender: formInputs.gender,
-            phone: formInputs.phone
-        })
+        const extractPhoto = async () => {
+            const data: ResponseGetUrlPhoto = await getUrlPhoto(authToken, profileInfo.uuid);
+
+            setProfileInfo({
+                ...profileInfo,
+                name: formInputs.name,
+                username: formInputs.username,
+                linkPhoto: data?.urlPhoto ? data.urlPhoto : undefined,
+                email: formInputs.email,
+                interests: formInputs.interests,
+                gender: formInputs.gender,
+                phone: formInputs.phone
+            })
+        }
+        extractPhoto();
     }
 
     useEffect(() => {
@@ -165,6 +173,13 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo, authToken: 
         else if(name == 'phone'){
             setFormInputs({...formInputs, phone: e.target.value});
         }
+        else if(name == 'file'){
+            const input = e.target as HTMLInputElement;
+            const file = input?.files ? input?.files[0] : null;
+            if(file){
+                setFormInputs({...formInputs, file: file});
+            }
+        }
         else if(name == 'password'){
             setFormInputs({...formInputs, password: e.target.value});
         }
@@ -187,6 +202,7 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo, authToken: 
             !formInputs.gender && 
             formInputs.interests.length === 0 &&
             !formInputs.phone &&
+            !formInputs.file &&
             !formInputs.password &&
             !formInputs.password1 &&
             !formInputs.password2
@@ -220,8 +236,41 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo, authToken: 
         if(errors.length === 0) makeUpgrade();
     }
 
+    function fileToBase64(file: File): Promise<{ base64: string, mimeType: string }> {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+      
+          reader.onloadend = () => {
+            if (typeof reader.result === 'string') {
+              const base64String = reader.result.split(',')[1]; // Extrai a parte base64
+              const mimeType = reader.result.split(';')[0].split(':')[1]; // Extrai o tipo MIME (image/jpeg, image/png, etc.)
+              resolve({ base64: base64String, mimeType });
+            } else {
+              reject('Erro ao ler o arquivo');
+            }
+          };
+      
+          reader.onerror = (error) => {
+            reject(error);
+          };
+      
+          reader.readAsDataURL(file); // Lê o arquivo como DataURL
+        });
+    }
+      
+      
+
     const makeUpgrade = async () => {
         let errors: Errors[] = [];
+        
+        let base64File = null;
+        let mimeType = null
+        if(formInputs.file) {
+            const fileResponse = await fileToBase64(formInputs.file);
+            base64File = fileResponse.base64;
+            mimeType = fileResponse.mimeType;
+        }
+
         try{
             const body: BodyRequestAtualizarForm = {
                 name: formInputs.name,
@@ -230,6 +279,8 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo, authToken: 
                 password1: formInputs.password1,
                 password2: formInputs.password2,
                 email: formInputs.email,
+                base64File: base64File,
+                mimeType: mimeType,
                 phone: formInputs.phone,
                 interests: formInputs.interests.map(interests => interests.value),
                 gender: formInputs.gender,
@@ -283,7 +334,14 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo, authToken: 
                 </div>
                 <div className="perfil-box">
                     <div className="perfil-foto">
-                        <img src="/user.png" alt="" />
+                        {
+                            profileInfo.linkPhoto
+                            ?
+                            <img src={profileInfo.linkPhoto} alt="" />
+                            :
+                            <img src="/user.png" alt="" />
+                        }
+
                         <h2>
                             {profileInfo.name?.split(' ')[0]}
                         </h2>
@@ -433,6 +491,16 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo, authToken: 
                                 </div>
                             </div>
                         }
+                    </div>
+                    <h3>
+                        Adicionar nova foto
+                    </h3>
+                    <div>
+                        <div>
+                            <input type='file' name="file" id="file" accept="image/*"
+                            onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeForm(e, 'file')}/>
+                            <ErrorAuth errors={errors} type='file'/>
+                        </div>
                     </div>
                     <h3>
                         Mudar a senha

@@ -17,6 +17,7 @@ export interface FormAtualizarValues {
     interests: interestsInterface[];
     gender: string;
     phone: string;
+    file: File | null;
     password: string;
     password1: string;
     password2: string;    
@@ -33,6 +34,8 @@ export interface BodyRequestAtualizarForm{
     password2: string;
     email: string;
     phone: string;
+    base64File: string | null;
+    mimeType: string | null;
     interests: string[];
     gender: string;
     typeProfile: TypeProfile;
@@ -45,6 +48,7 @@ export interface ResponseAtualizarForm {
 }
 
 export interface ProfileInfo {
+    uuid: string;
     name: string;
     username: string;
     email: string;
@@ -52,5 +56,10 @@ export interface ProfileInfo {
     gender: string;
     phone: string;
     dateBirth: string;
+    linkPhoto: string | undefined;
     confirmacaoEmail: boolean;
+}
+
+export interface ResponseGetUrlPhoto {
+    urlPhoto: string | undefined;
 }

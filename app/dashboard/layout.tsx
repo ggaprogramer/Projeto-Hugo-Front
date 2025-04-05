@@ -2,8 +2,6 @@ import React, { Suspense } from 'react';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import functionIsAuthenticated from '@auth/functions/isAuthenticated';
-import getInfoProfile from '@dashboard/functions/getInfoProfile';
-import { ProfileInfo } from './perfil/interfaces';
 import Header from '@home/Header';
 import Footer from '@home/Footer';
 import './styles/layout.scss';

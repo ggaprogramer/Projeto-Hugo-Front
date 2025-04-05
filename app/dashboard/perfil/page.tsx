@@ -2,10 +2,8 @@ import React, { Suspense } from 'react';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import functionIsAuthenticated from '@auth/functions/isAuthenticated';
-import getInfoProfile from '@dashboard/functions/getInfoProfile';
+import getInfoProfile from '@app/dashboard/functions/getInfoProfile';
 import { ProfileInfo } from './interfaces';
-import Header from '@home/Header';
-import Footer from '@home/Footer';
 import PerfilPage from './components/PerfilPage';
 
 export default async function Dashboard() {
