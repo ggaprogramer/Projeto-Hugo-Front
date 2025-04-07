@@ -5,8 +5,8 @@ import Header from '@home/Header';
 import Footer from '@home/Footer';
 
 export default async function Professional() {
-    const authToken = cookies().get('auth-token');
-    const userIsAuthenticated: string | undefined = await functionIsAuthenticated(authToken?.value);
+
+    const userIsAuthenticated: string | undefined = await functionIsAuthenticated();
 
     return (
       <>

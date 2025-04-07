@@ -1,8 +1,6 @@
 'use client';
 
 import React, { Suspense } from 'react';
-import { cookies } from 'next/headers';
-import functionIsAuthenticated from '@auth/functions/isAuthenticated';
 import { useRouter } from 'next/navigation';
 
 export default function Logout(){
@@ -16,9 +14,9 @@ export default function Logout(){
                 'Content-Type': 'application/json'
             },
         });
+        console.log(response.ok);
         if(response.ok){
             router.push('/auth/login');
-            window.location.reload();
         } else {
             router.push('/');
         }

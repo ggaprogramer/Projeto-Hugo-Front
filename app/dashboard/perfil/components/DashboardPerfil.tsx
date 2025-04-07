@@ -1,15 +1,25 @@
 'use client';
 
-import { ProfileInfo } from '../perfil/interfaces';
-import React, { Suspense } from 'react';
+import AlterPerfil from './AlterPerfil';
 import { FaUser } from "react-icons/fa";
 import { FaCalendarAlt } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
-import {useState} from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import getInfoProfile from '../functions/getInfoProfile';
+import { ProfileInfo } from '../interfaces';
+import '../styles/dashboard-perfil.scss';
 
-export default function DashboardNavigation(props: {children: Readonly<React.ReactNode>}) {
-    const children = props.children;
+export default function DashboardPerfil(props: {authToken: string | undefined}) {
     const [navigation, setNavigation] = useState<Number>(0);
+    const [profileInfo, setProfileInfo] = useState<ProfileInfo | null>(null);
+
+    useEffect(() => {
+        const extractProfileInfoFunction = async () => {
+            const profileInfo: ProfileInfo = await getInfoProfile(props.authToken);
+            setProfileInfo(profileInfo);
+        };
+        extractProfileInfoFunction();
+    });
 
     return (
         <div className='container-dashboard'>
@@ -54,7 +64,15 @@ export default function DashboardNavigation(props: {children: Readonly<React.Rea
                     </button>
                 }
             </div>
-            <div className='barra-principal'>{children}</div>
+            <div className='barra-principal'>
+                {
+                    navigation === 0 && profileInfo
+                    ?
+                    <AlterPerfil authToken={props.authToken} profileInfo={profileInfo}/>
+                    :
+                    <span className='loader-dashboard'></span>
+                }
+            </div>
         </div>
     )
 

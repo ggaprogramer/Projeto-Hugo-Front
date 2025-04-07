@@ -7,8 +7,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-      const authToken = cookies().get('auth-token');
-      const userIsAuthenticated: string | undefined = await functionIsAuthenticated(authToken?.value);
+      const userIsAuthenticated: string | undefined = await functionIsAuthenticated();
 
       return (
         <html lang="pt-BR" className="html">

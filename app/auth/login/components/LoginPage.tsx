@@ -63,12 +63,10 @@ export default function LoginPage() {
                 if(redirect) {
                     router.push(redirect);
                 } else if(typeProfile === 'PROFILE'){
-                    router.push('/');
-                    window.location.reload();
+                    router.push('/dashboard/perfil');
                 } else {
                     // TODO redirecionar o profissional para a sua dashboard para o mesmo terminar o cadastro
                     router.push('/');
-                    window.location.reload();
                 }
             } else{
                 disableLoader();

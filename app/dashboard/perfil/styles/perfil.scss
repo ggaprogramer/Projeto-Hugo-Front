@@ -31,6 +31,12 @@
         @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
         width: 100%;
 
+        @media(max-width: 800px){
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
         .perfil-foto{
             @include padding(0rem, 2rem, 0rem, 0rem);
             @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 1.5rem);
@@ -47,15 +53,29 @@
             width: 100%;
             @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 4rem);
 
+            @media(max-width: 800px){
+                flex-direction: row;
+                flex-flow: wrap;
+                align-items: center;
+            }
+
+            @media(max-width: 530px){
+                flex-direction: column;
+            }
+
             div{
                 @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 1rem);
+
+                @media(max-width: 530px){
+                    align-items: center;
+                }
 
                 img{
                     max-width: 2rem;
                 }
 
                 div{
-                    @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 0.5rem);
+                    @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 0.5rem);
                     max-height: 15rem;
                     overflow: auto;
                 }
@@ -83,6 +103,9 @@
             width: 100%;
             @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
             
+            @media(max-width: 700px){
+                flex-direction: column;
+            }
 
             div{
                 @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 0.5rem);
@@ -134,7 +157,7 @@
 
     #interests-box{
         width: 100%;
-    
+
         #interests-search{
             @include border(0.2rem, $gray-two-color, solid, 10rem);
             @include padding(1rem, 1.5rem, 1rem, 1.5rem);

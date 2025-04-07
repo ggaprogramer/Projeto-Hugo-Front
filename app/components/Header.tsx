@@ -5,10 +5,11 @@ import Link from 'next/link';
 import {HeaderHomePropsInterface} from '../interfaces';
 import '../styles/header.scss';
 import HeaderNav from './HeaderNav';
+import functionIsAuthenticated from '@auth/functions/isAuthenticated';
 import {useEffect, useState, useRef, RefObject} from 'react';
 
 export default function Header(props: HeaderHomePropsInterface){
-    const userIsAuthenticated = props.userIsAuthenticated;
+    const [userIsAuthenticated, setUserIsAuthenticated] = useState<string | undefined>(props.userIsAuthenticated);
 
     const botaoMobile = useRef<HTMLDivElement>(null);
     const botaoMobileSpan1 = useRef<HTMLDivElement>(null);
@@ -19,6 +20,14 @@ export default function Header(props: HeaderHomePropsInterface){
     const handleClickMobile = () => {
         botaoMobileDiv?.current?.classList.toggle('mobile-expand');
     }
+
+    useEffect(() => {
+        const extractUserIsAuthenticated = async () => {
+            let userIsAuthenticated: string | undefined = await functionIsAuthenticated();
+            setUserIsAuthenticated(userIsAuthenticated);
+        };
+        extractUserIsAuthenticated();
+    });
 
     return (
         <>

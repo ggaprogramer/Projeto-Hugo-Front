@@ -3,9 +3,19 @@ import {FooterHomePropsInterface} from '../interfaces';
 import '../styles/footer.scss';
 import FooterNav from './FooterNav';
 import {FooterNavPropsInterface} from '../interfaces';
+import {useEffect, useState, useRef, RefObject} from 'react';
+import functionIsAuthenticated from '@auth/functions/isAuthenticated';
 
 export default function Footer(props: FooterHomePropsInterface){
-    const userIsAuthenticated = props.userIsAuthenticated;
+    const [userIsAuthenticated, setUserIsAuthenticated] = useState<string | undefined>(props.userIsAuthenticated);
+
+    useEffect(() => {
+        const extractUserIsAuthenticated = async () => {
+            let userIsAuthenticated: string | undefined = await functionIsAuthenticated();
+            setUserIsAuthenticated(userIsAuthenticated);
+        };
+        extractUserIsAuthenticated();
+    });
 
     return (
         <>

@@ -7,7 +7,7 @@ import DivInterestsAtualizarPerfil from './DivInterestsAtualizarPerfil';
 import React, { FormEvent, useState, useRef, useMemo, useEffect } from 'react';
 import {FormAtualizarValues, BodyRequestAtualizarForm, ResponseAtualizarForm, ResponseGetUrlPhoto} from '../interfaces';
 import {Errors} from '@auth/interfaces';
-import getUrlPhoto from '@app/dashboard/functions/getUrlPhoto';
+import getUrlPhoto from '@app/dashboard/perfil/functions/getUrlPhoto';
 import ErrorAuth from '@auth/components/ErrorAuth'
 import { ProfileInfo } from '../interfaces';
 import extractProfileInterests from '@auth/register/functions/extractProfileInterests';
@@ -16,9 +16,8 @@ import {interestsInterface} from '@auth/register/interfaces';
 import Message from '@app/components/Message';
 import {MessageType} from '@app/interfaces';
 
-export default function PerfilPage(props: {profileInfo: ProfileInfo, authToken: string | undefined}){
-    const extractProfileInfo: ProfileInfo = props.profileInfo;
-    const [profileInfo, setProfileInfo] = useState(extractProfileInfo);
+export default function AlterPerfil(props: {authToken: string | undefined, profileInfo: ProfileInfo}){
+    const [profileInfo, setProfileInfo] = useState<ProfileInfo>(props.profileInfo);
 
     // Mensagem - Início
     const [viewMessageConfig, setViewMessageConfig] = useState<{
@@ -258,8 +257,6 @@ export default function PerfilPage(props: {profileInfo: ProfileInfo, authToken: 
         });
     }
       
-      
-
     const makeUpgrade = async () => {
         let errors: Errors[] = [];
         

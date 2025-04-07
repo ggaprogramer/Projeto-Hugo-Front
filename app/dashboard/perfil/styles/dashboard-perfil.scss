@@ -7,12 +7,25 @@
     @include padding(2rem, 2rem, 2rem, 2rem);
     background: $gray-two-color;
 
+    @media(max-width: 1080px){
+        flex-direction: column;
+    }
+
     .barra-lateral{
         width: 40rem;
         background: $white-one-color;
         @include padding(2rem, 2rem, 2rem, 2rem);
         @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
         @include border-radius(2rem, 2rem, 2rem, 2rem);
+
+        @media(max-width: 1080px){
+            flex-direction: row;
+            width: 100%;
+        }
+
+        @media(max-width: 880px){
+            flex-direction: column;
+        }
 
         button{
             width: 100%;
@@ -31,12 +44,21 @@
             &.selected{
                 background: $gray-three-color;
             }
+
+            @media(max-width: 1080px){
+                justify-content: center;
+            }
         }
     }
 
     .barra-principal{
         width: 100%;
         min-height: 85vh;
-        @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: center, $gap: 4rem);
+        @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 4rem);
     }
+
+    .loader-dashboard{
+        @include loader($side: 5rem, $thickness: 0.5rem, $color: $blue-one-color, $top-color: white);
+        display: inline-block;
+    } 
 }
