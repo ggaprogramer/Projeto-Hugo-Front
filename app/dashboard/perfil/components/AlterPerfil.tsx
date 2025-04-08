@@ -8,6 +8,7 @@ import React, { FormEvent, useState, useRef, useMemo, useEffect } from 'react';
 import {FormAtualizarValues, BodyRequestAtualizarForm, ResponseAtualizarForm, ResponseGetUrlPhoto} from '../interfaces';
 import {Errors} from '@auth/interfaces';
 import getUrlPhoto from '@app/dashboard/perfil/functions/getUrlPhoto';
+import postUpgradeProfile from '@app/dashboard/perfil/functions/postUpgradeProfile';
 import ErrorAuth from '@auth/components/ErrorAuth'
 import { ProfileInfo } from '../interfaces';
 import extractProfileInterests from '@auth/register/functions/extractProfileInterests';
@@ -16,7 +17,7 @@ import {interestsInterface} from '@auth/register/interfaces';
 import Message from '@app/components/Message';
 import {MessageType} from '@app/interfaces';
 
-export default function AlterPerfil(props: {authToken: string | undefined, profileInfo: ProfileInfo}){
+export default function AlterPerfil(props: {profileInfo: ProfileInfo}){
     const [profileInfo, setProfileInfo] = useState<ProfileInfo>(props.profileInfo);
 
     // Mensagem - Início
@@ -48,21 +49,15 @@ export default function AlterPerfil(props: {authToken: string | undefined, profi
     }, [viewMessageConfig]);
     // Mensagem - Fim
 
-    const authToken = props.authToken ? props.authToken : '';
-
-    const urlBack = process.env.NEXT_PUBLIC_BACK_URL;
-
     const buttonAtualizar = useRef<HTMLButtonElement>(null);
     const loader = useRef<HTMLSpanElement>(null);
 
-    let [interestsResponse, setInterestsResponse] = useState<interestsInterface[][] | null>(null);
     let [interests, setInterests] = useState<interestsInterface[] | null>(null);
 
     useEffect(() => {
         const resolveFetch = async () => {
             const profileInterests: interestsInterface[] = await extractProfileInterests();
-            const professionalInterests: interestsInterface[] = await extractProfessionalInterests();
-            setInterestsResponse([profileInterests, professionalInterests]);
+            setInterests(profileInterests);
         }
         resolveFetch();
     }, []);
@@ -94,7 +89,7 @@ export default function AlterPerfil(props: {authToken: string | undefined, profi
 
     const updateProfileInfo = () => {
         const extractPhoto = async () => {
-            const data: ResponseGetUrlPhoto = await getUrlPhoto(authToken, profileInfo.uuid);
+            const data: ResponseGetUrlPhoto = await getUrlPhoto(profileInfo.uuid);
 
             setProfileInfo({
                 ...profileInfo,
@@ -120,14 +115,6 @@ export default function AlterPerfil(props: {authToken: string | undefined, profi
             phone: profileInfo.phone,
         });
     }, [profileInfo]);
-
-    useEffect(() => {
-        if(interestsResponse && formInputs.typeProfile === 'PROFESSIONAL'){
-            setInterests(interestsResponse[1]);
-        } else if(interestsResponse) {
-            setInterests(interestsResponse[0]);
-        }
-    }, [formInputs, interestsResponse]);
 
     const handleCancel = () => {
         setFormInputs({...formInputs, 
@@ -284,22 +271,16 @@ export default function AlterPerfil(props: {authToken: string | undefined, profi
                 typeProfile: formInputs.typeProfile,
             }
             viewLoader();
-            const response = await fetch(`${urlBack}/profile/update`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': 'Bearer ' + authToken,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(body)
-            });
-            const data: ResponseAtualizarForm = await response.json();
-            if(data.status === 'ERROR' && data.type){
+            
+            const data: ResponseAtualizarForm | undefined = await postUpgradeProfile(body);
+
+            if(data && data.status === 'ERROR' && data.type){
                 disableLoader();
                 errors.push({type: data.type, description: data.message});
                 errors.push({type: 'lenErrors', description: '1'});
                 setErrors(errors);
             }
-            else if(data.status === 'SUCCESS'){
+            else if(data && data.status === 'SUCCESS'){
                 disableLoader();
                 updateProfileInfo();
                 viewMessage('O seu perfil foi atualizado com sucesso', 'SUCCESS');
@@ -490,7 +471,7 @@ export default function AlterPerfil(props: {authToken: string | undefined, profi
                         }
                     </div>
                     <h3>
-                        Adicionar nova foto
+                        Adicionar nova foto (menor que 5mb)
                     </h3>
                     <div>
                         <div>

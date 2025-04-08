@@ -1,3 +1,5 @@
+import {isAuthenticatedInterface} from '@auth/interfaces';
+
 export interface QuestionInterface{
     order: number;
     title: string;
@@ -9,7 +11,7 @@ export interface HomePagePropsInterface {
 }
 
 export interface HeaderHomePropsInterface {
-    userIsAuthenticated: string | undefined;
+    userIsAuthenticated: isAuthenticatedInterface
 }
 
 export interface HeaderNavPropsInterface {
@@ -21,7 +23,7 @@ export interface MainHomePropsInterface {
 }
 
 export interface FooterHomePropsInterface {
-    userIsAuthenticated: string | undefined;
+    userIsAuthenticated: isAuthenticatedInterface;
 }
 
 export interface FooterNavPropsInterface {

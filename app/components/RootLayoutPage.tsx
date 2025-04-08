@@ -3,8 +3,9 @@
 import { usePathname } from 'next/navigation';
 import Header from '@home/Header';
 import Footer from '@home/Footer';
+import {isAuthenticatedInterface} from '@auth/interfaces';
 
-export default function RootLayoutPage(props: {children: Readonly<React.ReactNode>, userIsAuthenticated: string | undefined}){
+export default function RootLayoutPage(props: {children: Readonly<React.ReactNode>, userIsAuthenticated: isAuthenticatedInterface}){
     const userIsAuthenticated = props.userIsAuthenticated;
     const children = props.children;
     

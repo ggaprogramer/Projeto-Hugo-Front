@@ -1,12 +1,13 @@
 import { cookies } from 'next/headers';
 import functionIsAuthenticated from '@auth/functions/isAuthenticated';
+import {isAuthenticatedInterface} from '@auth/interfaces';
 
 export async function DELETE() {    
     const authToken = cookies().get('auth-token');
     if(authToken){
-        const userIsAuthenticated: string | undefined = await functionIsAuthenticated(authToken?.value);
+        const userIsAuthenticated: isAuthenticatedInterface = await functionIsAuthenticated();
 
-        if(userIsAuthenticated){
+        if(userIsAuthenticated.token && userIsAuthenticated.roles.length !== 0){
           cookies().delete('auth-token');
           return new Response(null, {status: 200});
         }

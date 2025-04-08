@@ -15,11 +15,11 @@ export default function DashboardPerfil(props: {authToken: string | undefined}) 
 
     useEffect(() => {
         const extractProfileInfoFunction = async () => {
-            const profileInfo: ProfileInfo = await getInfoProfile(props.authToken);
+            const profileInfo: ProfileInfo = await getInfoProfile();
             setProfileInfo(profileInfo);
         };
         extractProfileInfoFunction();
-    });
+    }, []);
 
     return (
         <div className='container-dashboard'>
@@ -68,7 +68,7 @@ export default function DashboardPerfil(props: {authToken: string | undefined}) 
                 {
                     navigation === 0 && profileInfo
                     ?
-                    <AlterPerfil authToken={props.authToken} profileInfo={profileInfo}/>
+                    <AlterPerfil profileInfo={profileInfo}/>
                     :
                     <span className='loader-dashboard'></span>
                 }

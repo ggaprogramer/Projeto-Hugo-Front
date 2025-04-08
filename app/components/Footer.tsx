@@ -2,20 +2,20 @@ import Link from 'next/link';
 import {FooterHomePropsInterface} from '../interfaces';
 import '../styles/footer.scss';
 import FooterNav from './FooterNav';
-import {FooterNavPropsInterface} from '../interfaces';
 import {useEffect, useState, useRef, RefObject} from 'react';
 import functionIsAuthenticated from '@auth/functions/isAuthenticated';
+import {isAuthenticatedInterface} from '@auth/interfaces';
 
 export default function Footer(props: FooterHomePropsInterface){
-    const [userIsAuthenticated, setUserIsAuthenticated] = useState<string | undefined>(props.userIsAuthenticated);
+    const [userIsAuthenticated, setUserIsAuthenticated] = useState<isAuthenticatedInterface>(props.userIsAuthenticated);
 
     useEffect(() => {
         const extractUserIsAuthenticated = async () => {
-            let userIsAuthenticated: string | undefined = await functionIsAuthenticated();
+            let userIsAuthenticated: isAuthenticatedInterface = await functionIsAuthenticated();
             setUserIsAuthenticated(userIsAuthenticated);
         };
         extractUserIsAuthenticated();
-    });
+    }, []);
 
     return (
         <>
@@ -26,7 +26,7 @@ export default function Footer(props: FooterHomePropsInterface){
                             <img src="/logo.png" alt=""/>
                         </Link>
                     </div>
-                    {<FooterNav userIsAuthenticated={userIsAuthenticated}/>}
+                    {<FooterNav userIsAuthenticated={userIsAuthenticated.token}/>}
                     <div className="rodape-coluna coluna-contato">
                         <h2>
                             Informações para contato

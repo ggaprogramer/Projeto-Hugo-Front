@@ -17,8 +17,6 @@ export default async function isAuthenticated(){
             cache: 'no-store',
         });
         const data = await response.json();
-        const getToken = data?.token;
-
-        if(response.ok && getToken) return getToken;
+        return data;
     }
 }
