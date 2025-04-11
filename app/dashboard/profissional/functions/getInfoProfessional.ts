@@ -2,19 +2,22 @@
 
 import { cookies } from 'next/headers';
 
-export default async function extractProfessionalInterests(){
+export default async function getInfoProfessional(){
     const token = cookies().get('auth-token');
-    if(token){
+    const value = token?.value;
+    if(value){
         const urlBack = process.env.NEXT_PUBLIC_BACK_URL;
-        const response = await fetch(`${urlBack}/professional-interests`, {
+        const response = await fetch(`${urlBack}/professional`, {
             method: 'GET',
             headers: {
-                'Authorization': 'Bearer ' + token.value,
+                'Authorization': 'Bearer ' + value,
                 'Content-Type': 'application/json',
             },
             credentials: 'include',
-            cache: 'no-store'
+            cache: 'no-store',
         });
-        return await response.json();
+        
+        const data = await response.json();
+        return data;
     }
 }

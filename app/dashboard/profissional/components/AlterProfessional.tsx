@@ -1,24 +1,30 @@
 'use client';
 
 import { FaPencilAlt } from "react-icons/fa";
-import '../styles/perfil.scss';
+import '../styles/profissional.scss';
 import { IMaskInput } from 'react-imask';
-import DivInterestsAtualizarPerfil from './DivInterestsAtualizarPerfil';
+import DivInterestsAtualizarProfissional from './DivInterestsAtualizarProfissional';
+import DivApproachesAtualizarProfissional from './DivApproachesAtualizarProfissional';
+import DivSpecialtiesAtualizarProfissional from './DivSpecialtiesAtualizarProfissional';
+import DivLanguagesAtualizarProfissional from './DivLanguagesAtualizarProfissional';
 import React, { FormEvent, useState, useRef, useMemo, useEffect } from 'react';
 import {FormAtualizarValues, BodyRequestAtualizarForm, ResponseAtualizarForm, ResponseGetUrlPhoto} from '../interfaces';
 import {Errors} from '@auth/interfaces';
-import getUrlPhoto from '@app/dashboard/perfil/functions/getUrlPhoto';
-import postUpgradeProfile from '@app/dashboard/perfil/functions/postUpgradeProfile';
+import getUrlPhoto from '@app/dashboard/profissional/functions/getUrlPhoto';
+import postUpgradeProfessional from '@app/dashboard/profissional/functions/postUpgradeProfessional';
 import ErrorAuth from '@auth/components/ErrorAuth'
-import { ProfileInfo } from '../interfaces';
-import extractProfileInterests from '@auth/register/functions/extractProfileInterests';
+import { ProfessionalInfo } from '../interfaces';
 import extractProfessionalInterests from '@auth/register/functions/extractProfessionalInterests';
+import extractProfessionalApproaches from '../functions/extractProfessionalApproaches';
+import extractProfessionalSpecialties from '../functions/extractProfessionalSpecialties';
+import extractProfessionalLanguages from '../functions/extractProfessionalLanguages';
 import {interestsInterface} from '@auth/register/interfaces';
+import {approachesInterface, specialtiesInterface, languagesInterface} from '../interfaces';
 import Message from '@app/components/Message';
 import {MessageType} from '@app/interfaces';
 
-export default function AlterPerfil(props: {profileInfo: ProfileInfo}){
-    const [profileInfo, setProfileInfo] = useState<ProfileInfo>(props.profileInfo);
+export default function AlterProfessional(props: {professionalInfo: ProfessionalInfo}){
+    const [professionalInfo, setProfessionalInfo] = useState<ProfessionalInfo>(props.professionalInfo);
 
     // Mensagem - Início
     const [viewMessageConfig, setViewMessageConfig] = useState<{
@@ -53,11 +59,38 @@ export default function AlterPerfil(props: {profileInfo: ProfileInfo}){
     const loader = useRef<HTMLSpanElement>(null);
 
     let [interests, setInterests] = useState<interestsInterface[] | null>(null);
+    let [approaches, setApproaches] = useState<approachesInterface[] | null>(null);
+    let [specialties, setSpecialties] = useState<specialtiesInterface[] | null>(null);
+    let [languages, setLanguages] = useState<languagesInterface[] | null>(null);
 
     useEffect(() => {
         const resolveFetch = async () => {
-            const profileInterests: interestsInterface[] = await extractProfileInterests();
+            const profileInterests: interestsInterface[] = await extractProfessionalInterests();
             setInterests(profileInterests);
+        }
+        resolveFetch();
+    }, []);
+
+    useEffect(() => {
+        const resolveFetch = async () => {
+            const profileApproaches: approachesInterface[] = await extractProfessionalApproaches();
+            setApproaches(profileApproaches);
+        }
+        resolveFetch();
+    }, []);
+
+    useEffect(() => {
+        const resolveFetch = async () => {
+            const profileSpecialties: languagesInterface[] = await extractProfessionalSpecialties();
+            setSpecialties(profileSpecialties);
+        }
+        resolveFetch();
+    }, []);
+
+    useEffect(() => {
+        const resolveFetch = async () => {
+            const profileLanguages: languagesInterface[] = await extractProfessionalLanguages();
+            setLanguages(profileLanguages);
         }
         resolveFetch();
     }, []);
@@ -77,27 +110,33 @@ export default function AlterPerfil(props: {profileInfo: ProfileInfo}){
         username: '',
         email: '',
         interests: [],
+        approaches: [],
+        specialties: [],
+        languages: [],
         gender: '',
         phone: '',
         file: null,
         password: '',
         password1: '',
         password2: '',
-        typeProfile: 'PROFILE',
+        typeProfile: 'PROFESSIONAL',
     });
     const [errors, setErrors] = useState<Errors[]>([]);
 
-    const updateProfileInfo = () => {
+    const updateprofessionalInfo = () => {
         const extractPhoto = async () => {
-            const data: ResponseGetUrlPhoto = await getUrlPhoto(profileInfo.uuid);
+            const data: ResponseGetUrlPhoto = await getUrlPhoto(professionalInfo.uuid);
 
-            setProfileInfo({
-                ...profileInfo,
+            setProfessionalInfo({
+                ...professionalInfo,
                 name: formInputs.name,
                 username: formInputs.username,
                 linkPhoto: data?.urlPhoto ? data.urlPhoto : undefined,
                 email: formInputs.email,
                 interests: formInputs.interests,
+                approaches: formInputs.approaches,
+                specialties: formInputs.specialties,
+                languages: formInputs.languages,
                 gender: formInputs.gender,
                 phone: formInputs.phone
             })
@@ -107,23 +146,29 @@ export default function AlterPerfil(props: {profileInfo: ProfileInfo}){
 
     useEffect(() => {
         setFormInputs({...formInputs, 
-            interests: profileInfo.interests ? profileInfo.interests : [],
-            name: profileInfo.name,
-            username: profileInfo.username,
-            email: profileInfo.email,
-            gender: profileInfo.gender,
-            phone: profileInfo.phone,
+            interests: professionalInfo.interests ? professionalInfo.interests : [],
+            approaches: professionalInfo.approaches ? professionalInfo.approaches : [],
+            specialties: professionalInfo.specialties ? professionalInfo.specialties : [],
+            languages: professionalInfo.languages ? professionalInfo.languages : [],
+            name: professionalInfo.name,
+            username: professionalInfo.username,
+            email: professionalInfo.email,
+            gender: professionalInfo.gender,
+            phone: professionalInfo.phone,
         });
-    }, [profileInfo]);
+    }, [professionalInfo]);
 
     const handleCancel = () => {
         setFormInputs({...formInputs, 
-            interests: profileInfo.interests,
-            name: profileInfo.name,
-            username: profileInfo.username,
-            email: profileInfo.email,
-            gender: profileInfo.gender,
-            phone: profileInfo.phone,
+            interests: professionalInfo.interests,
+            approaches: professionalInfo.approaches,
+            specialties: professionalInfo.specialties,
+            languages: professionalInfo.languages,
+            name: professionalInfo.name,
+            username: professionalInfo.username,
+            email: professionalInfo.email,
+            gender: professionalInfo.gender,
+            phone: professionalInfo.phone,
             password: '',
             password1: '',
             password2: '',
@@ -184,6 +229,9 @@ export default function AlterPerfil(props: {profileInfo: ProfileInfo}){
             !formInputs.email && 
             !formInputs.gender && 
             formInputs.interests.length === 0 &&
+            formInputs.approaches.length === 0 &&
+            formInputs.specialties.length === 0 &&
+            formInputs.languages.length === 0 &&
             !formInputs.phone &&
             !formInputs.file &&
             !formInputs.password &&
@@ -199,8 +247,23 @@ export default function AlterPerfil(props: {profileInfo: ProfileInfo}){
             lenErrors+=1;
         }
 
-        if(formInputs.interests.length === 0){
+        if(formInputs.interests?.length === 0){
             errors.push({type: 'interests', description: 'Você não pode deixar a lista de interesses vazia. Escolha no mínimo 1.'});
+            lenErrors+=1;
+        }
+
+        if(formInputs.approaches?.length === 0){
+            errors.push({type: 'approaches', description: 'Você não pode deixar a lista de abordagens vazia. Escolha no mínimo 1.'});
+            lenErrors+=1;
+        }
+
+        if(formInputs.specialties?.length === 0){
+            errors.push({type: 'specialties', description: 'Você não pode deixar a lista de especialidades vazia. Escolha no mínimo 1.'});
+            lenErrors+=1;
+        }
+
+        if(formInputs.languages?.length === 0){
+            errors.push({type: 'languages', description: 'Você não pode deixar a lista de idiomas vazia. Escolha no mínimo 1.'});
             lenErrors+=1;
         }
         
@@ -268,12 +331,15 @@ export default function AlterPerfil(props: {profileInfo: ProfileInfo}){
                 mimeType: mimeType,
                 phone: formInputs.phone,
                 interests: formInputs.interests.map(interests => interests.value),
+                approaches: formInputs.approaches.map(approaches => approaches.value),
+                specialties: formInputs.specialties.map(specialties => specialties.value),
+                languages: formInputs.languages.map(interests => interests.value),
                 gender: formInputs.gender,
                 typeProfile: formInputs.typeProfile,
             }
             viewLoader();
             
-            const data: ResponseAtualizarForm | undefined = await postUpgradeProfile(body);
+            const data: ResponseAtualizarForm | undefined = await postUpgradeProfessional(body);
 
             if(data && data.status === 'ERROR' && data.type){
                 disableLoader();
@@ -283,8 +349,8 @@ export default function AlterPerfil(props: {profileInfo: ProfileInfo}){
             }
             else if(data && data.status === 'SUCCESS'){
                 disableLoader();
-                updateProfileInfo();
-                viewMessage('O seu perfil foi atualizado com sucesso', 'SUCCESS');
+                updateprofessionalInfo();
+                viewMessage('O seu perfil de profissional foi atualizado com sucesso', 'SUCCESS');
             } else{
                 disableLoader();
             }
@@ -297,10 +363,10 @@ export default function AlterPerfil(props: {profileInfo: ProfileInfo}){
 
     return (
         <>
-            <div className="perfil">
-                <div className="perfil-cabecalho">
+            <div className="profissional">
+                <div className="profissional-cabecalho">
                     <h1>
-                        Meu Perfil
+                        Meu Perfil de Profissional
                     </h1>
                     {
                         interests 
@@ -311,27 +377,27 @@ export default function AlterPerfil(props: {profileInfo: ProfileInfo}){
                         </button>
                     }
                 </div>
-                <div className="perfil-box">
-                    <div className="perfil-foto">
+                <div className="profissional-box">
+                    <div className="profissional-foto">
                         {
-                            profileInfo.linkPhoto
+                            professionalInfo.linkPhoto
                             ?
-                            <img src={profileInfo.linkPhoto} alt="" />
+                            <img src={professionalInfo.linkPhoto} alt="" />
                             :
                             <img src="/user.png" alt="" />
                         }
 
                         <h2>
-                            {profileInfo.name?.split(' ')[0]}
+                            {professionalInfo.name?.split(' ')[0]}
                         </h2>
                     </div>
-                    <div className="perfil-info">
+                    <div className="profissional-info">
                         <div>
                             <p>
                                 Nome: 
                             </p>
                             <strong>
-                                {profileInfo.name}
+                                {professionalInfo.name}
                             </strong>
                         </div>
                         <div>
@@ -339,7 +405,7 @@ export default function AlterPerfil(props: {profileInfo: ProfileInfo}){
                                 E-mail: 
                             </p>
                             <strong>
-                                {profileInfo.email}
+                                {professionalInfo.email}
                             </strong>
                         </div>
                         <div>
@@ -347,17 +413,17 @@ export default function AlterPerfil(props: {profileInfo: ProfileInfo}){
                                 Celular: 
                             </p>
                             <strong>
-                                {profileInfo.phone}
+                                {professionalInfo.phone}
                             </strong>
                         </div>
                     </div>
-                    <div className="perfil-info">
+                    <div className="profissional-info">
                         <div>
                             <p>
                                 Usuário: 
                             </p>
                             <strong>
-                                {profileInfo.username}
+                                {professionalInfo.username}
                             </strong>
                         </div>
                         <div>
@@ -365,7 +431,7 @@ export default function AlterPerfil(props: {profileInfo: ProfileInfo}){
                                 Aniversário: 
                             </p>
                             <strong>
-                                {profileInfo.dateBirth}
+                                {professionalInfo.dateBirth}
                             </strong>
                         </div>
                         <div>
@@ -374,7 +440,7 @@ export default function AlterPerfil(props: {profileInfo: ProfileInfo}){
                             </p>
                             <strong>
                                 {
-                                    profileInfo.confirmacaoEmail
+                                    professionalInfo.confirmacaoEmail
                                     ?
                                     <img src="/check.png" alt="" />
                                     :
@@ -383,13 +449,13 @@ export default function AlterPerfil(props: {profileInfo: ProfileInfo}){
                             </strong>
                         </div>
                     </div>
-                    <div className="perfil-info">
+                    <div className="profissional-info">
                         <div>
                             <p>
                                 Sexo: 
                             </p>
                             <strong>
-                                {`${profileInfo.gender.charAt(0).toUpperCase()}${profileInfo.gender.substring(1).toLocaleLowerCase()}`}
+                                {`${professionalInfo.gender.charAt(0).toUpperCase()}${professionalInfo.gender.substring(1).toLocaleLowerCase()}`}
                             </strong>
                         </div>
                         <div>
@@ -397,7 +463,7 @@ export default function AlterPerfil(props: {profileInfo: ProfileInfo}){
                                 Interesses: 
                             </p>
                             <div>
-                                {profileInfo.interests.map((interest) => {
+                                {professionalInfo.interests.map((interest) => {
                                     return <strong key={interest.value}>{interest.label}</strong>
                                 })}
                             </div>
@@ -406,11 +472,11 @@ export default function AlterPerfil(props: {profileInfo: ProfileInfo}){
                 </div>
             </div>
             {stateUpgrade === 1 &&
-            <form ref={formAtualizar} className="alterar-perfil" onSubmit={handleSubmit}>
+            <form ref={formAtualizar} className="alterar-profissional" onSubmit={handleSubmit}>
                 <h2>
-                    Alterar Perfil
+                    Alterar Perfil do Profissional
                 </h2>
-                <div className="alterar-perfil-box">
+                <div className="alterar-profissional-box">
                     <div>
                         <div>
                             <label htmlFor="name">Nome:</label>
@@ -460,12 +526,62 @@ export default function AlterPerfil(props: {profileInfo: ProfileInfo}){
                             <div>
                                 <div>
                                     <p>Interesses:</p>
-                                    <DivInterestsAtualizarPerfil
+                                    <DivInterestsAtualizarProfissional
                                     formAtualizar={formAtualizar}
                                     formInputs={formInputs}
                                     setFormInputs={setFormInputs}
                                     options={interests}
                                     valueInterests={formInputs.interests}
+                                    errors={errors}/>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div>
+                        {
+                            approaches 
+                            &&
+                            <div>
+                                <div>
+                                    <p>Abordagens:</p>
+                                    <DivApproachesAtualizarProfissional
+                                    formAtualizar={formAtualizar}
+                                    formInputs={formInputs}
+                                    setFormInputs={setFormInputs}
+                                    options={approaches}
+                                    valueApproaches={formInputs.approaches}
+                                    errors={errors}/>
+                                </div>
+                            </div>
+                        }
+                        {
+                            specialties 
+                            &&
+                            <div>
+                                <div>
+                                    <p>Especialidades:</p>
+                                    <DivSpecialtiesAtualizarProfissional
+                                    formAtualizar={formAtualizar}
+                                    formInputs={formInputs}
+                                    setFormInputs={setFormInputs}
+                                    options={specialties}
+                                    valueSpecialties={formInputs.specialties}
+                                    errors={errors}/>
+                                </div>
+                            </div>
+                        }
+                        {
+                            languages 
+                            &&
+                            <div>
+                                <div>
+                                    <p>Idiomas:</p>
+                                    <DivLanguagesAtualizarProfissional
+                                    formAtualizar={formAtualizar}
+                                    formInputs={formInputs}
+                                    setFormInputs={setFormInputs}
+                                    options={languages}
+                                    valueLanguages={formInputs.languages}
                                     errors={errors}/>
                                 </div>
                             </div>

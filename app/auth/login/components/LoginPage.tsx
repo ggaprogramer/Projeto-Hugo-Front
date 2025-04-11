@@ -65,8 +65,7 @@ export default function LoginPage() {
                 } else if(typeProfile === 'PROFILE'){
                     router.push('/dashboard/perfil');
                 } else {
-                    // TODO redirecionar o profissional para a sua dashboard para o mesmo terminar o cadastro
-                    router.push('/');
+                    router.push('/dashboard/profissional');
                 }
             } else{
                 disableLoader();

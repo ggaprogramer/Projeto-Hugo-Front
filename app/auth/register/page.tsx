@@ -10,7 +10,7 @@ export default async function Register() {
     
     const userIsAuthenticated: isAuthenticatedInterface = await functionIsAuthenticated();
 
-    if(!userIsAuthenticated.token && userIsAuthenticated.roles.length === 0){
+    if(!userIsAuthenticated.token && userIsAuthenticated.roles?.length !== 0){
         return (
             <RegisterPage/>
         );

@@ -1,0 +1,204 @@
+@import '@styles/utils.scss';
+
+.profissional{
+    width: 100%;
+    @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
+    @include padding(2rem, 2rem, 2rem, 2rem);
+    background: $white-one-color;
+    @include border-radius(2rem, 2rem, 2rem, 2rem);
+
+    .profissional-cabecalho{
+        width: 100%;
+        @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: space-between, $align-items: center, $gap: 2rem);
+
+        button{
+            @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 1rem);
+            @include border-radius(2rem, 2rem, 2rem, 2rem);
+            @include padding(1rem, 2rem, 1rem, 2rem);
+            background: $yellow-one-color;
+            font-weight: bold;
+            font-size: 1.5rem;
+            transition: .3s;
+            cursor: pointer;
+
+            &:hover{
+                @include transform-scale(1.02);
+            }
+        }
+    }
+
+    .profissional-box{
+        @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
+        width: 100%;
+
+        @media(max-width: 800px){
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .profissional-foto{
+            @include padding(0rem, 2rem, 0rem, 0rem);
+            @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 1.5rem);
+
+            img{
+                @include border(0.2rem,  $yellow-one-color, solid, 2rem);
+                width: 20rem;
+                height: 20rem;
+                border-radius: 50%;
+            }
+        }
+
+        .profissional-info{
+            width: 100%;
+            @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 4rem);
+
+            @media(max-width: 800px){
+                flex-direction: row;
+                flex-flow: wrap;
+                align-items: center;
+            }
+
+            @media(max-width: 530px){
+                flex-direction: column;
+            }
+
+            div{
+                @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 1rem);
+
+                @media(max-width: 530px){
+                    align-items: center;
+                }
+
+                img{
+                    max-width: 2rem;
+                }
+
+                div{
+                    @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 0.5rem);
+                    max-height: 15rem;
+                    overflow: auto;
+                }
+            }
+
+            strong{
+                @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 0.5rem);
+            }
+        }
+    }
+}
+
+.alterar-profissional{
+    width: 100%;
+    @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
+    @include padding(2rem, 2rem, 2rem, 2rem);
+    background: $white-one-color;
+    @include border-radius(2rem, 2rem, 2rem, 2rem);
+
+    .alterar-profissional-box{
+        width: 100%;
+        @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
+
+        div{
+            width: 100%;
+            @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
+            
+            @media(max-width: 700px){
+                flex-direction: column;
+            }
+
+            div{
+                @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 0.5rem);
+                width: 100%;
+
+                input, select{
+                    width: 100%;
+                    @include padding(1rem, 1rem, 1rem, 1rem);
+                    @include border(0.2rem,  $gray-two-color, solid, 10rem);
+                }
+            }
+        }
+
+        .erros-gerais{
+            @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-end, $gap: 2rem);
+        }
+    
+        .error, .error-text-center{
+            text-align: left;
+            color: red;
+            font-size: 1.4rem;
+        }
+
+        .botoes{
+            width: 100%;
+            @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: flex-end, $align-items: center, $gap: 2rem);
+
+            button{
+                @include padding(1rem, 2rem, 1rem, 2rem);
+                cursor: pointer;
+                transition: .3s;
+                background: $yellow-one-color;
+                color: $black-one-color;
+                font-weight: bold;
+                @include border(0rem,  transparent, solid, 10rem);
+
+                &:hover{
+                    @include transform-scale(1.02);
+                }
+
+                &:nth-of-type(1){
+                    background: transparent;
+                    color: $black-one-color;
+                    @include border(0.2rem,  $black-one-color, solid, 10rem);
+                }
+            }
+        }
+    }
+
+    #interests-box, #approaches-box, #specialties-box, #languages-box{
+        width: 100%;
+
+        #interests-search, #approaches-specialties, #specialties-search, #languages-search{
+            @include border(0.2rem, $gray-two-color, solid, 10rem);
+            @include padding(1rem, 1.5rem, 1rem, 1.5rem);
+
+            &::placeholder{
+                color: $black-one-color;
+            }
+        }
+    }
+    
+    #interests-dropbox, #approaches-dropbox, #specialties-dropbox, #languages-dropbox{
+        width: 100%;
+        @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 0rem);
+        @include border(0.2rem, $yellow-one-color, solid, 0rem);
+        @include border-radius(0rem, 0rem, 1rem, 1rem);
+    
+        max-height: 20rem;
+        overflow: auto;
+    
+        label{
+            width: 100%;
+            @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: center, $gap: 1rem);
+            @include padding(1.5rem, 1.5rem, 1.5rem, 1.5rem);
+    
+            input{
+                width: 1.6rem;
+                height: 1.6rem;
+            }
+    
+            p{
+                width: 90%;
+            }
+        }
+    }
+
+    .inputs-extras{
+        @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: center, $gap: 1rem);
+    }
+}
+
+.loader{
+    @include loader($side: 5rem, $thickness: 0.5rem, $color: $blue-one-color, $top-color: white);
+    display: none;
+} 

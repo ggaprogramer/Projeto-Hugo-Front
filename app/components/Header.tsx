@@ -50,7 +50,7 @@ export default function Header(props: HeaderHomePropsInterface){
                             <Link href='/auth/login'>Login</Link>
                             :
                             <>
-                                <Link href={`${userIsAuthenticated.roles.indexOf("PROFILE") !== -1 ? '/dashboard/perfil' : '/dashboard/profissional'}`}>
+                                <Link href={`${userIsAuthenticated.roles?.indexOf("PROFILE") !== -1 ? '/dashboard/perfil' : '/dashboard/profissional'}`}>
                                     Dashboard
                                 </Link>
                                 <Logout/>
@@ -84,7 +84,7 @@ export default function Header(props: HeaderHomePropsInterface){
                             </Link>
                             :
                             <>
-                                <Link href={`${userIsAuthenticated.roles.indexOf("PROFILE") !== -1 ? '/dashboard/perfil' : '/dashboard/profissional'}`}>
+                                <Link href={`${userIsAuthenticated.roles?.indexOf("PROFILE") !== -1 ? '/dashboard/perfil' : '/dashboard/profissional'}`}>
                                     Dashboard
                                 </Link>
                                 <Logout/>

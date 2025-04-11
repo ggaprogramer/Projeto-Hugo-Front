@@ -7,7 +7,7 @@ export async function DELETE() {
     if(authToken){
         const userIsAuthenticated: isAuthenticatedInterface = await functionIsAuthenticated();
 
-        if(userIsAuthenticated.token && userIsAuthenticated.roles.length !== 0){
+        if(userIsAuthenticated.token && userIsAuthenticated.roles?.length !== 0){
           cookies().delete('auth-token');
           return new Response(null, {status: 200});
         }
