@@ -12,3 +12,8 @@ export interface ErrorsComponents {
     errors: Errors[],
     type: string,
 }
+
+export interface isAuthenticatedInterface {
+    token: string | undefined;
+    roles: string[];
+}

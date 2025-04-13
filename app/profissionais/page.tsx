@@ -1,18 +1,15 @@
 import { cookies } from 'next/headers';
 import functionIsAuthenticated from '@auth/functions/isAuthenticated';
+import {isAuthenticatedInterface} from '@auth/interfaces';
 import ProfessionalsPage from './components/ProfessionalsPage';
-import Header from '@home/Header';
-import Footer from '@home/Footer';
 
 export default async function Professional() {
-    const authToken = cookies().get('auth-token');
-    const userIsAuthenticated: boolean | undefined = await functionIsAuthenticated(authToken?.value);
+
+    const userIsAuthenticated: isAuthenticatedInterface = await functionIsAuthenticated();
 
     return (
       <>
-        <Header userIsAuthenticated={userIsAuthenticated}/>
-        <ProfessionalsPage userIsAuthenticated={userIsAuthenticated} />
-        <Footer userIsAuthenticated={userIsAuthenticated}/>
+        <ProfessionalsPage userIsAuthenticated={userIsAuthenticated?.token} />
       </>
     );
 }

@@ -56,10 +56,8 @@ export default function FilterProfessionals(){
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log('submit');
     }
 
-    console.log(formInputs);
 
     return (
         <form onSubmit={handleSubmit} className='filtros'>

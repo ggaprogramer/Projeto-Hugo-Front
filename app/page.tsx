@@ -2,12 +2,14 @@ import Link from 'next/link';
 import { cookies } from 'next/headers';
 import functionIsAuthenticated from '@auth/functions/isAuthenticated';
 import HomePage from './components/HomePage';
+import {isAuthenticatedInterface} from '@auth/interfaces';
 
 export default async function Home() {
-    const authToken = cookies().get('auth-token');
-    const userIsAuthenticated: boolean | undefined = await functionIsAuthenticated(authToken?.value);
+    const userIsAuthenticated: isAuthenticatedInterface = await functionIsAuthenticated();
 
     return (
-      <HomePage userIsAuthenticated={userIsAuthenticated} />
+      <>
+        <HomePage userIsAuthenticated={userIsAuthenticated?.token} />
+      </>
     );
 }

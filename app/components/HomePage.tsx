@@ -1,7 +1,4 @@
-import Link from 'next/link';
-import Header from './Header';
 import Main from './Main';
-import Footer from './Footer';
 import {HomePagePropsInterface} from '../interfaces';
 
 export default function HomePage(props: HomePagePropsInterface) {
@@ -9,9 +6,7 @@ export default function HomePage(props: HomePagePropsInterface) {
 
     return (
       <>
-        <Header userIsAuthenticated={userIsAuthenticated}/>
         <Main userIsAuthenticated={userIsAuthenticated}/>
-        <Footer userIsAuthenticated={userIsAuthenticated}/>
       </>
     );
 }

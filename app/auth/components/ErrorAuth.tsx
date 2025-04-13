@@ -9,7 +9,7 @@ export default function ErrorAuth(props: ErrorsComponents) {
         errors.map((error) => {
             if(error.type === 'lenErrors'){
                 return (
-                    <span key={error.description} className='error-text-center'>Revise o Formulário - {error.description} Erros</span>
+                    <small key={error.description} className='error-text-center'>Revise o Formulário - {error.description} Erro(s)</small>
                 )
             }
         })

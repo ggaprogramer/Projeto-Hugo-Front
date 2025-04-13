@@ -1,3 +1,5 @@
+import {isAuthenticatedInterface} from '@auth/interfaces';
+
 export interface QuestionInterface{
     order: number;
     title: string;
@@ -5,17 +7,31 @@ export interface QuestionInterface{
 }
 
 export interface HomePagePropsInterface {
-    userIsAuthenticated: boolean | undefined;
+    userIsAuthenticated: string | undefined;
 }
 
 export interface HeaderHomePropsInterface {
-    userIsAuthenticated: boolean | undefined;
+    userIsAuthenticated: isAuthenticatedInterface
+}
+
+export interface HeaderNavPropsInterface {
+    userIsAuthenticated: string | undefined;
 }
 
 export interface MainHomePropsInterface {
-    userIsAuthenticated: boolean | undefined;
+    userIsAuthenticated: string | undefined;
 }
 
 export interface FooterHomePropsInterface {
-    userIsAuthenticated: boolean | undefined;
+    userIsAuthenticated: isAuthenticatedInterface;
 }
+
+export interface FooterNavPropsInterface {
+    userIsAuthenticated: string | undefined;
+}
+
+export interface MessageBox {
+    type: MessageType,
+    message: string,
+}
+export type MessageType = 'INFO' | 'ERROR' | 'SUCCESS';

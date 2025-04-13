@@ -1,5 +1,5 @@
 export interface ProfessionalsPagePropsInterface {
-    userIsAuthenticated: boolean | undefined;
+    userIsAuthenticated: string | undefined;
 }
 
 export interface FiltersProfessionals {

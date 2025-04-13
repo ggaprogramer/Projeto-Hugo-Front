@@ -10,28 +10,7 @@ export default function DivInterestsForm(props: DivInterestsFormInterface){
     const formInputs = props.formInputs;
     const setFormInputs = props.setFormInputs;
     const errors: Errors[] = props.errors;
-
-    const opcoes = useMemo<OptionType[]>(() => {
-        return (
-            [
-                { value: 'TERAPIA', label: 'Terapia' },
-                { value: 'PSICOLOGIA', label: 'Psicologia' },
-                { value: 'TERAPIA_COGNITIVO_COMPORTAMENTAL', label: 'Terapia Cognitivo-Comportamental' },
-                { value: 'PSICOTERAPIA', label: 'Psicoterapia' },
-                { value: 'TERAPIA_EMOCIONAL', label: 'Terapia Emocional' },
-                { value: 'SAUDE_MENTAL', label: 'Saúde Mental' },
-                { value: 'ANSIEDADE', label: 'Ansiedade' },
-                { value: 'DEPRESSAO', label: 'Depressão' },
-                { value: 'RELACIONAMENTOS', label: 'Relacionamentos' },
-                { value: 'AUTOESTIMA', label: 'Autoestima' },
-                { value: 'MINDFULNESS', label: 'Mindfulness' },
-                { value: 'ESTRESSE', label: 'Estresse' },
-                { value: 'TRAUMA', label: 'Trauma' },
-                { value: 'PSICANALISE', label: 'Psicanálise' },
-                { value: 'ADOLESCENCIA', label: 'Adolescência' },
-            ]
-        )
-    }, []);
+    const opcoes = props.interests;
 
     const [interestsSearch, setInterestsSearch] = useState('');
     const [interestsDropbox, setInterestsDropbox] = useState(0);
@@ -100,13 +79,13 @@ export default function DivInterestsForm(props: DivInterestsFormInterface){
                             <input type="checkbox" 
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                 handleChangeInputsInterestsAll(e);
-                            }} checked={formInputs.interests.length === opcoes.length ? true : false}/>
+                            }} checked={formInputs.interests.length === opcoes?.length ? true : false}/>
                             <p>
                             Selecione todas as opções
                             </p>
                         </label>
                     }
-                    {opcoes.map((opcao) => {
+                    {opcoes?.map((opcao) => {
                         if(opcao.value.toLowerCase().indexOf(interestsSearch.toLowerCase()) != -1){
                             return (
                                 <label key={opcao.value.toUpperCase()}>

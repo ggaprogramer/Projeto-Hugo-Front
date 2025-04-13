@@ -10,7 +10,7 @@ import {useRef, useState, useEffect} from 'react';
 export default function ProfessionalPage(props: ProfessionalPagePropsInterface){
     const userIsAuthenticated = props.userIsAuthenticated;
 
-    const [navegacao, setNavegacao] = useState(2);
+    const [navegacao, setNavegacao] = useState(0);
 
     return (
         <>
@@ -79,7 +79,7 @@ export default function ProfessionalPage(props: ProfessionalPagePropsInterface){
                                     </div>
                                 </div>
                                 <div className='info-botoes'>
-                                    <button>Agendar consulta</button>
+                                    <button onClick={() => setNavegacao(2)}>Agendar consulta</button>
                                     <button>Enviar mensagem</button>
                                 </div>
                                 <div className='info-midia'>

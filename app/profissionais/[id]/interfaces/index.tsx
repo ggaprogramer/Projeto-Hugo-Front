@@ -1,3 +1,3 @@
 export interface ProfessionalPagePropsInterface {
-    userIsAuthenticated: boolean | undefined;
+    userIsAuthenticated: string | undefined;
 }

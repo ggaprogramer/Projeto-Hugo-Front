@@ -5,10 +5,12 @@ import Link from 'next/link';
 import {HeaderHomePropsInterface} from '../interfaces';
 import '../styles/header.scss';
 import HeaderNav from './HeaderNav';
-import {useEffect, useState, useRef, RefObject} from 'react';
+import functionIsAuthenticated from '@auth/functions/isAuthenticated';
+import {isAuthenticatedInterface} from '@auth/interfaces';
+import {useEffect, useState, useRef} from 'react';
 
 export default function Header(props: HeaderHomePropsInterface){
-    const userIsAuthenticated = props.userIsAuthenticated;
+    const [userIsAuthenticated, setUserIsAuthenticated] = useState<isAuthenticatedInterface>(props.userIsAuthenticated);
 
     const botaoMobile = useRef<HTMLDivElement>(null);
     const botaoMobileSpan1 = useRef<HTMLDivElement>(null);
@@ -19,6 +21,14 @@ export default function Header(props: HeaderHomePropsInterface){
     const handleClickMobile = () => {
         botaoMobileDiv?.current?.classList.toggle('mobile-expand');
     }
+
+    useEffect(() => {
+        const extractUserIsAuthenticated = async () => {
+            let userIsAuthenticated: isAuthenticatedInterface = await functionIsAuthenticated();
+            setUserIsAuthenticated(userIsAuthenticated);
+        };
+        extractUserIsAuthenticated();
+    }, []);
 
     return (
         <>
@@ -32,15 +42,17 @@ export default function Header(props: HeaderHomePropsInterface){
                             Terapia
                         </h2>
                     </Link>
-                    <HeaderNav/>
+                    {<HeaderNav userIsAuthenticated={userIsAuthenticated?.token}/>}
                     <div className='botoes'>
                         {
-                            !userIsAuthenticated 
+                            !userIsAuthenticated?.token && !userIsAuthenticated?.roles 
                             ?
                             <Link href='/auth/login'>Login</Link>
                             :
                             <>
-                                <Link href=''>Dashboard</Link>
+                                <Link href={`${userIsAuthenticated.roles?.indexOf("PROFILE") !== -1 ? '/dashboard/perfil' : '/dashboard/profissional'}`}>
+                                    Dashboard
+                                </Link>
                                 <Logout/>
                             </>
                         }
@@ -62,15 +74,19 @@ export default function Header(props: HeaderHomePropsInterface){
                     </div>
                 </div>
                 <div ref={botaoMobileDiv}>
-                    <HeaderNav/>
+                {<HeaderNav userIsAuthenticated={userIsAuthenticated?.token}/>}
                     <div className='botoes'>
                         {
-                            !userIsAuthenticated 
+                            !userIsAuthenticated?.token && !userIsAuthenticated?.roles 
                             ?
-                            <Link href='/auth/login'>Login</Link>
+                            <Link href="/auth/login" onClick={() => window.location.reload()}>
+                                Login
+                            </Link>
                             :
                             <>
-                                <Link href=''>Dashboard</Link>
+                                <Link href={`${userIsAuthenticated.roles?.indexOf("PROFILE") !== -1 ? '/dashboard/perfil' : '/dashboard/profissional'}`}>
+                                    Dashboard
+                                </Link>
                                 <Logout/>
                             </>
                         }

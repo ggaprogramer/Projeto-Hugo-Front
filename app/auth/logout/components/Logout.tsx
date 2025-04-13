@@ -1,8 +1,6 @@
 'use client';
 
 import React, { Suspense } from 'react';
-import { cookies } from 'next/headers';
-import functionIsAuthenticated from '@auth/functions/isAuthenticated';
 import { useRouter } from 'next/navigation';
 
 export default function Logout(){
