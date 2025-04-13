@@ -26,7 +26,7 @@ export default function Footer(props: FooterHomePropsInterface){
                             <img src="/logo.png" alt=""/>
                         </Link>
                     </div>
-                    {<FooterNav userIsAuthenticated={userIsAuthenticated.token}/>}
+                    {<FooterNav userIsAuthenticated={userIsAuthenticated?.token}/>}
                     <div className="rodape-coluna coluna-contato">
                         <h2>
                             Informações para contato

@@ -42,10 +42,10 @@ export default function Header(props: HeaderHomePropsInterface){
                             Terapia
                         </h2>
                     </Link>
-                    {<HeaderNav userIsAuthenticated={userIsAuthenticated.token}/>}
+                    {<HeaderNav userIsAuthenticated={userIsAuthenticated?.token}/>}
                     <div className='botoes'>
                         {
-                            !userIsAuthenticated.token && !userIsAuthenticated.roles 
+                            !userIsAuthenticated?.token && !userIsAuthenticated?.roles 
                             ?
                             <Link href='/auth/login'>Login</Link>
                             :
@@ -74,10 +74,10 @@ export default function Header(props: HeaderHomePropsInterface){
                     </div>
                 </div>
                 <div ref={botaoMobileDiv}>
-                {<HeaderNav userIsAuthenticated={userIsAuthenticated.token}/>}
+                {<HeaderNav userIsAuthenticated={userIsAuthenticated?.token}/>}
                     <div className='botoes'>
                         {
-                            !userIsAuthenticated.token && !userIsAuthenticated.roles 
+                            !userIsAuthenticated?.token && !userIsAuthenticated?.roles 
                             ?
                             <Link href="/auth/login" onClick={() => window.location.reload()}>
                                 Login

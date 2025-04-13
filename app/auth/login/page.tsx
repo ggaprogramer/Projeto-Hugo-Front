@@ -9,7 +9,7 @@ export default async function Page() {
     
     const userIsAuthenticated: isAuthenticatedInterface = await functionIsAuthenticated();
 
-    if(!userIsAuthenticated.token) {
+    if(!userIsAuthenticated?.token) {
         return (
             <LoginPage />
         );

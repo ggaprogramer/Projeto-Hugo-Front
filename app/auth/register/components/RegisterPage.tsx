@@ -71,7 +71,7 @@ export default function RegisterPage() {
         } else if(interestsResponse) {
             setInterests(interestsResponse[0]);
         }
-    }, [formInputs, interestsResponse]);
+    }, [formInputs.typeProfile, interestsResponse]);
 
     const makeRegister = async () => {
         let errors: Errors[] = [];
@@ -107,8 +107,7 @@ export default function RegisterPage() {
                 setErrors(errors);
             }
             else if(data.status === 'SUCCESS'){
-                // TODO enviar uma mensagem de sucesso pra página de login
-                router.push('/auth/login');
+                router.push('/auth/login?login-success=true');
             } else{
                 disableLoader();
             }
@@ -303,7 +302,7 @@ export default function RegisterPage() {
                     
                     {   
                         interests !== null &&
-                        interests.length !== 0 &&
+                        interests?.length !== 0 &&
                         <DivInterestsForm
                         formRegister={formRegister}
                         formInputs={formInputs}
@@ -383,7 +382,7 @@ export default function RegisterPage() {
                 </button>}
                 {   
                     interests !== null &&
-                    interests.length !== 0 
+                    interests?.length !== 0 
                     ?
                     <button type='submit' ref={buttonRegister}>
                         {etapasForm === 1 ? 'Próxima Etapa' : 'Criar Conta'}

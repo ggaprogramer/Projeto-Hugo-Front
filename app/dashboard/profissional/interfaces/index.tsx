@@ -114,6 +114,13 @@ export interface languagesInterface {
     level: string;
 }
 
+export interface optionsClientInterface {
+    interests: interestsInterface[];
+    approaches: approachesInterface[];
+    specialties: specialtiesInterface[];
+    languages: languagesInterface[];
+}
+
 export interface ResponseGetUrlPhoto {
     urlPhoto: string | undefined;
 }

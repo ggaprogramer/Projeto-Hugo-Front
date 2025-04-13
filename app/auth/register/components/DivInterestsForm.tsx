@@ -79,13 +79,13 @@ export default function DivInterestsForm(props: DivInterestsFormInterface){
                             <input type="checkbox" 
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                 handleChangeInputsInterestsAll(e);
-                            }} checked={formInputs.interests.length === opcoes.length ? true : false}/>
+                            }} checked={formInputs.interests.length === opcoes?.length ? true : false}/>
                             <p>
                             Selecione todas as opções
                             </p>
                         </label>
                     }
-                    {opcoes.map((opcao) => {
+                    {opcoes?.map((opcao) => {
                         if(opcao.value.toLowerCase().indexOf(interestsSearch.toLowerCase()) != -1){
                             return (
                                 <label key={opcao.value.toUpperCase()}>

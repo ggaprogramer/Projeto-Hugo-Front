@@ -13,6 +13,7 @@ export default function DivApproachesAtualizarProfissional(props: DivApproachesA
     const errors: Errors[] = props.errors;
     const options = props.options;
 
+
     const [approachesSearch, setApproachesSearch] = useState('');
     const [approachesDropbox, setApproachesDropbox] = useState(0);
     const inputApproachesSearch = useRef<HTMLInputElement>(null);
@@ -73,6 +74,7 @@ export default function DivApproachesAtualizarProfissional(props: DivApproachesA
         <>
             <div id='approaches-box' onMouseLeave={handleInputApproachesLeave}>
                 <input type="text"
+                className={formInputs.approaches.length !== 0 ? '' : 'error'}
                 onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setApproachesSearch(e.target.value);
                 }}

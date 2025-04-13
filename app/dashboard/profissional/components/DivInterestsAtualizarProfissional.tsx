@@ -73,6 +73,7 @@ export default function DivInterestsAtualizarProfissional(props: DivInterestsAtu
         <>
             <div id='interests-box' onMouseLeave={handleInputInterestsLeave}>
                 <input type="text"
+                className={formInputs.interests.length !== 0 ? '' : 'error'}
                 onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setInterestsSearch(e.target.value);
                 }}

@@ -9,7 +9,7 @@ export default async function Professional() {
 
     return (
       <>
-        <ProfessionalsPage userIsAuthenticated={userIsAuthenticated.token} />
+        <ProfessionalsPage userIsAuthenticated={userIsAuthenticated?.token} />
       </>
     );
 }

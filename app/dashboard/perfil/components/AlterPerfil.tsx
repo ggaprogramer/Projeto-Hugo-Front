@@ -12,7 +12,7 @@ import postUpgradeProfile from '@app/dashboard/perfil/functions/postUpgradeProfi
 import ErrorAuth from '@auth/components/ErrorAuth'
 import { ProfileInfo } from '../interfaces';
 import extractProfileInterests from '@auth/register/functions/extractProfileInterests';
-import extractProfessionalInterests from '@auth/register/functions/extractProfessionalInterests';
+import { MdError } from "react-icons/md";
 import {interestsInterface} from '@auth/register/interfaces';
 import Message from '@app/components/Message';
 import {MessageType} from '@app/interfaces';
@@ -212,6 +212,10 @@ export default function AlterPerfil(props: {profileInfo: ProfileInfo}){
             errors.push({type: 'password1', description: 'A senha precisa ter no mínimo 8 caracteres.'});
             lenErrors+=1;
         }
+        if(!profileInfo.linkPhoto && !formInputs.file){
+            errors.push({type: 'file', description: 'Adicione uma foto de perfil.'});
+            lenErrors+=1;
+        }
         if(formInputs.file && formInputs.file.size / (1024 * 1024) >= 5){
             errors.push({type: 'file', description: 'O tamanho da foto precisa ser menor que 5MB.'});
             lenErrors+=1;
@@ -311,6 +315,12 @@ export default function AlterPerfil(props: {profileInfo: ProfileInfo}){
                         </button>
                     }
                 </div>
+                {
+                    !profileInfo.linkPhoto &&
+                    <span className="message error">
+                        <MdError/> Para ter o seu perfil ativo, você deve completar o seu cadastro preenchendo todos os campos obrigatórios.
+                    </span>
+                }
                 <div className="perfil-box">
                     <div className="perfil-foto">
                         {
@@ -319,6 +329,13 @@ export default function AlterPerfil(props: {profileInfo: ProfileInfo}){
                             <img src={profileInfo.linkPhoto} alt="" />
                             :
                             <img src="/user.png" alt="" />
+                        }
+
+                        {
+                            !profileInfo.linkPhoto &&
+                            <p className="error">
+                                <MdError/> Adicione uma foto.
+                            </p>
                         }
 
                         <h2>
@@ -472,11 +489,11 @@ export default function AlterPerfil(props: {profileInfo: ProfileInfo}){
                         }
                     </div>
                     <h3>
-                        Adicionar nova foto (menor que 5mb)
+                        Adicionar nova foto
                     </h3>
                     <div>
                         <div>
-                            <input type='file' name="file" id="file" accept="image/*"
+                            <input type='file' name="file" id="file" accept="image/*" className={profileInfo.linkPhoto ? '' : 'error'}
                             onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeForm(e, 'file')}/>
                             <ErrorAuth errors={errors} type='file'/>
                         </div>

@@ -11,11 +11,30 @@ import '../styles/dashboard-profissional.scss';
 
 export default function DashboardProfissional(props: {authToken: string | undefined}) {
     const [navigation, setNavigation] = useState<Number>(0);
-    const [professionalInfo, setProfessionalInfo] = useState<ProfessionalInfo | null>(null);
-
+    const [professionalInfo, setProfessionalInfo] = useState<ProfessionalInfo>({
+        uuid: '',
+        name: '',
+        username: '',
+        email: '',
+        interests: [],
+        approaches: [],
+        specialties: [],
+        languages: [],
+        gender: '',
+        phone: '',
+        dateBirth: '',
+        linkPhoto: undefined,
+        confirmacaoEmail: false,
+        registrationCompleted: false,
+    });
+    
     useEffect(() => {
         const extractprofessionalInfoFunction = async () => {
             const professionalInfo: ProfessionalInfo = await getInfoProfessional();
+            professionalInfo.interests = professionalInfo.interests ? professionalInfo.interests : [];
+            professionalInfo.approaches = professionalInfo.approaches ? professionalInfo.approaches : [];
+            professionalInfo.specialties = professionalInfo.specialties ? professionalInfo.specialties : [];
+            professionalInfo.languages = professionalInfo.languages ? professionalInfo.languages : [];
             setProfessionalInfo(professionalInfo);
         };
         extractprofessionalInfoFunction();
@@ -66,7 +85,7 @@ export default function DashboardProfissional(props: {authToken: string | undefi
             </div>
             <div className='barra-principal'>
                 {
-                    navigation === 0 && professionalInfo
+                    navigation === 0 && professionalInfo.uuid
                     ?
                     <AlterProfessional professionalInfo={professionalInfo}/>
                     :

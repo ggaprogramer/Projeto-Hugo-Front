@@ -14,7 +14,6 @@ export default function Logout(){
                 'Content-Type': 'application/json'
             },
         });
-        console.log(response.ok);
         if(response.ok){
             router.push('/auth/login');
         } else {

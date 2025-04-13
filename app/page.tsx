@@ -9,7 +9,7 @@ export default async function Home() {
 
     return (
       <>
-        <HomePage userIsAuthenticated={userIsAuthenticated.token} />
+        <HomePage userIsAuthenticated={userIsAuthenticated?.token} />
       </>
     );
 }

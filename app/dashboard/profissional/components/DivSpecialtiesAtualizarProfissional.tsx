@@ -73,6 +73,7 @@ export default function DivSpecialtiesAtualizarProfissional(props: DivSpecialtie
         <>
             <div id='specialties-box' onMouseLeave={handleInputSpecialtiesLeave}>
                 <input type="text"
+                className={formInputs.specialties.length !== 0 ? '' : 'error'}
                 onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setSpecialtiesSearch(e.target.value);
                 }}

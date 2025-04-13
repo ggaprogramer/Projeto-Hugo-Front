@@ -19,8 +19,9 @@ import extractProfessionalApproaches from '../functions/extractProfessionalAppro
 import extractProfessionalSpecialties from '../functions/extractProfessionalSpecialties';
 import extractProfessionalLanguages from '../functions/extractProfessionalLanguages';
 import {interestsInterface} from '@auth/register/interfaces';
-import {approachesInterface, specialtiesInterface, languagesInterface} from '../interfaces';
+import {approachesInterface, specialtiesInterface, languagesInterface, optionsClientInterface} from '../interfaces';
 import Message from '@app/components/Message';
+import { MdError } from "react-icons/md";
 import {MessageType} from '@app/interfaces';
 
 export default function AlterProfessional(props: {professionalInfo: ProfessionalInfo}){
@@ -58,42 +59,25 @@ export default function AlterProfessional(props: {professionalInfo: Professional
     const buttonAtualizar = useRef<HTMLButtonElement>(null);
     const loader = useRef<HTMLSpanElement>(null);
 
-    let [interests, setInterests] = useState<interestsInterface[] | null>(null);
-    let [approaches, setApproaches] = useState<approachesInterface[] | null>(null);
-    let [specialties, setSpecialties] = useState<specialtiesInterface[] | null>(null);
-    let [languages, setLanguages] = useState<languagesInterface[] | null>(null);
+    let [optionsClient, setOptionsClient] = useState<optionsClientInterface | null>(null);
 
     useEffect(() => {
         const resolveFetch = async () => {
-            const profileInterests: interestsInterface[] = await extractProfessionalInterests();
-            setInterests(profileInterests);
+            const interests: interestsInterface[] = await extractProfessionalInterests();
+            const approaches: approachesInterface[] = await extractProfessionalApproaches();
+            const specialties: languagesInterface[] = await extractProfessionalSpecialties();
+            const languages: languagesInterface[] = await extractProfessionalLanguages();
+            setOptionsClient({
+                ...optionsClient, 
+                interests: interests, 
+                approaches: approaches, 
+                specialties: specialties, 
+                languages: languages
+            });
         }
         resolveFetch();
     }, []);
 
-    useEffect(() => {
-        const resolveFetch = async () => {
-            const profileApproaches: approachesInterface[] = await extractProfessionalApproaches();
-            setApproaches(profileApproaches);
-        }
-        resolveFetch();
-    }, []);
-
-    useEffect(() => {
-        const resolveFetch = async () => {
-            const profileSpecialties: languagesInterface[] = await extractProfessionalSpecialties();
-            setSpecialties(profileSpecialties);
-        }
-        resolveFetch();
-    }, []);
-
-    useEffect(() => {
-        const resolveFetch = async () => {
-            const profileLanguages: languagesInterface[] = await extractProfessionalLanguages();
-            setLanguages(profileLanguages);
-        }
-        resolveFetch();
-    }, []);
     
     const viewLoader = () => {
         buttonAtualizar?.current?.setAttribute('style', 'display: none');
@@ -125,7 +109,7 @@ export default function AlterProfessional(props: {professionalInfo: Professional
 
     const updateprofessionalInfo = () => {
         const extractPhoto = async () => {
-            const data: ResponseGetUrlPhoto = await getUrlPhoto(professionalInfo.uuid);
+            let data: ResponseGetUrlPhoto = await getUrlPhoto(professionalInfo.uuid);
 
             setProfessionalInfo({
                 ...professionalInfo,
@@ -133,10 +117,10 @@ export default function AlterProfessional(props: {professionalInfo: Professional
                 username: formInputs.username,
                 linkPhoto: data?.urlPhoto ? data.urlPhoto : undefined,
                 email: formInputs.email,
-                interests: formInputs.interests,
-                approaches: formInputs.approaches,
-                specialties: formInputs.specialties,
-                languages: formInputs.languages,
+                interests: formInputs.interests ? formInputs.interests : [],
+                approaches: formInputs.approaches ? formInputs.approaches : [],
+                specialties: formInputs.specialties ? formInputs.specialties : [],
+                languages: formInputs.languages ? formInputs.languages : [],
                 gender: formInputs.gender,
                 phone: formInputs.phone
             })
@@ -160,10 +144,10 @@ export default function AlterProfessional(props: {professionalInfo: Professional
 
     const handleCancel = () => {
         setFormInputs({...formInputs, 
-            interests: professionalInfo.interests,
-            approaches: professionalInfo.approaches,
-            specialties: professionalInfo.specialties,
-            languages: professionalInfo.languages,
+            interests: professionalInfo.interests ? professionalInfo.interests : [],
+            approaches: professionalInfo.approaches ? professionalInfo.approaches : [],
+            specialties: professionalInfo.specialties ? professionalInfo.specialties : [],
+            languages: professionalInfo.languages ? professionalInfo.languages : [],
             name: professionalInfo.name,
             username: professionalInfo.username,
             email: professionalInfo.email,
@@ -275,6 +259,10 @@ export default function AlterProfessional(props: {professionalInfo: Professional
             errors.push({type: 'password1', description: 'A senha precisa ter no mínimo 8 caracteres.'});
             lenErrors+=1;
         }
+        if(!professionalInfo.linkPhoto && !formInputs.file){
+            errors.push({type: 'file', description: 'Adicione uma foto de perfil.'});
+            lenErrors+=1;
+        }
         if(formInputs.file && formInputs.file.size / (1024 * 1024) >= 5){
             errors.push({type: 'file', description: 'O tamanho da foto precisa ser menor que 5MB.'});
             lenErrors+=1;
@@ -369,7 +357,7 @@ export default function AlterProfessional(props: {professionalInfo: Professional
                         Meu Perfil de Profissional
                     </h1>
                     {
-                        interests 
+                        optionsClient 
                         &&
                         <button onClick={() => setStateUpgrade(1)}>
                             <FaPencilAlt/>
@@ -377,6 +365,16 @@ export default function AlterProfessional(props: {professionalInfo: Professional
                         </button>
                     }
                 </div>
+                {
+                    !(professionalInfo.interests?.length !== 0) &&
+                    !(professionalInfo.approaches?.length !== 0) &&
+                    !(professionalInfo.specialties?.length !== 0) &&
+                    !(professionalInfo.languages?.length !== 0) &&
+                    !professionalInfo.linkPhoto &&
+                    <span className="message error">
+                        <MdError/> Para ter o seu perfil de profissional ativo, você deve completar o seu cadastro preenchendo todos os campos obrigatórios.
+                    </span>
+                }
                 <div className="profissional-box">
                     <div className="profissional-foto">
                         {
@@ -385,6 +383,13 @@ export default function AlterProfessional(props: {professionalInfo: Professional
                             <img src={professionalInfo.linkPhoto} alt="" />
                             :
                             <img src="/user.png" alt="" />
+                        }
+
+                        {
+                            !professionalInfo.linkPhoto &&
+                            <p className="error">
+                                <MdError/> Adicione uma foto.
+                            </p>
                         }
 
                         <h2>
@@ -415,6 +420,24 @@ export default function AlterProfessional(props: {professionalInfo: Professional
                             <strong>
                                 {professionalInfo.phone}
                             </strong>
+                        </div>
+                        <div>
+                            <p>
+                                Abordagens: 
+                            </p>
+                            <div>
+                                {
+                                    professionalInfo.approaches?.length !== 0
+                                    ?
+                                    professionalInfo.approaches.map((approach) => {
+                                        return <strong key={approach.value}>{approach.label}</strong>
+                                    })
+                                    :
+                                    <p className="error">
+                                        <MdError/> Adicione abordagens.
+                                    </p>
+                                }
+                            </div>
                         </div>
                     </div>
                     <div className="profissional-info">
@@ -448,6 +471,24 @@ export default function AlterProfessional(props: {professionalInfo: Professional
                                 }
                             </strong>
                         </div>
+                        <div>
+                            <p>
+                                Especialidades: 
+                            </p>
+                            <div>
+                                {
+                                    professionalInfo.specialties?.length !== 0
+                                    ?
+                                    professionalInfo.specialties.map((specialtiy) => {
+                                        return <strong key={specialtiy.value}>{specialtiy.label}</strong>
+                                    })
+                                    :
+                                    <p className="error">
+                                        <MdError/> Adicione especialidades.
+                                    </p>
+                                }
+                            </div>
+                        </div>
                     </div>
                     <div className="profissional-info">
                         <div>
@@ -463,9 +504,35 @@ export default function AlterProfessional(props: {professionalInfo: Professional
                                 Interesses: 
                             </p>
                             <div>
-                                {professionalInfo.interests.map((interest) => {
-                                    return <strong key={interest.value}>{interest.label}</strong>
-                                })}
+                                {
+                                    professionalInfo.interests?.length !== 0
+                                    ?
+                                    professionalInfo.interests.map((interest) => {
+                                        return <strong key={interest.value}>{interest.label}</strong>
+                                    })
+                                    :
+                                    <p className="error">
+                                        <MdError/> Adicione interesses.
+                                    </p>
+                                }
+                            </div>
+                        </div>
+                        <div>
+                            <p>
+                                Idiomas: 
+                            </p>
+                            <div>
+                                {
+                                    professionalInfo.languages?.length !== 0
+                                    ?
+                                    professionalInfo.languages.map((language) => {
+                                        return <strong key={language.value}>{language.label}</strong>
+                                    })
+                                    :
+                                    <p className="error">
+                                        <MdError/> Adicione idiomas.
+                                    </p>
+                                }
                             </div>
                         </div>
                     </div>
@@ -480,13 +547,13 @@ export default function AlterProfessional(props: {professionalInfo: Professional
                     <div>
                         <div>
                             <label htmlFor="name">Nome:</label>
-                            <input type="text" name="name" id="name" value={formInputs.name}
+                            <input type="text" name="name" id="name" value={formInputs.name} className={formInputs.name ? '' : 'error'}
                             onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeForm(e, 'name')} />
                             <ErrorAuth errors={errors} type='name'/>
                         </div>
                         <div>
                             <label htmlFor="username">Usuário:</label>
-                            <input type="text" name="username" id="username" value={formInputs.username}
+                            <input type="text" name="username" id="username" value={formInputs.username} className={formInputs.username ? '' : 'error'}
                             onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeForm(e, 'username')} />
                             <ErrorAuth errors={errors} type='username'/>
                         </div>
@@ -494,7 +561,7 @@ export default function AlterProfessional(props: {professionalInfo: Professional
                     <div>
                         <div>
                             <label htmlFor="email">E-mail:</label>
-                            <input type="email" name="email" id="email" value={formInputs.email}
+                            <input type="email" name="email" id="email" value={formInputs.email} className={formInputs.email ? '' : 'error'}
                             onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeForm(e, 'email')}/>
                             <ErrorAuth errors={errors} type='email'/>
                         </div>
@@ -503,7 +570,7 @@ export default function AlterProfessional(props: {professionalInfo: Professional
                             <IMaskInput
                                 id='phone'
                                 name='phone'
-                                mask="+55 (00) 00000-0000" value={formInputs.phone}
+                                mask="+55 (00) 00000-0000" value={formInputs.phone} className={formInputs.phone ? '' : 'error'}
                                 onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeForm(e, 'phone')}
                             />
                             <ErrorAuth errors={errors} type='phone'/>
@@ -512,7 +579,7 @@ export default function AlterProfessional(props: {professionalInfo: Professional
                     <div>
                         <div>
                             <label htmlFor="gender">Sexo:</label>
-                            <select name="gender" id="gender" value={formInputs.gender}
+                            <select name="gender" id="gender" value={formInputs.gender} className={formInputs.gender ? '' : 'error'}
                             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleChangeForm(e, 'gender')}>
                                 <option value="MASCULINO">Masculino</option>
                                 <option value="FEMININO">Feminino</option>
@@ -521,7 +588,7 @@ export default function AlterProfessional(props: {professionalInfo: Professional
                             <ErrorAuth errors={errors} type='sexo'/>
                         </div>
                         {
-                            interests 
+                            optionsClient?.interests 
                             &&
                             <div>
                                 <div>
@@ -530,7 +597,7 @@ export default function AlterProfessional(props: {professionalInfo: Professional
                                     formAtualizar={formAtualizar}
                                     formInputs={formInputs}
                                     setFormInputs={setFormInputs}
-                                    options={interests}
+                                    options={optionsClient?.interests}
                                     valueInterests={formInputs.interests}
                                     errors={errors}/>
                                 </div>
@@ -539,7 +606,7 @@ export default function AlterProfessional(props: {professionalInfo: Professional
                     </div>
                     <div>
                         {
-                            approaches 
+                            optionsClient?.approaches 
                             &&
                             <div>
                                 <div>
@@ -548,14 +615,14 @@ export default function AlterProfessional(props: {professionalInfo: Professional
                                     formAtualizar={formAtualizar}
                                     formInputs={formInputs}
                                     setFormInputs={setFormInputs}
-                                    options={approaches}
+                                    options={optionsClient.approaches}
                                     valueApproaches={formInputs.approaches}
                                     errors={errors}/>
                                 </div>
                             </div>
                         }
                         {
-                            specialties 
+                            optionsClient?.specialties 
                             &&
                             <div>
                                 <div>
@@ -564,14 +631,14 @@ export default function AlterProfessional(props: {professionalInfo: Professional
                                     formAtualizar={formAtualizar}
                                     formInputs={formInputs}
                                     setFormInputs={setFormInputs}
-                                    options={specialties}
+                                    options={optionsClient?.specialties}
                                     valueSpecialties={formInputs.specialties}
                                     errors={errors}/>
                                 </div>
                             </div>
                         }
                         {
-                            languages 
+                            optionsClient?.languages 
                             &&
                             <div>
                                 <div>
@@ -580,7 +647,7 @@ export default function AlterProfessional(props: {professionalInfo: Professional
                                     formAtualizar={formAtualizar}
                                     formInputs={formInputs}
                                     setFormInputs={setFormInputs}
-                                    options={languages}
+                                    options={optionsClient?.languages}
                                     valueLanguages={formInputs.languages}
                                     errors={errors}/>
                                 </div>
@@ -588,11 +655,11 @@ export default function AlterProfessional(props: {professionalInfo: Professional
                         }
                     </div>
                     <h3>
-                        Adicionar nova foto (menor que 5mb)
+                        Adicionar nova foto
                     </h3>
                     <div>
                         <div>
-                            <input type='file' name="file" id="file" accept="image/*"
+                            <input type='file' name="file" id="file" accept="image/*" className={professionalInfo.linkPhoto ? '' : 'error'}
                             onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeForm(e, 'file')}/>
                             <ErrorAuth errors={errors} type='file'/>
                         </div>

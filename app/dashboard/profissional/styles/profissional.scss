@@ -85,6 +85,12 @@
                 @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 0.5rem);
             }
         }
+
+        p.error{
+            color: red;
+            font-weight: bold;
+            @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 0.5rem);
+        }
     }
 }
 
@@ -115,6 +121,14 @@
                     width: 100%;
                     @include padding(1rem, 1rem, 1rem, 1rem);
                     @include border(0.2rem,  $gray-two-color, solid, 10rem);
+
+                    &::placeholder{
+                        color: $black-one-color;
+                    }
+
+                    &.error{
+                        border-color: red !important;
+                    }
                 }
             }
         }

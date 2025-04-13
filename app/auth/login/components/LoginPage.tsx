@@ -13,6 +13,9 @@ import useFetch from '@hooks/useFetch';
 import { useRouter, useSearchParams } from "next/navigation";
 import {responseFormLogin, bodyRequestFormLogin} from '@auth/login/interfaces';
 import {TypeProfile} from '@auth/register/interfaces';
+import Message from '@app/components/Message';
+import { MdError } from "react-icons/md";
+import {MessageType} from '@app/interfaces';
 
 export default function LoginPage() {
     const urlBack = process.env.NEXT_PUBLIC_BACK_URL;
@@ -20,6 +23,43 @@ export default function LoginPage() {
 
     const router = useRouter();
     const searchParams = useSearchParams();
+
+    // Mensagem - Início
+    const [viewMessageConfig, setViewMessageConfig] = useState<{
+        status: boolean
+        message: string,
+        type: MessageType
+    }>({
+        status: false,
+        message: '',
+        type: 'INFO'
+    });
+    const viewMessage = (message: string, type: MessageType) => {
+        setViewMessageConfig({message: message, type: type, status: true });
+    }
+
+    useEffect(() => {
+        let id: NodeJS.Timeout;
+    
+        if (viewMessageConfig.status) {
+            id = setTimeout(() => {
+                setViewMessageConfig(prev => ({ ...prev, status: false }));
+            }, 5000);
+        }
+    
+        return () => {
+            if (id) clearTimeout(id);
+        };
+    }, [viewMessageConfig]);
+    // Mensagem - Fim
+
+    const loginIsSuccess = searchParams.get("login-success") || '';
+
+    useEffect(() => {
+        if(loginIsSuccess === 'true' && !viewMessageConfig.status){
+            viewMessage('Parabéns, a sua conta foi cadastrada com sucesso. Agora, faça o login.', 'SUCCESS');
+        }
+    }, []);
 
     const [errors, setErrors] = useState<Errors[]>([]);
     const [formInputs, setFormInputs] = useState<LoginFormValues>({
@@ -130,51 +170,54 @@ export default function LoginPage() {
     };
 
     return (
-        <form onSubmit={handleSubmit} ref={formLogin} className='login-page-box login-page-form auth-form'>
-            <h2 className='title-secoundary title-auth'>
-                <img src="/logo.png" 
-                alt="Login - Terapia" />
-                Login
-            </h2>
-            <InputLogin 
-            inputType="email" 
-            name='email' 
-            placeholder='Email:'
-            value={formInputs.email}
-            errors={errors}
-            formInputs={formInputs}
-            setFormInputs={setFormInputs}
-            />
-            <InputLogin 
-            inputType={!viewPassword ? "password" : "text"}
-            name='password' 
-            placeholder='Senha:' 
-            value={formInputs.password}
-            errors={errors}
-            formInputs={formInputs}
-            setFormInputs={setFormInputs}
-            />
-            <label className='inputs-extras'>
-                <input onChange={handleViewPassowrd} type="checkbox"/>
-                <p>
-                    Mostrar senha
-                </p>
-            </label>
-            <span className='row'></span>
-            <InputLogin 
-            inputType="checkbox" 
-            name='remember-password' 
-            placeholder='' 
-            value={formInputs.rememberPassword}
-            errors={errors}
-            formInputs={formInputs}
-            setFormInputs={setFormInputs}
-            />
-            <ErrorAuth errors={errors} type="system"/>
-            <button ref={buttonLogin} type='submit'>Entrar</button>
-            <span ref={loader} className='loader'></span>
-            <Link href='/forgot-password'>Esqueceu a senha?</Link>
-            <Link href='/auth/register'>Não tem uma conta? Registre-se</Link>
-        </form>
+        <>
+            <form onSubmit={handleSubmit} ref={formLogin} className='login-page-box login-page-form auth-form'>
+                <h2 className='title-secoundary title-auth'>
+                    <img src="/logo.png" 
+                    alt="Login - Terapia" />
+                    Login
+                </h2>
+                <InputLogin 
+                inputType="email" 
+                name='email' 
+                placeholder='Email:'
+                value={formInputs.email}
+                errors={errors}
+                formInputs={formInputs}
+                setFormInputs={setFormInputs}
+                />
+                <InputLogin 
+                inputType={!viewPassword ? "password" : "text"}
+                name='password' 
+                placeholder='Senha:' 
+                value={formInputs.password}
+                errors={errors}
+                formInputs={formInputs}
+                setFormInputs={setFormInputs}
+                />
+                <label className='inputs-extras'>
+                    <input onChange={handleViewPassowrd} type="checkbox"/>
+                    <p>
+                        Mostrar senha
+                    </p>
+                </label>
+                <span className='row'></span>
+                <InputLogin 
+                inputType="checkbox" 
+                name='remember-password' 
+                placeholder='' 
+                value={formInputs.rememberPassword}
+                errors={errors}
+                formInputs={formInputs}
+                setFormInputs={setFormInputs}
+                />
+                <ErrorAuth errors={errors} type="system"/>
+                <button ref={buttonLogin} type='submit'>Entrar</button>
+                <span ref={loader} className='loader'></span>
+                <Link href='/forgot-password'>Esqueceu a senha?</Link>
+                <Link href='/auth/register'>Não tem uma conta? Registre-se</Link>
+            </form>
+            {viewMessageConfig.status && <Message message={viewMessageConfig.message} type={viewMessageConfig.type}/>}
+        </>
     )
 }

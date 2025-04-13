@@ -73,6 +73,7 @@ export default function DivLanguagesAtualizarProfissional(props: DivLanguagesAtu
         <>
             <div id='languages-box' onMouseLeave={handleInputLanguagesLeave}>
                 <input type="text"
+                className={formInputs.languages.length !== 0 ? '' : 'error'}
                 onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setLanguagesSearch(e.target.value);
                 }}
