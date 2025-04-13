@@ -14,7 +14,7 @@
     }
 
     .aba-filtros{
-        @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: center, $align-items: center, $gap: 3rem);
+        @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: center, $align-items: flex-start, $gap: 3rem);
 
         .filtro-nome, .filtro-abordagem, .filtro-especialidade, .filtro-interesse{
             @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 1rem);
@@ -124,6 +124,44 @@
             background: $blue-one-color;
             @include padding(1.5rem, 3rem, 1.5rem, 3rem);
             color: $white-one-color;
+        }
+    }
+
+    div.options-box{
+        width: 100%;
+
+        .options-search{
+            @include border(0.18rem, $black-one-color, solid, 10rem);
+            @include padding(1rem, 1.5rem, 1rem, 1.5rem);
+
+            &::placeholder{
+                color: $black-one-color;
+            }
+        }
+    }
+    
+    div.options-dropbox{
+        width: 100%;
+        @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 0rem);
+        @include border(0.2rem, $yellow-one-color, solid, 0rem);
+        @include border-radius(0rem, 0rem, 1rem, 1rem);
+    
+        max-height: 20rem;
+        overflow: auto;
+    
+        label{
+            width: 100%;
+            @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: center, $gap: 1rem);
+            @include padding(1.5rem, 1.5rem, 1.5rem, 1.5rem);
+    
+            input{
+                width: 1.6rem !important;
+                height: 1.6rem !important;
+            }
+    
+            p{
+                width: 90%;
+            }
         }
     }
 }

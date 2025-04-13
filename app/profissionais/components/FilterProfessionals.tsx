@@ -1,39 +1,65 @@
 "use client";
 
 import { FormEvent, useState, useRef, useMemo, useEffect } from 'react';
-import {FiltersProfessionals, GeneroFiltersProfessionals, DisponibilidadeFiltersProfessionals} from '../interfaces';
-import { IMaskInput } from 'react-imask';
+import {FiltersProfessionals, GeneroFiltersProfessionals, DisponibilidadeFiltersProfessionals, OptionsFiltersInterface} from '../interfaces';
+import DivMultipleSelectProfissional from './DivMultipleSelectProfissional';
+import {approachesInterface, specialtiesInterface, languagesInterface} from '@dashboard/profissional/interfaces';
+import {interestsInterface} from '@auth/register/interfaces';
+import extractProfessionalInterests from '@auth/register/functions/extractProfessionalInterests';
+import extractProfessionalApproaches from '@dashboard/profissional/functions/extractProfessionalApproaches';
+import extractProfessionalSpecialties from '@dashboard/profissional/functions/extractProfessionalSpecialties';
+import extractProfessionalLanguages from '@dashboard/profissional/functions/extractProfessionalLanguages';
 
 export default function FilterProfessionals(){
 
+    const [optionsFilters, setOptionsFilters] = useState<OptionsFiltersInterface>({
+        interesses: [],
+        abordagens: [],
+        especialidades: [],
+    });
+
+    useEffect(() => {
+        const extractOptionsFiltersFunction = async () => {
+            const interesses: interestsInterface[] = await extractProfessionalInterests();
+            const abordagens: approachesInterface[] = await extractProfessionalApproaches();
+            const especialidades: specialtiesInterface[] = await extractProfessionalSpecialties();
+            const languages: languagesInterface[] = await extractProfessionalLanguages();
+            setOptionsFilters({
+                ...optionsFilters,
+                interesses: interesses,
+                abordagens: abordagens,
+                especialidades: especialidades,
+            });
+        };
+        extractOptionsFiltersFunction();
+    }, []);
+
     const [formInputs, setFormInputs] = useState<FiltersProfessionals>({
         nome: '',
-        abordagem: 'todas',
+        abordagens: [],
         precoMinimo: '',
         precoMaximo: '',
-        especialidade: 'todas',
-        interesse: 'todos',
+        especialidades: [],
+        interesses: [],
         genero: 'T',
         disponibilidade: 'TO',
     });
 
-    const handleFormInputs = (name: string, value: string | GeneroFiltersProfessionals | DisponibilidadeFiltersProfessionals) => {
+    const formAtualizar = useRef<HTMLFormElement>(null);
+
+    const handleFormInputs = (name: string, e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
+        const input = e.target as HTMLInputElement;
+
         if(name === 'nome') {
-            setFormInputs({...formInputs, nome: value});
-        } else if(name === 'abordagem') {
-            setFormInputs({...formInputs, abordagem: value});
+            setFormInputs({...formInputs, nome: input.value});
         } else if(name === 'preco-minimo') {
-            setFormInputs({...formInputs, precoMinimo: value});
+            setFormInputs({...formInputs, precoMinimo: input.value});
         } else if(name === 'preco-maximo') {
-            setFormInputs({...formInputs, precoMaximo: value});
-        } else if(name === 'especialidade') {
-            setFormInputs({...formInputs, especialidade: value});
-        } else if(name === 'interesse') {
-            setFormInputs({...formInputs, interesse: value});
+            setFormInputs({...formInputs, precoMaximo: input.value});
         } else if(name === 'genero') {
-            setFormInputs({...formInputs, genero: value as GeneroFiltersProfessionals});
+            setFormInputs({...formInputs, genero: input.value as GeneroFiltersProfessionals});
         } else if(name === 'disponibilidade') {
-            setFormInputs({...formInputs, disponibilidade: value as DisponibilidadeFiltersProfessionals});
+            setFormInputs({...formInputs, disponibilidade: input.value as DisponibilidadeFiltersProfessionals});
         }
     }
 
@@ -60,33 +86,32 @@ export default function FilterProfessionals(){
 
 
     return (
-        <form onSubmit={handleSubmit} className='filtros'>
+        <form ref={formAtualizar} onSubmit={handleSubmit} className='filtros'>
             <div className='aba-filtros'>
                 <div className='filtro-nome'>
                     <label htmlFor="nome">Busca por nome:</label>
                     <div>
-                        <input onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('nome', e.target.value)} 
+                        <input onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('nome', e)} 
                         type="text" name='nome' id='nome' placeholder='Nome do profissional' value={formInputs.nome} />
                         <label htmlFor="nome">
                             <img src="/lupa.png" alt="" />
                         </label>
                     </div>
                 </div>
-                <div className='filtro-abordagem'>
-                    <p>Abordagem terapêutica:</p>
-                    <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleFormInputs('abordagem', e.target.value)} 
-                    value={formInputs.abordagem} name="abordagem" id="abordagem">
-                        <option value="TODAS">Todas as abordagens</option>
-                        <option value="TCC">Terapia Cognitivo-Comportamental (TCC)</option>
-                        <option value="PSICANALITICA">Psicoterapia Psicanalítica</option>
-                        <option value="HUMANISTA">Terapia Humanista</option>
-                        <option value="SISTEMICA">Terapia Sistêmica</option>
-                        <option value="COMPORTAMENTAL">Terapia Comportamental</option>
-                        <option value="ACT">Terapia de Aceitação e Compromisso (ACT)</option>
-                        <option value="DBT">Terapia Dialética Comportamental (DBT)</option>
-                        <option value="GESTALT">Terapia Gestalt</option>
-                    </select>
-                </div>
+                {
+                    optionsFilters.abordagens?.length !== 0 && 
+                    <div className='filtro-abordagem'>
+                        <p>Abordagem terapêutica:</p>
+                        <DivMultipleSelectProfissional
+                            formInputs={formInputs}
+                            formAtualizar={formAtualizar}
+                            setFormInputs={setFormInputs}
+                            options={optionsFilters.abordagens}
+                            formInputsName='abordagem'
+                            formOptions={formInputs.abordagens}
+                        />
+                    </div>
+                }
                 <div className='filtro-preco'>
                     <p>Faixa de preço:</p>
                     <div>
@@ -98,11 +123,11 @@ export default function FilterProfessionals(){
                 </div>
                 <div className='filtro-genero'>
                     <p>Gênero do profissional:</p>
-                        <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('genero', e.target.value)}
+                        <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('genero', e)}
                         type="radio" name='genero' id='todos-generos' value='T' />
-                        <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('genero', e.target.value)}
+                        <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('genero', e)}
                         type="radio" name='genero' id='genero-feminino' value='F' />
-                        <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('genero', e.target.value)}
+                        <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('genero', e)}
                         type="radio" name='genero' id='genero-masculino' value='M' />
                     <div>
                         {
@@ -128,56 +153,45 @@ export default function FilterProfessionals(){
                         }
                     </div>
                 </div>
-                <div className='filtro-especialidade'>
-                    <p>Especialidade:</p>
-                    <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleFormInputs('especialidade', e.target.value)} 
-                    value={formInputs.especialidade} name="especialidade" id="especialidade">
-                        <option value="TODAS">Todas as especialidades</option>
-                        <option value="PSICOLOGIA_CLINICA">Psicologia Clínica</option>
-                        <option value="PSICOLOGIA_ORGANIZACIONAL">Psicologia Organizacional</option>
-                        <option value="PSICOLOGIA_ESCOLAR">Psicologia Escolar</option>
-                        <option value="PSICOLOGIA_JURIDICA">Psicologia Jurídica</option>
-                        <option value="NEUROPSICOLOGIA">Neuropsicologia</option>
-                        <option value="PSICOTERAPIA">Psicoterapia</option>
-                        <option value="PSICOLOGIA_SOCIAL">Psicologia Social</option>
-                        <option value="PSICOLOGIA_DA_SAUDE">Psicologia da Saúde</option>
-                        <option value="PSICOLOGIA_INFANTIL">Psicologia Infantil</option>
-                        <option value="PSICOLOGIA_EDUCACIONAL">Psicologia Educacional</option>
-                    </select>
-                </div>
-                <div className='filtro-interesse'>
-                    <p>Interesse:</p>
-                    <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleFormInputs('interesse', e.target.value)} 
-                    value={formInputs.interesse} name="interesse" id="interesse">
-                        <option value="TODOS">Todos os interesses</option>
-                        <option value="TERAPIA">Terapia</option>
-                        <option value="PSICOLOGIA">Psicologia</option>
-                        <option value="TERAPIA_COGNITIVO_COMPORTAMENTAL">Terapia Cognitivo Comportamental</option>
-                        <option value="PSICOTERAPIA">Psicoterapia</option>
-                        <option value="TERAPIA_EMOCIONAL">Terapia Emocional</option>
-                        <option value="SAUDE_MENTAL">Saúde Mental</option>
-                        <option value="ANSIEDADE">Ansiedade</option>
-                        <option value="DEPRESSAO">Depressão</option>
-                        <option value="RELACIONAMENTOS">Relacionamentos</option>
-                        <option value="AUTOESTIMA">Autoestima</option>
-                        <option value="MINDFULNESS">Mindfulness</option>
-                        <option value="ESTRESSE">Estresse</option>
-                        <option value="TRAUMA">Trauma</option>
-                        <option value="ADOLESCENCIA">Adolescência</option>
-                        <option value="PSICANALISE">Psicanálise</option>
-                    </select>
-                </div>
+                {
+                    optionsFilters.especialidades?.length !== 0 && 
+                    <div className='filtro-especialidade'>
+                        <p>Especialidade:</p>
+                        <DivMultipleSelectProfissional
+                            formInputs={formInputs}
+                            formAtualizar={formAtualizar}
+                            setFormInputs={setFormInputs}
+                            options={optionsFilters.especialidades}
+                            formInputsName='especialidades'
+                            formOptions={formInputs.especialidades}
+                        />
+                    </div>
+                }
+                {
+                    optionsFilters.interesses?.length !== 0 && 
+                    <div className='filtro-interesse'>
+                        <p>Interesse:</p>
+                        <DivMultipleSelectProfissional
+                            formInputs={formInputs}
+                            formAtualizar={formAtualizar}
+                            setFormInputs={setFormInputs}
+                            options={optionsFilters.interesses}
+                            formInputsName='interesses'
+                            formOptions={formInputs.interesses}
+                        />
+                    </div>
+                }
                 <div className='filtro-disponilidade'>
                     <p>Disponibilidade:</p>
-                        <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('disponibilidade', e.target.value)}
+                        <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('disponibilidade', e)}
                         type="radio" name='disponibilidade' id='disponibilidade-todos' value='TO' />
-                        <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('disponibilidade', e.target.value)}
+                        <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('disponibilidade', e)}
                         type="radio" name='disponibilidade' id='disponibilidade-manha' value='MA' />
-                        <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('disponibilidade', e.target.value)}
+                        <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('disponibilidade', e)}
                         type="radio" name='disponibilidade' id='disponibilidade-tarde' value='TA' />
-                        <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('disponibilidade', e.target.value)}
+                        <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('disponibilidade', e)}
                         type="radio" name='disponibilidade' id='disponibilidade-noite' value='NO' />
-                        <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('disponibilidade', e.target.value)}
+                        <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('disponibilidade', e)}
                         type="radio" name='disponibilidade' id='disponibilidade-fim-de-semana' value='FDS' />
                     <div>
                         {
