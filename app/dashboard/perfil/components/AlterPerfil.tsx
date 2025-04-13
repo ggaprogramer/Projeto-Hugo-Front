@@ -179,16 +179,13 @@ export default function AlterPerfil(props: {profileInfo: ProfileInfo}){
         let errors: Errors[] = [];
         let lenErrors: number = 0;
         if(formInputs && 
-            !formInputs.name && 
-            !formInputs.username && 
-            !formInputs.email && 
-            !formInputs.gender && 
-            formInputs.interests.length === 0 &&
-            !formInputs.phone &&
-            !formInputs.file &&
-            !formInputs.password &&
-            !formInputs.password1 &&
-            !formInputs.password2
+            !formInputs.name || 
+            !formInputs.username ||
+            !formInputs.email ||
+            !formInputs.gender || 
+            formInputs.interests.length === 0 ||
+            !formInputs.phone ||
+            !formInputs.file
         ){
             errors.push({type: 'system', description: 'O formulário inteiro não pode ficar vazio.'});
             lenErrors+=1;
@@ -499,7 +496,7 @@ export default function AlterPerfil(props: {profileInfo: ProfileInfo}){
                         </div>
                     </div>
                     <h3>
-                        Mudar a senha
+                        Mudar a senha (opcional)
                     </h3>
                     <div>
                         <div>

@@ -65,7 +65,7 @@ export default function AlterProfessional(props: {professionalInfo: Professional
         const resolveFetch = async () => {
             const interests: interestsInterface[] = await extractProfessionalInterests();
             const approaches: approachesInterface[] = await extractProfessionalApproaches();
-            const specialties: languagesInterface[] = await extractProfessionalSpecialties();
+            const specialties: specialtiesInterface[] = await extractProfessionalSpecialties();
             const languages: languagesInterface[] = await extractProfessionalLanguages();
             setOptionsClient({
                 ...optionsClient, 
@@ -208,21 +208,18 @@ export default function AlterProfessional(props: {professionalInfo: Professional
         let errors: Errors[] = [];
         let lenErrors: number = 0;
         if(formInputs && 
-            !formInputs.name && 
-            !formInputs.username && 
-            !formInputs.email && 
-            !formInputs.gender && 
-            formInputs.interests.length === 0 &&
-            formInputs.approaches.length === 0 &&
-            formInputs.specialties.length === 0 &&
-            formInputs.languages.length === 0 &&
-            !formInputs.phone &&
-            !formInputs.file &&
-            !formInputs.password &&
-            !formInputs.password1 &&
-            !formInputs.password2
+            !formInputs.name || 
+            !formInputs.username || 
+            !formInputs.email || 
+            !formInputs.gender || 
+            formInputs.interests.length === 0 ||
+            formInputs.approaches.length === 0 ||
+            formInputs.specialties.length === 0 ||
+            formInputs.languages.length === 0 ||
+            !formInputs.phone ||
+            !formInputs.file
         ){
-            errors.push({type: 'system', description: 'O formulário inteiro não pode ficar vazio.'});
+            errors.push({type: 'system', description: 'Os campos obrigatórios não podem ficar vazios.'});
             lenErrors+=1;
         }
 
@@ -665,7 +662,7 @@ export default function AlterProfessional(props: {professionalInfo: Professional
                         </div>
                     </div>
                     <h3>
-                        Mudar a senha
+                        Mudar a senha (opcional)
                     </h3>
                     <div>
                         <div>
