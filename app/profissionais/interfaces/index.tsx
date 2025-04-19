@@ -9,6 +9,7 @@ export interface FiltersProfessionals {
     precoMaximo: string;
     especialidades: DivMultipleSelectInterface[];
     interesses: DivMultipleSelectInterface[];
+    idiomas: DivMultipleSelectLanguageInterface[];
     genero: GeneroFiltersProfessionals;
     disponibilidade: DisponibilidadeFiltersProfessionals;
 }
@@ -18,19 +19,26 @@ export interface DivMultipleSelectInterface {
     label: string;
 }
 
+export interface DivMultipleSelectLanguageInterface {
+    value: string;
+    label: string;
+    level: string;
+}
+
 export interface DivMultipleSelectPropsInterface {
     formInputs: FiltersProfessionals;
     formAtualizar: React.RefObject<HTMLFormElement>;
     setFormInputs: Function;
-    options: DivMultipleSelectInterface[];
+    options: DivMultipleSelectInterface[] | DivMultipleSelectLanguageInterface[];
     formInputsName: string;
-    formOptions: DivMultipleSelectInterface[];
+    formOptions: DivMultipleSelectInterface[] | DivMultipleSelectLanguageInterface[];
 }
 
 export interface OptionsFiltersInterface {
     abordagens: DivMultipleSelectInterface[];
     especialidades: DivMultipleSelectInterface[];
     interesses: DivMultipleSelectInterface[];
+    idiomas: DivMultipleSelectLanguageInterface[];
 }
 
 export type GeneroFiltersProfessionals = 'T' | 'F' | 'M';

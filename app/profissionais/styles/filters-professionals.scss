@@ -16,7 +16,7 @@
     .aba-filtros{
         @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: center, $align-items: flex-start, $gap: 3rem);
 
-        .filtro-nome, .filtro-abordagem, .filtro-especialidade, .filtro-interesse{
+        .filtro-nome, .filtro-abordagem, .filtro-especialidade, .filtro-interesse, .filtro-idiomas{
             @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 1rem);
 
             @media(max-width: 640px){
@@ -28,7 +28,9 @@
                 @include padding(1rem, 4rem, 1rem, 1rem);
                 width: 100%;
             }
+        }
 
+        .filtro-nome{
             div{
                 position: relative;
 
@@ -54,7 +56,7 @@
             }
 
             div{
-                @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 1rem);
+                @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: center, $align-items: center, $gap: 1rem);
             }
         }
 
@@ -129,6 +131,12 @@
 
     div.options-box{
         width: 100%;
+        position: relative;
+        width: 30rem;
+
+        @media (max-width: 400px){
+            width: 100%;
+        }
 
         .options-search{
             @include border(0.18rem, $black-one-color, solid, 10rem);
@@ -137,13 +145,24 @@
             &::placeholder{
                 color: $black-one-color;
             }
+
+            &.make-borders-radius{
+                @include border-radius(1rem, 1rem, 0rem, 0rem);
+            }
         }
     }
     
     div.options-dropbox{
+        position: absolute;
+        top: 4rem;
+        right: 0rem;
+        left: 0rem;
+        background: $white-one-color;
+        z-index: 10000;
+        
         width: 100%;
         @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 0rem);
-        @include border(0.2rem, $yellow-one-color, solid, 0rem);
+        @include border(0.2rem, $black-one-color, solid, 0rem);
         @include border-radius(0rem, 0rem, 1rem, 1rem);
     
         max-height: 20rem;
@@ -165,3 +184,8 @@
         }
     }
 }
+
+.loader, .loader-filters{
+    @include loader($side: 5rem, $thickness: 0.5rem, $color: $blue-one-color, $top-color: white);
+    display: inline-block;
+} 
