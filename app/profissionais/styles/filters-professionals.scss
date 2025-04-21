@@ -189,3 +189,13 @@
     @include loader($side: 5rem, $thickness: 0.5rem, $color: $blue-one-color, $top-color: white);
     display: inline-block;
 } 
+
+.loader {
+    display: none;
+}
+
+.error{
+    width: 100%;
+    text-align: right;
+    color: red;
+}

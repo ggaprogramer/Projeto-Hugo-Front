@@ -1,7 +1,8 @@
 "use client";
 
 import { FormEvent, useState, useRef, useMemo, useEffect } from 'react';
-import {FiltersProfessionals, GeneroFiltersProfessionals, DisponibilidadeFiltersProfessionals, OptionsFiltersInterface} from '../interfaces';
+import {FiltersProfessionals, GeneroFiltersProfessionals, DisponibilidadeFiltersProfessionals, OptionsFiltersInterface, 
+    BodyProfessionalFilter} from '../interfaces';
 import DivMultipleSelectProfissional from './DivMultipleSelectProfissional';
 import {approachesInterface, specialtiesInterface, languagesInterface} from '@dashboard/profissional/interfaces';
 import {interestsInterface} from '@auth/register/interfaces';
@@ -9,6 +10,9 @@ import extractProfessionalInterests from '@auth/register/functions/extractProfes
 import extractProfessionalApproaches from '@dashboard/profissional/functions/extractProfessionalApproaches';
 import extractProfessionalSpecialties from '@dashboard/profissional/functions/extractProfessionalSpecialties';
 import extractProfessionalLanguages from '@dashboard/profissional/functions/extractProfessionalLanguages';
+import {ProfessionalInfo} from '@dashboard/profissional/interfaces';
+import {Errors} from '@auth/interfaces';
+import ErrorAuth from '@auth/components/ErrorAuth'
 
 export default function FilterProfessionals(){
 
@@ -18,6 +22,23 @@ export default function FilterProfessionals(){
         especialidades: [],
         idiomas: [],
     });
+
+    const [professionals, setProfessionals] = useState<ProfessionalInfo[]>([]);
+    console.log(professionals);
+
+    const [errors, setErrors] = useState<Errors[]>([]);
+
+    const buttonSubmit = useRef<HTMLButtonElement>(null);
+    const loader = useRef<HTMLSpanElement>(null);
+
+    const viewLoader = () => {
+        buttonSubmit?.current?.setAttribute('style', 'display: none');
+        loader?.current?.setAttribute('style', 'display: inline-block');
+    }
+    const disableLoader = () => {
+        buttonSubmit?.current?.setAttribute('style', 'display: inline-block');
+        loader?.current?.setAttribute('style', 'display: none');
+    }
 
     useEffect(() => {
         const extractOptionsFiltersFunction = async () => {
@@ -44,8 +65,8 @@ export default function FilterProfessionals(){
         especialidades: [],
         interesses: [],
         idiomas: [],
-        genero: 'T',
-        disponibilidade: 'TO',
+        genero: 'TODOS',
+        disponibilidades: ['TODOS'],
     });
 
     const formAtualizar = useRef<HTMLFormElement>(null);
@@ -62,7 +83,22 @@ export default function FilterProfessionals(){
         } else if(name === 'genero') {
             setFormInputs({...formInputs, genero: input.value as GeneroFiltersProfessionals});
         } else if(name === 'disponibilidade') {
-            setFormInputs({...formInputs, disponibilidade: input.value as DisponibilidadeFiltersProfessionals});
+            let disponibilidades: string[] = [];
+            if(input.checked){
+                if(input.value === 'TODOS'){
+                    disponibilidades = ['TODOS'];
+                } else {
+                    disponibilidades = formInputs.disponibilidades.filter(disponibilidade => disponibilidade !== 'TODOS');
+                    disponibilidades.push(input.value); 
+                }  
+            } else {
+                if(formInputs.disponibilidades.length === 1) {
+                    disponibilidades = ['TODOS'];
+                } else {
+                    disponibilidades = formInputs.disponibilidades.filter(disponibilidade => disponibilidade !== input.value);
+                }
+            }
+            setFormInputs({...formInputs, disponibilidades: disponibilidades as DisponibilidadeFiltersProfessionals[]});
         }
     }
 
@@ -83,8 +119,56 @@ export default function FilterProfessionals(){
         }
     }
 
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        const urlBack = process.env.NEXT_PUBLIC_BACK_URL;
+
+        const body: BodyProfessionalFilter = {
+            pagina: 0,
+            tamanho: 10,
+            ordenarPor: "name",
+            direcao: "ASC",
+            nome: formInputs.nome,
+            abordagens: formInputs.abordagens.map(abordagens => abordagens.value),
+            precoMinimo: formInputs.precoMinimo ? parseFloat(formInputs.precoMinimo) : 0.0,
+            precoMaximo: formInputs.precoMaximo ? parseFloat(formInputs.precoMaximo) : 0.0,
+            especialidades: formInputs.especialidades.map(especialidades => especialidades.value),
+            interesses: formInputs.interesses.map(interests => interests.value),
+            idiomas: formInputs.idiomas.map(idiomas => idiomas.value),
+            genero: formInputs.genero,
+            disponibilidades: formInputs.disponibilidades,
+        }
+
+        let errors: Errors[] = [];
+        try{
+            viewLoader();
+            const response = await fetch(`${urlBack}/professional/filter`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + '',
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify(body)
+            });
+            console.log(response.ok);
+            if(!response.ok){
+                disableLoader();
+                errors.push({type: 'system', description: 'Houve um erro na comunicação com o servidor.'});
+                setErrors(errors);
+            }
+            else{
+                disableLoader();
+                const json = await response.json();
+                const data: ProfessionalInfo[] = json.content; 
+                setProfessionals(data);
+            } 
+        } catch{
+            disableLoader();
+            errors.push({type: 'system', description: 'Houve um erro na comunicação com o servidor.'});
+            setErrors(errors);
+        }
+
     }
 
     return (
@@ -133,32 +217,41 @@ export default function FilterProfessionals(){
                         <div className='filtro-genero'>
                             <p>Gênero do profissional:</p>
                                 <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('genero', e)}
-                                type="radio" name='genero' id='todos-generos' value='T' />
+                                type="radio" name='genero' id='todos-generos' value='TODOS' />
                                 <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('genero', e)}
-                                type="radio" name='genero' id='genero-feminino' value='F' />
+                                type="radio" name='genero' id='genero-feminino' value='FEMININO' />
                                 <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('genero', e)}
-                                type="radio" name='genero' id='genero-masculino' value='M' />
+                                type="radio" name='genero' id='genero-masculino' value='MASCULINO' />
+                                <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('genero', e)}
+                                type="radio" name='genero' id='genero-outros' value='OUTROS' />
                             <div>
                                 {
-                                    formInputs.genero === 'T' 
+                                    formInputs.genero === 'TODOS' 
                                     ? 
                                     <label className='selected' htmlFor="todos-generos">Todos</label>
                                     :
                                     <label htmlFor="todos-generos">Todos</label>
                                 }
                                 {
-                                    formInputs.genero === 'F' 
+                                    formInputs.genero === 'MASCULINO' 
+                                    ? 
+                                    <label className='selected' htmlFor="genero-masculino">Masculino</label>
+                                    :
+                                    <label htmlFor="genero-masculino">Masculino</label>
+                                }
+                                {
+                                    formInputs.genero === 'FEMININO' 
                                     ? 
                                     <label className='selected' htmlFor="genero-feminino">Feminino</label>
                                     :
                                     <label htmlFor="genero-feminino">Feminino</label>
                                 }
                                 {
-                                    formInputs.genero === 'M' 
+                                    formInputs.genero === 'OUTROS' 
                                     ? 
-                                    <label className='selected' htmlFor="genero-masculino">Masculino</label>
+                                    <label className='selected' htmlFor="genero-outros">Outros</label>
                                     :
-                                    <label htmlFor="genero-masculino">Masculino</label>
+                                    <label htmlFor="genero-outros">Outros</label>
                                 }
                             </div>
                         </div>
@@ -207,46 +300,46 @@ export default function FilterProfessionals(){
                         <div className='filtro-disponilidade'>
                             <p>Disponibilidade:</p>
                                 <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('disponibilidade', e)}
-                                type="radio" name='disponibilidade' id='disponibilidade-todos' value='TO' />
+                                type="checkbox" name='disponibilidade' id='disponibilidade-todos' value='TODOS' />
                                 <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('disponibilidade', e)}
-                                type="radio" name='disponibilidade' id='disponibilidade-manha' value='MA' />
+                                type="checkbox" name='disponibilidade' id='disponibilidade-manha' value='MANHA' />
                                 <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('disponibilidade', e)}
-                                type="radio" name='disponibilidade' id='disponibilidade-tarde' value='TA' />
+                                type="checkbox" name='disponibilidade' id='disponibilidade-tarde' value='TARDE' />
                                 <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('disponibilidade', e)}
-                                type="radio" name='disponibilidade' id='disponibilidade-noite' value='NO' />
+                                type="checkbox" name='disponibilidade' id='disponibilidade-noite' value='NOITE' />
                                 <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('disponibilidade', e)}
-                                type="radio" name='disponibilidade' id='disponibilidade-fim-de-semana' value='FDS' />
+                                type="checkbox" name='disponibilidade' id='disponibilidade-fim-de-semana' value='FDS' />
                             <div>
                                 {
-                                    formInputs.disponibilidade === 'TO' 
+                                    formInputs.disponibilidades.indexOf('TODOS') !== -1 
                                     ? 
                                     <label className='selected' htmlFor="disponibilidade-todos">Todos</label>
                                     :
                                     <label htmlFor="disponibilidade-todos">Todos</label>
                                 }
                                 {
-                                    formInputs.disponibilidade === 'MA' 
+                                    formInputs.disponibilidades.indexOf('MANHA') !== -1 
                                     ? 
                                     <label className='selected' htmlFor="disponibilidade-manha">Manhã</label>
                                     :
                                     <label htmlFor="disponibilidade-manha">Manhã</label>
                                 }
                                 {
-                                    formInputs.disponibilidade === 'TA' 
+                                    formInputs.disponibilidades.indexOf('TARDE') !== -1 
                                     ? 
                                     <label className='selected' htmlFor="disponibilidade-tarde">Tarde</label>
                                     :
                                     <label htmlFor="disponibilidade-tarde">Tarde</label>
                                 }
                                 {
-                                    formInputs.disponibilidade === 'NO' 
+                                    formInputs.disponibilidades.indexOf('NOITE') !== -1 
                                     ? 
                                     <label className='selected' htmlFor="disponibilidade-noite">Noite</label>
                                     :
                                     <label htmlFor="disponibilidade-noite">Noite</label>
                                 }
                                 {
-                                    formInputs.disponibilidade === 'FDS' 
+                                    formInputs.disponibilidades.indexOf('FDS') !== -1 
                                     ? 
                                     <label className='selected' htmlFor="disponibilidade-fim-de-semana">Fim de semana</label>
                                     :
@@ -257,8 +350,10 @@ export default function FilterProfessionals(){
                     </div>
                     <div className='filtros-buttons'>
                         <button>Limpar filtros</button>
-                        <button type='submit'>Filtrar resultados</button>
+                        <button ref={buttonSubmit} type='submit'>Filtrar resultados</button>
+                        <span className='loader'></span>
                     </div>
+                    <ErrorAuth errors={errors} type='system'/>
                 </form>
                 :
                 <span className='loader-filters'></span>

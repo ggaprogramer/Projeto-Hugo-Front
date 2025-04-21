@@ -1,3 +1,5 @@
+import {ProfessionalInfo} from '@dashboard/profissional/interfaces';
+
 export interface ProfessionalsPagePropsInterface {
     userIsAuthenticated: string | undefined;
 }
@@ -11,7 +13,7 @@ export interface FiltersProfessionals {
     interesses: DivMultipleSelectInterface[];
     idiomas: DivMultipleSelectLanguageInterface[];
     genero: GeneroFiltersProfessionals;
-    disponibilidade: DisponibilidadeFiltersProfessionals;
+    disponibilidades: DisponibilidadeFiltersProfessionals[];
 }
 
 export interface DivMultipleSelectInterface {
@@ -41,5 +43,21 @@ export interface OptionsFiltersInterface {
     idiomas: DivMultipleSelectLanguageInterface[];
 }
 
-export type GeneroFiltersProfessionals = 'T' | 'F' | 'M';
-export type DisponibilidadeFiltersProfessionals = 'MA' | 'TA' | 'NO' | 'FDS' | 'TO';
+export type GeneroFiltersProfessionals = 'TODOS' | 'FEMININO' | 'MASCULINO' | 'OUTROS';
+export type DisponibilidadeFiltersProfessionals = 'MANHA' | 'TARDE' | 'NOITE' | 'FDS' | 'TODOS';
+
+export interface BodyProfessionalFilter {
+    pagina: number,
+    tamanho: number,
+    ordenarPor: string,
+    direcao: string,
+    nome: string,
+    abordagens: string[];
+    especialidades: string[];
+    interesses: string[];
+    idiomas: string[];
+    precoMinimo: number;
+    precoMaximo: number;
+    genero: GeneroFiltersProfessionals,
+    disponibilidades: DisponibilidadeFiltersProfessionals[],
+}
