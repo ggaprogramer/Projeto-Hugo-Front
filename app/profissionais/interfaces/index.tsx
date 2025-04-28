@@ -61,3 +61,11 @@ export interface BodyProfessionalFilter {
     genero: GeneroFiltersProfessionals,
     disponibilidades: DisponibilidadeFiltersProfessionals[],
 }
+
+export interface ControlProfessionals{
+    professionals: ProfessionalInfo[];
+    pageSelected: number;
+    totalPages: number;
+    totalElements: number;
+    pageSize: number;
+}

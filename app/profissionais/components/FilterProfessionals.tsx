@@ -2,7 +2,7 @@
 
 import { FormEvent, useState, useRef, useMemo, useEffect } from 'react';
 import {FiltersProfessionals, GeneroFiltersProfessionals, DisponibilidadeFiltersProfessionals, OptionsFiltersInterface, 
-    BodyProfessionalFilter} from '../interfaces';
+    BodyProfessionalFilter, ControlProfessionals} from '../interfaces';
 import DivMultipleSelectProfissional from './DivMultipleSelectProfissional';
 import {approachesInterface, specialtiesInterface, languagesInterface} from '@dashboard/profissional/interfaces';
 import {interestsInterface} from '@auth/register/interfaces';
@@ -14,7 +14,8 @@ import {ProfessionalInfo} from '@dashboard/profissional/interfaces';
 import {Errors} from '@auth/interfaces';
 import ErrorAuth from '@auth/components/ErrorAuth'
 
-export default function FilterProfessionals(){
+export default function FilterProfessionals(props: {control: ControlProfessionals, setControl: Function}){
+    const urlBack = process.env.NEXT_PUBLIC_BACK_URL;
 
     const [optionsFilters, setOptionsFilters] = useState<OptionsFiltersInterface>({
         interesses: [],
@@ -22,9 +23,6 @@ export default function FilterProfessionals(){
         especialidades: [],
         idiomas: [],
     });
-
-    const [professionals, setProfessionals] = useState<ProfessionalInfo[]>([]);
-    console.log(professionals);
 
     const [errors, setErrors] = useState<Errors[]>([]);
 
@@ -56,6 +54,13 @@ export default function FilterProfessionals(){
         };
         extractOptionsFiltersFunction();
     }, []);
+
+    useEffect(() => {
+        const reloadFilter = async () => {
+            await makeFilter();
+        };
+        reloadFilter();
+    }, [props.control.pageSelected, props.control.pageSize]);
 
     const [formInputs, setFormInputs] = useState<FiltersProfessionals>({
         nome: '',
@@ -121,14 +126,16 @@ export default function FilterProfessionals(){
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const urlBack = process.env.NEXT_PUBLIC_BACK_URL;
+        await makeFilter();
+    }
 
+    const makeFilter = async () => {
         const body: BodyProfessionalFilter = {
-            pagina: 0,
-            tamanho: 10,
+            pagina: props.control.pageSelected,
+            tamanho: props.control.pageSize,
             ordenarPor: "name",
             direcao: "ASC",
-            nome: formInputs.nome,
+            nome: formInputs.nome ? formInputs.nome : "",
             abordagens: formInputs.abordagens.map(abordagens => abordagens.value),
             precoMinimo: formInputs.precoMinimo ? parseFloat(formInputs.precoMinimo) : 0.0,
             precoMaximo: formInputs.precoMaximo ? parseFloat(formInputs.precoMaximo) : 0.0,
@@ -151,7 +158,6 @@ export default function FilterProfessionals(){
                 credentials: 'include',
                 body: JSON.stringify(body)
             });
-            console.log(response.ok);
             if(!response.ok){
                 disableLoader();
                 errors.push({type: 'system', description: 'Houve um erro na comunicação com o servidor.'});
@@ -160,15 +166,21 @@ export default function FilterProfessionals(){
             else{
                 disableLoader();
                 const json = await response.json();
+                console.log(json);
                 const data: ProfessionalInfo[] = json.content; 
-                setProfessionals(data);
+                props.setControl({...props.control, 
+                    professionals: data, 
+                    totalElements: json.totalElements, 
+                    pageSelected: json.pageable.pageNumber, 
+                    pageSize: json.size,
+                    totalPages: json.totalPages});
+                setErrors([]);
             } 
         } catch{
             disableLoader();
             errors.push({type: 'system', description: 'Houve um erro na comunicação com o servidor.'});
             setErrors(errors);
         }
-
     }
 
     return (

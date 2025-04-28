@@ -154,13 +154,14 @@
         .navegacao{
             @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: center, $align-items: center, $gap: 0rem);
 
-            a{
+            button{
                 @include padding(1rem, 2rem, 1rem, 2rem);
                 background: transparent;
                 @include border(0.2rem, $blue-one-color, solid, 0rem);
                 color: $blue-one-color;
                 @include font-weight(500);
                 transition: .3s;
+                cursor: pointer;
 
                 &:hover{
                     transform: scale(1.05);
@@ -172,13 +173,52 @@
                 }
             }
 
-            &>a:nth-of-type(1){
+            &>button:nth-of-type(1){
                 @include border-radius(10rem, 0rem, 10rem, 0rem);
             }
 
-            &>a:last-child{
+            &>button:last-child{
                 @include border-radius(0rem, 10rem, 0rem, 10rem);
             }
+        }
+
+        .filtros-adicionais{
+            width: 100%;
+            @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: space-between, $align-items: center, $gap: 3rem);
+
+            .filtro-pagina{
+                position: relative;
+
+                p{
+                    @include padding(1rem, 1rem, 1rem, 1rem);
+                    @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 0.5rem);
+                    background: $white-one-color;
+                    cursor: pointer;
+                }
+
+                .filtro-pagina-dropbox{
+                    @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 0rem);
+                    position: absolute;
+                    top: 5rem;
+                    @include border(0.2rem, $blue-one-color, solid, 0rem);
+                    width: 13.9rem;
+
+                    p{
+                        width: 100%;
+
+                        &:not(:last-child){
+                            border-bottom: 0.2rem solid $blue-one-color;
+                        }
+
+                        &.selected{
+                            background: $blue-one-color;
+                            color: $white-one-color;
+                        }
+
+                    }
+                }
+            }
+    
         }
     }
 }

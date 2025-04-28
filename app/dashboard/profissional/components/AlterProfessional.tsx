@@ -216,8 +216,7 @@ export default function AlterProfessional(props: {professionalInfo: Professional
             formInputs.approaches.length === 0 ||
             formInputs.specialties.length === 0 ||
             formInputs.languages.length === 0 ||
-            !formInputs.phone ||
-            !formInputs.file
+            !formInputs.phone
         ){
             errors.push({type: 'system', description: 'Os campos obrigatórios não podem ficar vazios.'});
             lenErrors+=1;
