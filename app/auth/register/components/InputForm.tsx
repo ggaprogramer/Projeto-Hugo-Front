@@ -25,6 +25,9 @@ export default function InputForm(props: InputFormRegister){
         else if(name == 'phone'){
             setFormInputs({...formInputs, phone: e.target.value});
         }
+        else if(name == 'crp'){
+            setFormInputs({...formInputs, crp: e.target.value});
+        }
         else if(name == 'password1'){
             setFormInputs({...formInputs, password1: e.target.value});
         }
@@ -47,6 +50,19 @@ export default function InputForm(props: InputFormRegister){
                     value={formInputs.phone}
                 />
                 <ErrorAuth errors={errors} type='phone'/>
+            </>
+        )
+    } else if(props.name === 'crp'){
+        return (
+            <>
+                <IMaskInput
+                    name={props.name}
+                    mask="00/00000"
+                    placeholder={props.placeholder}
+                    onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleInputFormRegister(e, 'crp')}
+                    value={formInputs.crp}
+                />
+                <ErrorAuth errors={errors} type='crp'/>
             </>
         )
     } 

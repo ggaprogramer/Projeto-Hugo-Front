@@ -85,12 +85,24 @@
                 @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 0.5rem);
             }
         }
+    }
+}
 
-        p.error{
-            color: red;
-            font-weight: bold;
-            @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 0.5rem);
-        }
+p.error{
+    color: red;
+    font-weight: bold;
+    @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 0.5rem);
+}
+
+.descricao{
+    @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
+    background: $white-one-color;
+    @include padding(2rem, 2rem, 2rem, 2rem);
+    width: 100%;
+    @include border-radius(2rem, 2rem, 2rem, 2rem);
+
+    h3{
+        @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 0.5rem);
     }
 }
 
@@ -117,7 +129,7 @@
                 @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 0.5rem);
                 width: 100%;
 
-                input, select{
+                input, select, textarea{
                     width: 100%;
                     @include padding(1rem, 1rem, 1rem, 1rem);
                     @include border(0.2rem,  $gray-two-color, solid, 10rem);
@@ -129,6 +141,10 @@
                     &.error{
                         border-color: red !important;
                     }
+                }
+
+                textarea{
+                    @include border(0.2rem,  $gray-two-color, solid, 2rem);
                 }
             }
         }

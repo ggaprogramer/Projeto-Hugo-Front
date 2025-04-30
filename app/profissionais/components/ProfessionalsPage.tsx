@@ -52,7 +52,7 @@ export default function ProfessionalsPage(props: ProfessionalsPagePropsInterface
                         </h2>
                         <div className='filtro-pagina'>
                             <p onClick={() => handleFiltroPaginaDropBox()}>
-                                Por página: {control.pageSize} 
+                                Quantidade por página: {control.pageSize} 
                                 {
                                     !viewFiltroPaginaDropBox
                                     ?
@@ -111,7 +111,7 @@ export default function ProfessionalsPage(props: ProfessionalsPagePropsInterface
                                             {professional.name}
                                         </h3>
                                         <p>
-                                            Psicóloga Clínica - CRP: 06/54321
+                                            Psicóloga Clínica - CRP: {professional.crp}
                                         </p>
                                         <div className='avaliacao'>
                                             <div>
@@ -126,8 +126,7 @@ export default function ProfessionalsPage(props: ProfessionalsPagePropsInterface
                                             </p>
                                         </div>
                                         <p className='descricao'>
-                                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit temporibus non quaerat asperiores, 
-                                            corporis dicta ab voluptas nemo eum quae optio quis id voluptatum quas. Fuga animi dolorem molestiae quas.
+                                            {professional.description}
                                         </p>
                                         <div className='categorias'>
                                             {professional.interests.map(interest => {

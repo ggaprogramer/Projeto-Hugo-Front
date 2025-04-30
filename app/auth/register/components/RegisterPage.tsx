@@ -55,6 +55,7 @@ export default function RegisterPage() {
         interests: [],
         gender: '',
         phone: '',
+        crp: '',
         dateBirth: '',
         password1: '',
         password2: '',
@@ -86,6 +87,7 @@ export default function RegisterPage() {
                 email: formInputs.email,
                 roles: roles,
                 phone: formInputs.phone,
+                crp: formInputs.typeProfile === 'PROFESSIONAL' ? formInputs.crp : '',
                 dateBirth: formInputs.dateBirth,
                 interests: formInputs.interests,
                 gender: formInputs.gender,
@@ -167,6 +169,10 @@ export default function RegisterPage() {
             }
             if(formInputs && !formInputs.phone){
                 errors.push({type: 'phone', description: 'Nenhum número de celular foi enviado.'});
+                lenErrors+=1;
+            }
+            if(formInputs && formInputs.typeProfile === 'PROFESSIONAL' && !formInputs.crp){
+                errors.push({type: 'crp', description: 'Nenhum crp foi enviado.'});
                 lenErrors+=1;
             }
             if(formInputs && !formInputs.dateBirth){
@@ -285,6 +291,20 @@ export default function RegisterPage() {
                     formInputs={formInputs}
                     setFormInputs={setFormInputs}
                     />    
+
+                    {
+                        formInputs.typeProfile === 'PROFESSIONAL'
+                        &&
+                        <InputForm
+                        inputType='text' 
+                        name='crp'  
+                        placeholder='CRP:'  
+                        value={formInputs.crp} 
+                        errors={errors} 
+                        formInputs={formInputs}
+                        setFormInputs={setFormInputs}
+                        />   
+                    }
 
                     <SelectForm
                     name='gender'  

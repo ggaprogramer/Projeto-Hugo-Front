@@ -52,6 +52,11 @@
 
                     .descricao{
                         font-size: 1.6rem;
+                        display: -webkit-box;
+                        -webkit-box-orient: vertical;
+                        -webkit-line-clamp: 4;
+                        overflow: hidden;
+                        line-clamp: 4;
                     }
 
                     h3{
@@ -201,7 +206,7 @@
                     position: absolute;
                     top: 5rem;
                     @include border(0.2rem, $blue-one-color, solid, 0rem);
-                    width: 13.9rem;
+                    width: 23.9rem;
 
                     p{
                         width: 100%;

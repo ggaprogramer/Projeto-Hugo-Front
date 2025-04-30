@@ -99,6 +99,7 @@ export default function AlterProfessional(props: {professionalInfo: Professional
         languages: [],
         gender: '',
         phone: '',
+        description: '',
         file: null,
         password: '',
         password1: '',
@@ -107,7 +108,7 @@ export default function AlterProfessional(props: {professionalInfo: Professional
     });
     const [errors, setErrors] = useState<Errors[]>([]);
 
-    const updateprofessionalInfo = () => {
+    const updateProfessionalInfo = () => {
         const extractPhoto = async () => {
             let data: ResponseGetUrlPhoto = await getUrlPhoto(professionalInfo.uuid);
 
@@ -122,7 +123,8 @@ export default function AlterProfessional(props: {professionalInfo: Professional
                 specialties: formInputs.specialties ? formInputs.specialties : [],
                 languages: formInputs.languages ? formInputs.languages : [],
                 gender: formInputs.gender,
-                phone: formInputs.phone
+                phone: formInputs.phone,
+                description: formInputs.description
             })
         }
         extractPhoto();
@@ -139,6 +141,7 @@ export default function AlterProfessional(props: {professionalInfo: Professional
             email: professionalInfo.email,
             gender: professionalInfo.gender,
             phone: professionalInfo.phone,
+            description: professionalInfo.description,
         });
     }, [professionalInfo]);
 
@@ -153,6 +156,7 @@ export default function AlterProfessional(props: {professionalInfo: Professional
             email: professionalInfo.email,
             gender: professionalInfo.gender,
             phone: professionalInfo.phone,
+            description: professionalInfo.description,
             password: '',
             password1: '',
             password2: '',
@@ -169,7 +173,9 @@ export default function AlterProfessional(props: {professionalInfo: Professional
         setViewPassword((viewPassword) => viewPassword ? false : true);
     }
 
-    const handleChangeForm = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>, name: string) => {
+    const handleChangeForm = (e: React.ChangeEvent<HTMLInputElement> 
+        | React.ChangeEvent<HTMLSelectElement>
+        | React.ChangeEvent<HTMLTextAreaElement>, name: string) => {
         if(name == 'name'){
             setFormInputs({...formInputs, name: e.target.value});
         }
@@ -184,6 +190,9 @@ export default function AlterProfessional(props: {professionalInfo: Professional
         }
         else if(name == 'phone'){
             setFormInputs({...formInputs, phone: e.target.value});
+        }
+        else if(name == 'description'){
+            setFormInputs({...formInputs, description: e.target.value});
         }
         else if(name == 'file'){
             const input = e.target as HTMLInputElement;
@@ -212,6 +221,7 @@ export default function AlterProfessional(props: {professionalInfo: Professional
             !formInputs.username || 
             !formInputs.email || 
             !formInputs.gender || 
+            !formInputs.description || 
             formInputs.interests.length === 0 ||
             formInputs.approaches.length === 0 ||
             formInputs.specialties.length === 0 ||
@@ -224,6 +234,11 @@ export default function AlterProfessional(props: {professionalInfo: Professional
 
         if(formInputs && formInputs.username && formInputs.username.length < 5){
             errors.push({type: 'username', description: 'O nome do usuário deve ter no mínimo 5 caracteres.'});
+            lenErrors+=1;
+        }
+
+        if(formInputs && formInputs.description && formInputs.description.length > 5000){
+            errors.push({type: 'description', description: 'A descrição não pode ser maior do que 5000 caracteres.'});
             lenErrors+=1;
         }
 
@@ -314,6 +329,7 @@ export default function AlterProfessional(props: {professionalInfo: Professional
                 base64File: base64File,
                 mimeType: mimeType,
                 phone: formInputs.phone,
+                description: formInputs.description,
                 interests: formInputs.interests.map(interests => interests.value),
                 approaches: formInputs.approaches.map(approaches => approaches.value),
                 specialties: formInputs.specialties.map(specialties => specialties.value),
@@ -333,7 +349,7 @@ export default function AlterProfessional(props: {professionalInfo: Professional
             }
             else if(data && data.status === 'SUCCESS'){
                 disableLoader();
-                updateprofessionalInfo();
+                updateProfessionalInfo();
                 viewMessage('O seu perfil de profissional foi atualizado com sucesso', 'SUCCESS');
             } else{
                 disableLoader();
@@ -367,6 +383,7 @@ export default function AlterProfessional(props: {professionalInfo: Professional
                     !(professionalInfo.specialties?.length !== 0) &&
                     !(professionalInfo.languages?.length !== 0) &&
                     !professionalInfo.linkPhoto &&
+                    !professionalInfo.description &&
                     <span className="message error">
                         <MdError/> Para ter o seu perfil de profissional ativo, você deve completar o seu cadastro preenchendo todos os campos obrigatórios.
                     </span>
@@ -391,6 +408,17 @@ export default function AlterProfessional(props: {professionalInfo: Professional
                         <h2>
                             {professionalInfo.name?.split(' ')[0]}
                         </h2>
+                        {
+                            !professionalInfo.crp
+                            ?
+                            <p className="error">
+                                <MdError/> Adicione um CRP. Fale com o suporte.
+                            </p>
+                            :
+                            <h3>
+                                CRP: {professionalInfo.crp}
+                            </h3>
+                        }
                     </div>
                     <div className="profissional-info">
                         <div>
@@ -534,6 +562,25 @@ export default function AlterProfessional(props: {professionalInfo: Professional
                     </div>
                 </div>
             </div>
+
+            <div className="descricao">
+                <h3>
+                    <MdError/>
+                    Descrição:
+                </h3>
+                {
+                    !professionalInfo.description
+                    ?
+                    <p className="error">
+                        <MdError/> Adicione uma descrição.
+                    </p>
+                    :
+                    <p>
+                        {professionalInfo.description}
+                    </p>
+                }
+            </div>
+
             {stateUpgrade === 1 &&
             <form ref={formAtualizar} className="alterar-profissional" onSubmit={handleSubmit}>
                 <h2>
@@ -649,6 +696,17 @@ export default function AlterProfessional(props: {professionalInfo: Professional
                                 </div>
                             </div>
                         }
+                    </div>
+                    <h3>
+                        Adicionar descrição ({formInputs?.description?.length ? formInputs.description.length : 0}/5000)
+                    </h3>
+                    <div>
+                        <div>
+                            <textarea className={formInputs.description ? '' : 'error'} value={formInputs.description}
+                            onInput={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleChangeForm(e, 'description')}
+                            name="description" id="description" cols={5} rows={6} maxLength={5000} minLength={1}></textarea>
+                            <ErrorAuth errors={errors} type='description'/>
+                        </div>
                     </div>
                     <h3>
                         Adicionar nova foto
