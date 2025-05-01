@@ -22,6 +22,8 @@ export default function DashboardProfissional(props: {authToken: string | undefi
         languages: [],
         gender: '',
         phone: '',
+        crp: '',
+        description: '',
         dateBirth: '',
         linkPhoto: undefined,
         confirmacaoEmail: false,

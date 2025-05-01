@@ -166,7 +166,6 @@ export default function FilterProfessionals(props: {control: ControlProfessional
             else{
                 disableLoader();
                 const json = await response.json();
-                console.log(json);
                 const data: ProfessionalInfo[] = json.content; 
                 props.setControl({...props.control, 
                     professionals: data, 
