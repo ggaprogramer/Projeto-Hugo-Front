@@ -15,20 +15,68 @@ export default function DivSpecialtiesAtualizarProfissional(props: DivSpecialtie
 
     const [specialtiesSearch, setSpecialtiesSearch] = useState('');
     const [specialtiesDropbox, setSpecialtiesDropbox] = useState(0);
+    const specialtiesDropboxRef = useRef(0);
+    const handleSpecialtiesDropbox = (count: number) => {
+        specialtiesDropboxRef.current = count;
+        setSpecialtiesDropbox(count);
+    }
+
     const inputSpecialtiesSearch = useRef<HTMLInputElement>(null);
 
-    const handleInputSpecialtiesEnter = () => {
-        if(specialtiesDropbox === 0){
-            setSpecialtiesDropbox(1);
-        }
-    }
+    useEffect(() => {
+        const handleClick = (e: MouseEvent) => {
+            const elSpecialtiesBox = document.querySelector(`#specialties-box`);
+            const elSpecialtiesBoxInput = document.querySelector(`#specialties-box>input`);
+            const elSpecialtiesDropbox = document.querySelector(`#specialties-box > div`);
+            const elSpecialtiesDropboxLabels = document.querySelectorAll(`#specialties-box > div > label`);
+            const elSpecialtiesDropboxLabelsInputs = document.querySelectorAll(`#specialties-box > div > label > input`);
+            const elSpecialtiesDropboxLabelsP = document.querySelectorAll(`#specialties-box > div > label > p`);
+            
+            const el = e.target;
 
-    const handleInputSpecialtiesLeave = () => {
-        if(specialtiesDropbox === 1){
-            setSpecialtiesDropbox(0);
-            inputSpecialtiesSearch.current?.blur();
-        }
-    }
+            let validador = false;
+            for(let i = 0; i < elSpecialtiesDropboxLabels.length; i++){
+                if(elSpecialtiesDropboxLabels[i] === el){
+                    validador = true;
+                    break;
+                }
+            }
+
+            if(!validador){
+                for(let i = 0; i < elSpecialtiesDropboxLabelsInputs.length; i++){
+                    if(elSpecialtiesDropboxLabelsInputs[i] === el){
+                        validador = true;
+                        break;
+                    }
+                }
+            }
+
+            if(!validador){
+                for(let i = 0; i < elSpecialtiesDropboxLabelsP.length; i++){
+                    if(elSpecialtiesDropboxLabelsP[i] === el){
+                        validador = true;
+                        break;
+                    }
+                }
+            }
+
+            if(!validador && (el === elSpecialtiesBox || el === elSpecialtiesBoxInput || el === elSpecialtiesDropbox)){
+                validador = true;
+            }
+
+            if(validador && specialtiesDropboxRef.current == 0){
+                handleSpecialtiesDropbox(1);
+            } else if(!validador && specialtiesDropboxRef.current == 1){
+                handleSpecialtiesDropbox(0);
+            }
+        };
+    
+        window?.addEventListener('click', handleClick);
+    
+        return () => {
+            window?.removeEventListener('click', handleClick);
+        };
+    }, []); 
 
     const filterSpecialties = (values: string[]) => {
         const array: specialtiesInterface[] = [];
@@ -71,13 +119,12 @@ export default function DivSpecialtiesAtualizarProfissional(props: DivSpecialtie
 
     return (
         <>
-            <div id='specialties-box' onMouseLeave={handleInputSpecialtiesLeave}>
+            <div id='specialties-box'>
                 <input type="text"
                 className={formInputs.specialties.length !== 0 ? '' : 'error'}
                 onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setSpecialtiesSearch(e.target.value);
                 }}
-                onFocus={handleInputSpecialtiesEnter}
                 name="specialties-search" ref={inputSpecialtiesSearch} id="specialties-search" 
                 placeholder={
                     formInputs.specialties && formInputs.specialties.length === 1

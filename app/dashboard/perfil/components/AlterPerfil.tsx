@@ -184,8 +184,7 @@ export default function AlterPerfil(props: {profileInfo: ProfileInfo}){
             !formInputs.email ||
             !formInputs.gender || 
             formInputs.interests.length === 0 ||
-            !formInputs.phone ||
-            !formInputs.file
+            !formInputs.phone
         ){
             errors.push({type: 'system', description: 'O formulário inteiro não pode ficar vazio.'});
             lenErrors+=1;

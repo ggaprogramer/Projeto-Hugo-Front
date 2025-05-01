@@ -16,20 +16,68 @@ export default function DivApproachesAtualizarProfissional(props: DivApproachesA
 
     const [approachesSearch, setApproachesSearch] = useState('');
     const [approachesDropbox, setApproachesDropbox] = useState(0);
+    const approachesDropboxRef = useRef(0);
+    const handleApproachesDropbox = (count: number) => {
+        approachesDropboxRef.current = count;
+        setApproachesDropbox(count);
+    }
+
     const inputApproachesSearch = useRef<HTMLInputElement>(null);
 
-    const handleInputApproachesEnter = () => {
-        if(approachesDropbox === 0){
-            setApproachesDropbox(1);
-        }
-    }
+    useEffect(() => {
+        const handleClick = (e: MouseEvent) => {
+            const elApproachesBox = document.querySelector(`#approaches-box`);
+            const elApproachesBoxInput = document.querySelector(`#approaches-box>input`);
+            const elApproachesDropbox = document.querySelector(`#approaches-box  > div`);
+            const elApproachesDropboxLabels = document.querySelectorAll(`#approaches-box > div > label`);
+            const elApproachesDropboxLabelsInputs = document.querySelectorAll(`#approaches-box > div > label > input`);
+            const elApproachesDropboxLabelsP = document.querySelectorAll(`#approaches-box > div > label > p`);
+            
+            const el = e.target;
 
-    const handleInputApproachesLeave = () => {
-        if(approachesDropbox === 1){
-            setApproachesDropbox(0);
-            inputApproachesSearch.current?.blur();
-        }
-    }
+            let validador = false;
+            for(let i = 0; i < elApproachesDropboxLabels.length; i++){
+                if(elApproachesDropboxLabels[i] === el){
+                    validador = true;
+                    break;
+                }
+            }
+
+            if(!validador){
+                for(let i = 0; i < elApproachesDropboxLabelsInputs.length; i++){
+                    if(elApproachesDropboxLabelsInputs[i] === el){
+                        validador = true;
+                        break;
+                    }
+                }
+            }
+
+            if(!validador){
+                for(let i = 0; i < elApproachesDropboxLabelsP.length; i++){
+                    if(elApproachesDropboxLabelsP[i] === el){
+                        validador = true;
+                        break;
+                    }
+                }
+            }
+
+            if(!validador && (el === elApproachesBox || el === elApproachesBoxInput || el === elApproachesDropbox)){
+                validador = true;
+            }
+
+            if(validador && approachesDropboxRef.current == 0){
+                handleApproachesDropbox(1);
+            } else if(!validador && approachesDropboxRef.current == 1){
+                handleApproachesDropbox(0);
+            }
+        };
+    
+        window?.addEventListener('click', handleClick);
+    
+        return () => {
+            window?.removeEventListener('click', handleClick);
+        };
+    }, []); 
 
     const filterApproaches = (values: string[]) => {
         const array: approachesInterface[] = [];
@@ -72,13 +120,12 @@ export default function DivApproachesAtualizarProfissional(props: DivApproachesA
 
     return (
         <>
-            <div id='approaches-box' onMouseLeave={handleInputApproachesLeave}>
+            <div id='approaches-box'>
                 <input type="text"
                 className={formInputs.approaches.length !== 0 ? '' : 'error'}
                 onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setApproachesSearch(e.target.value);
                 }}
-                onFocus={handleInputApproachesEnter}
                 name="approaches-search" ref={inputApproachesSearch} id="approaches-search" 
                 placeholder={
                     formInputs.approaches && formInputs.approaches.length === 1

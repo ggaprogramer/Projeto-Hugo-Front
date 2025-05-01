@@ -1,236 +1,161 @@
-import {ProfessionalsPagePropsInterface} from '../interfaces';
+"use client";
+
+import {ProfessionalsPagePropsInterface, ControlProfessionals} from '../interfaces';
 import FilterProfessionals from './FilterProfessionals';
 import '../styles/professionals.scss';
 import '../styles/filters-professionals.scss';
 import Link from 'next/link';
+import { FormEvent, useState, useRef, useMemo, useEffect } from 'react';
+import Pagination from './Pagination';
+import { GoChevronDown } from "react-icons/go";
+import { GoChevronUp } from "react-icons/go";
 
 export default function ProfessionalsPage(props: ProfessionalsPagePropsInterface){
     const userIsAuthenticated = props.userIsAuthenticated;
+
+    const [control, setControl] = useState<ControlProfessionals>({
+        professionals: [],
+        pageSelected: 0,
+        totalPages: 0,
+        totalElements: 0,
+        pageSize: 5
+    });
+    const [viewFiltroPaginaDropBox, setViewFiltroPaginaDropBox] = useState<boolean>(false);
+    const handleFiltroPaginaDropBox = () => {
+        if(viewFiltroPaginaDropBox) {
+            setViewFiltroPaginaDropBox(false);
+        } else {
+            setViewFiltroPaginaDropBox(true);
+        }
+    }
 
     return (
         <>
             <div className='container-professionals'>
                 <div>
                     <h1>
-                        Encontro o seu psicólogo/terapeuta
+                        Encontre o seu psicólogo/terapeuta
                     </h1>
 
-                    <FilterProfessionals/>
+                    <FilterProfessionals control={control} setControl={setControl}/>
 
-                    <h2>
-                        Mostrando 15 profissionais:
-                    </h2>
+                    <div className='filtros-adicionais'>
+                        <h2>
+                            {
+                                control.totalElements === 1
+                                ?
+                                ` Foi encontrado 1 profissional`
+                                :
+                                ` Foram encontrados ${control.totalElements} profissionais`
+                            }
+                            :
+                        </h2>
+                        <div className='filtro-pagina'>
+                            <p onClick={() => handleFiltroPaginaDropBox()}>
+                                Quantidade por página: {control.pageSize} 
+                                {
+                                    !viewFiltroPaginaDropBox
+                                    ?
+                                    <GoChevronDown/>
+                                    :
+                                    <GoChevronUp/>
+                                }
+                            </p>
+                            {
+                                viewFiltroPaginaDropBox
+                                &&
+                                <div className='filtro-pagina-dropbox'>
+                                    <p onClick={() => setControl({...control, pageSize: 5, pageSelected: 0})} 
+                                    className={`${control.pageSize === 5 ? 'selected' : ''}`}>
+                                        5
+                                    </p>
+                                    <p onClick={() => setControl({...control, pageSize: 10, pageSelected: 0})} 
+                                    className={`${control.pageSize === 10 ? 'selected' : ''}`}>
+                                        10
+                                    </p>
+                                    <p onClick={() => setControl({...control, pageSize: 15, pageSelected: 0})} 
+                                    className={`${control.pageSize === 15 ? 'selected' : ''}`}>
+                                        15
+                                    </p>
+                                    <p onClick={() => setControl({...control, pageSize: 20, pageSelected: 0})} 
+                                    className={`${control.pageSize === 20 ? 'selected' : ''}`}>
+                                        20
+                                    </p>
+                                    <p onClick={() => setControl({...control, pageSize: 25, pageSelected: 0})} 
+                                    className={`${control.pageSize === 25 ? 'selected' : ''}`}>
+                                        25
+                                    </p>
+                                </div>
+                            }
+                        </div>
+                    </div>
                     <div className='professionals'>
-                        <div className='professional'>
-                            <div className='photo'>
-                                <img src="/user.png" alt="" />
-                            </div>
-                            <div className='bio-breve'>
-                                <h3>
-                                    Dra. Sofia Mendes
-                                </h3>
-                                <p>
-                                    Psicóloga Clínica - CRP: 06/54321
-                                </p>
-                                <div className='avaliacao'>
-                                    <div>
-                                        <img src="/estrela-preenchida.png" alt="" />
-                                        <img src="/estrela-preenchida.png" alt="" />
-                                        <img src="/estrela-preenchida.png" alt="" />
-                                        <img src="/estrela-preenchida.png" alt="" />
-                                        <img src="/estrela-cinza.png" alt="" />
+                        {control.professionals.map(professional => {
+                            return (
+                                <div className='professional' key={professional.uuid}>
+                                    <div className='photo'>
+                                        {
+                                            professional.linkPhoto
+                                            ?
+                                            <img src={professional.linkPhoto} alt="" />
+                                            :
+                                            <img src="/user.png" alt="" />
+                                        }
                                     </div>
-                                    <p>
-                                        (128 avaliações)
-                                    </p>
-                                </div>
-                                <p className='descricao'>
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit temporibus non quaerat asperiores, 
-                                    corporis dicta ab voluptas nemo eum quae optio quis id voluptatum quas. Fuga animi dolorem molestiae quas.
-                                </p>
-                                <div className='categorias'>
-                                    <span>Ansiedade</span>
-                                    <span>Depressão</span>
-                                    <span>Autoestima</span>
-                                    <span>Estresse</span>
-                                    <span>Psicanálise</span>
-                                </div>
-                            </div>
-                            <div className='info'>
-                                <p><strong>R$ 180,00</strong> / sessão</p>
-                                <p>
-                                    <strong>Duração:</strong> 50 minutos
-                                </p>
-                                <p>
-                                    <img src="/check-2.png" alt="" />
-                                    Próxima disponibilidade: Hoje
-                                </p>
-                                <div>
-                                    <Link href=''>Agendar consulta</Link>
-                                    <Link href=''>Ver perfil completo</Link>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='professional'>
-                            <div className='photo'>
-                                <img src="/user.png" alt="" />
-                            </div>
-                            <div className='bio-breve'>
-                                <h3>
-                                    Dra. Sofia Mendes
-                                </h3>
-                                <p>
-                                    Psicóloga Clínica - CRP: 06/54321
-                                </p>
-                                <div className='avaliacao'>
-                                    <div>
-                                        <img src="/estrela-preenchida.png" alt="" />
-                                        <img src="/estrela-preenchida.png" alt="" />
-                                        <img src="/estrela-preenchida.png" alt="" />
-                                        <img src="/estrela-preenchida.png" alt="" />
-                                        <img src="/estrela-cinza.png" alt="" />
+                                    <div className='bio-breve'>
+                                        <h3>
+                                            {professional.name}
+                                        </h3>
+                                        <p>
+                                            CRP: {professional.crp}
+                                        </p>
+                                        <div className='avaliacao'>
+                                            <div>
+                                                <img src="/estrela-preenchida.png" alt="" />
+                                                <img src="/estrela-preenchida.png" alt="" />
+                                                <img src="/estrela-preenchida.png" alt="" />
+                                                <img src="/estrela-preenchida.png" alt="" />
+                                                <img src="/estrela-cinza.png" alt="" />
+                                            </div>
+                                            <p>
+                                                (128 avaliações)
+                                            </p>
+                                        </div>
+                                        <p className='descricao'>
+                                            {professional.description}
+                                        </p>
+                                        <div className='categorias'>
+                                            {professional.interests.map(interest => {
+                                                return (
+                                                    <span key={interest.label}>{interest.label}</span>
+                                                )
+                                            })}
+                                        </div>
                                     </div>
-                                    <p>
-                                        (128 avaliações)
-                                    </p>
-                                </div>
-                                <p className='descricao'>
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit temporibus non quaerat asperiores, 
-                                    corporis dicta ab voluptas nemo eum quae optio quis id voluptatum quas. Fuga animi dolorem molestiae quas.
-                                </p>
-                                <div className='categorias'>
-                                    <span>Ansiedade</span>
-                                    <span>Depressão</span>
-                                    <span>Autoestima</span>
-                                    <span>Estresse</span>
-                                    <span>Psicanálise</span>
-                                </div>
-                            </div>
-                            <div className='info'>
-                                <p><strong>R$ 180,00</strong> / sessão</p>
-                                <p>
-                                    <strong>Duração:</strong> 50 minutos
-                                </p>
-                                <p>
-                                    <img src="/check-2.png" alt="" />
-                                    Próxima disponibilidade: Hoje
-                                </p>
-                                <div>
-                                    <Link href=''>Agendar consulta</Link>
-                                    <Link href=''>Ver perfil completo</Link>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='professional'>
-                            <div className='photo'>
-                                <img src="/user.png" alt="" />
-                            </div>
-                            <div className='bio-breve'>
-                                <h3>
-                                    Dra. Sofia Mendes
-                                </h3>
-                                <p>
-                                    Psicóloga Clínica - CRP: 06/54321
-                                </p>
-                                <div className='avaliacao'>
-                                    <div>
-                                        <img src="/estrela-preenchida.png" alt="" />
-                                        <img src="/estrela-preenchida.png" alt="" />
-                                        <img src="/estrela-preenchida.png" alt="" />
-                                        <img src="/estrela-preenchida.png" alt="" />
-                                        <img src="/estrela-cinza.png" alt="" />
+                                    <div className='info'>
+                                        <p><strong>R$ 180,00</strong> / sessão</p>
+                                        <p>
+                                            <strong>Duração:</strong> 50 minutos
+                                        </p>
+                                        <p>
+                                            <img src="/check-2.png" alt="" />
+                                            Próxima disponibilidade: Hoje
+                                        </p>
+                                        <div>
+                                            <Link href=''>Agendar consulta</Link>
+                                            <Link href={`/profissionais/${professional.uuid}`}>Ver perfil completo</Link>
+                                        </div>
                                     </div>
-                                    <p>
-                                        (128 avaliações)
-                                    </p>
                                 </div>
-                                <p className='descricao'>
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit temporibus non quaerat asperiores, 
-                                    corporis dicta ab voluptas nemo eum quae optio quis id voluptatum quas. Fuga animi dolorem molestiae quas.
-                                </p>
-                                <div className='categorias'>
-                                    <span>Ansiedade</span>
-                                    <span>Depressão</span>
-                                    <span>Autoestima</span>
-                                    <span>Estresse</span>
-                                    <span>Psicanálise</span>
-                                </div>
-                            </div>
-                            <div className='info'>
-                                <p><strong>R$ 180,00</strong> / sessão</p>
-                                <p>
-                                    <strong>Duração:</strong> 50 minutos
-                                </p>
-                                <p>
-                                    <img src="/check-2.png" alt="" />
-                                    Próxima disponibilidade: Hoje
-                                </p>
-                                <div>
-                                    <Link href=''>Agendar consulta</Link>
-                                    <Link href=''>Ver perfil completo</Link>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='professional'>
-                            <div className='photo'>
-                                <img src="/user.png" alt="" />
-                            </div>
-                            <div className='bio-breve'>
-                                <h3>
-                                    Dra. Sofia Mendes
-                                </h3>
-                                <p>
-                                    Psicóloga Clínica - CRP: 06/54321
-                                </p>
-                                <div className='avaliacao'>
-                                    <div>
-                                        <img src="/estrela-preenchida.png" alt="" />
-                                        <img src="/estrela-preenchida.png" alt="" />
-                                        <img src="/estrela-preenchida.png" alt="" />
-                                        <img src="/estrela-preenchida.png" alt="" />
-                                        <img src="/estrela-cinza.png" alt="" />
-                                    </div>
-                                    <p>
-                                        (128 avaliações)
-                                    </p>
-                                </div>
-                                <p className='descricao'>
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit temporibus non quaerat asperiores, 
-                                    corporis dicta ab voluptas nemo eum quae optio quis id voluptatum quas. Fuga animi dolorem molestiae quas.
-                                </p>
-                                <div className='categorias'>
-                                    <span>Ansiedade</span>
-                                    <span>Depressão</span>
-                                    <span>Autoestima</span>
-                                    <span>Estresse</span>
-                                    <span>Psicanálise</span>
-                                </div>
-                            </div>
-                            <div className='info'>
-                                <p><strong>R$ 180,00</strong> / sessão</p>
-                                <p>
-                                    <strong>Duração:</strong> 50 minutos
-                                </p>
-                                <p>
-                                    <img src="/check-2.png" alt="" />
-                                    Próxima disponibilidade: Hoje
-                                </p>
-                                <div>
-                                    <Link href=''>Agendar consulta</Link>
-                                    <Link href=''>Ver perfil completo</Link>
-                                </div>
-                            </div>
-                        </div>
+                            )
+                        })}
                     </div>
-                    <div className='navegacao'>
-                        <Link href=''>⭠</Link>
-                        <Link href='' className='selected'>1</Link>
-                        <Link href=''>2</Link>
-                        <Link href=''>3</Link>
-                        <Link href=''>4</Link>
-                        <Link href=''>5</Link>
-                        <Link href=''>⭢</Link>
-                    </div>
+                    
+                    {   
+                        control.totalElements > control.pageSize
+                        &&
+                        <Pagination control={control} setControl={setControl}/>
+                    }
                 </div>
             </div>
         </>

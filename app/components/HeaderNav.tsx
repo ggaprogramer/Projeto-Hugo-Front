@@ -15,7 +15,7 @@ export default function HeaderNav(props: HeaderNavPropsInterface){
                 const el = e.target as HTMLElement;
                 const hrefAttribute = el?.getAttribute('href');
                 if(hrefAttribute) {
-                    const divElement = window.document.querySelector(hrefAttribute) as HTMLElement;
+                    const divElement = window?.document?.querySelector(hrefAttribute) as HTMLElement;
                     const to = divElement?.offsetTop;
 
                     window.scroll({

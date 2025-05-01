@@ -9,6 +9,8 @@ import {useRef, useState, useEffect} from 'react';
 
 export default function ProfessionalPage(props: ProfessionalPagePropsInterface){
     const userIsAuthenticated = props.userIsAuthenticated;
+    const professional = props.professional;
+    console.log(professional);
 
     const [navegacao, setNavegacao] = useState(0);
 
@@ -23,7 +25,7 @@ export default function ProfessionalPage(props: ProfessionalPagePropsInterface){
                         <div className='info-one-intern'>
                             <div className='info-first'>
                                 <h2>
-                                    Dra. Sofia Mendes
+                                    Dra. {professional.name}
                                 </h2>
                                 <p>
                                     Psicóloga Clínica

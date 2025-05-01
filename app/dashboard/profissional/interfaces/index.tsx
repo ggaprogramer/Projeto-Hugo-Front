@@ -48,6 +48,7 @@ export interface FormAtualizarValues {
     languages: languagesInterface[];
     gender: string;
     phone: string;
+    description: string;
     file: File | null;
     password: string;
     password1: string;
@@ -65,6 +66,7 @@ export interface BodyRequestAtualizarForm{
     password2: string;
     email: string;
     phone: string;
+    description: string;
     base64File: string | null;
     mimeType: string | null;
     interests: string[];
@@ -92,6 +94,8 @@ export interface ProfessionalInfo {
     languages: languagesInterface[];
     gender: string;
     phone: string;
+    crp: string;
+    description: string;
     dateBirth: string;
     linkPhoto: string | undefined;
     confirmacaoEmail: boolean;

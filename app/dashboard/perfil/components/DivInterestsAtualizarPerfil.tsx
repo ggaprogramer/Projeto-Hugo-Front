@@ -15,20 +15,68 @@ export default function DivInterestsAtualizarPerfil(props: DivInterestsAtualizar
 
     const [interestsSearch, setInterestsSearch] = useState('');
     const [interestsDropbox, setInterestsDropbox] = useState(0);
+    const interestsDropboxRef = useRef(0);
+    const handleInterestsDropbox = (count: number) => {
+        interestsDropboxRef.current = count;
+        setInterestsDropbox(count);
+    }
+
     const inputInterestsSearch = useRef<HTMLInputElement>(null);
 
-    const handleInputInterestsEnter = () => {
-        if(interestsDropbox === 0){
-            setInterestsDropbox(1);
-        }
-    }
+    useEffect(() => {
+        const handleClick = (e: MouseEvent) => {
+            const elInterestsBox = document.querySelector(`#interests-box`);
+            const elInterestsBoxInput = document.querySelector(`#interests-box>input`);
+            const elInterestsDropbox = document.querySelector(`#interests-box  > div`);
+            const elInterestsDropboxLabels = document.querySelectorAll(`#interests-box > div > label`);
+            const elInterestsDropboxLabelsInputs = document.querySelectorAll(`#interests-box > div > label > input`);
+            const elInterestsDropboxLabelsP = document.querySelectorAll(`#interests-box > div > label > p`);
+            
+            const el = e.target;
 
-    const handleInputInterestsLeave = () => {
-        if(interestsDropbox === 1){
-            setInterestsDropbox(0);
-            inputInterestsSearch.current?.blur();
-        }
-    }
+            let validador = false;
+            for(let i = 0; i < elInterestsDropboxLabels.length; i++){
+                if(elInterestsDropboxLabels[i] === el){
+                    validador = true;
+                    break;
+                }
+            }
+
+            if(!validador){
+                for(let i = 0; i < elInterestsDropboxLabelsInputs.length; i++){
+                    if(elInterestsDropboxLabelsInputs[i] === el){
+                        validador = true;
+                        break;
+                    }
+                }
+            }
+
+            if(!validador){
+                for(let i = 0; i < elInterestsDropboxLabelsP.length; i++){
+                    if(elInterestsDropboxLabelsP[i] === el){
+                        validador = true;
+                        break;
+                    }
+                }
+            }
+
+            if(!validador && (el === elInterestsBox || el === elInterestsBoxInput || el === elInterestsDropbox)){
+                validador = true;
+            }
+
+            if(validador && interestsDropboxRef.current == 0){
+                handleInterestsDropbox(1);
+            } else if(!validador && interestsDropboxRef.current == 1){
+                handleInterestsDropbox(0);
+            }
+        };
+    
+        window?.addEventListener('click', handleClick);
+    
+        return () => {
+            window?.removeEventListener('click', handleClick);
+        };
+    }, []); 
 
     const filterInterests = (values: string[]) => {
         const array: interestsInterface[] = [];
@@ -71,12 +119,11 @@ export default function DivInterestsAtualizarPerfil(props: DivInterestsAtualizar
 
     return (
         <>
-            <div id='interests-box' onMouseLeave={handleInputInterestsLeave}>
+            <div id='interests-box'>
                 <input type="text"
                 onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setInterestsSearch(e.target.value);
                 }}
-                onFocus={handleInputInterestsEnter}
                 name="interests-search" ref={inputInterestsSearch} id="interests-search" 
                 placeholder={
                     formInputs.interests && formInputs.interests.length === 1

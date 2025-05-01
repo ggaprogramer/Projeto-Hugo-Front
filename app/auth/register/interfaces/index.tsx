@@ -40,6 +40,7 @@ export interface RegisterFormValues {
     interests: string[];
     gender: string;
     phone: string;
+    crp: string;
     dateBirth: string;
     password1: string;
     password2: string;
@@ -63,6 +64,7 @@ export interface bodyRequestRegisterForm{
     email: string;
     roles: Roles[];
     phone: string;
+    crp: string;
     dateBirth: string;
     interests: string[];
     gender: string;

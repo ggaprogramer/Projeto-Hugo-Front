@@ -15,20 +15,68 @@ export default function DivLanguagesAtualizarProfissional(props: DivLanguagesAtu
 
     const [languagesSearch, setLanguagesSearch] = useState('');
     const [languagesDropbox, setLanguagesDropbox] = useState(0);
+    const languagesDropboxRef = useRef(0);
+    const handleLanguagesDropbox = (count: number) => {
+        languagesDropboxRef.current = count;
+        setLanguagesDropbox(count);
+    }
+
     const inputLanguagesSearch = useRef<HTMLInputElement>(null);
 
-    const handleInputLanguagesEnter = () => {
-        if(languagesDropbox === 0){
-            setLanguagesDropbox(1);
-        }
-    }
+    useEffect(() => {
+        const handleClick = (e: MouseEvent) => {
+            const elLanguagesBox = document.querySelector(`#languages-box`);
+            const elLanguagesBoxInput = document.querySelector(`#languages-box>input`);
+            const elLanguagesDropbox = document.querySelector(`#languages-box > div`);
+            const elLanguagesDropboxLabels = document.querySelectorAll(`#languages-box > div > label`);
+            const elLanguagesDropboxLabelsInputs = document.querySelectorAll(`#languages-box > div > label > input`);
+            const elLanguagesDropboxLabelsP = document.querySelectorAll(`#languages-box > div > label > p`);
+            
+            const el = e.target;
 
-    const handleInputLanguagesLeave = () => {
-        if(languagesDropbox === 1){
-            setLanguagesDropbox(0);
-            inputLanguagesSearch.current?.blur();
-        }
-    }
+            let validador = false;
+            for(let i = 0; i < elLanguagesDropboxLabels.length; i++){
+                if(elLanguagesDropboxLabels[i] === el){
+                    validador = true;
+                    break;
+                }
+            }
+
+            if(!validador){
+                for(let i = 0; i < elLanguagesDropboxLabelsInputs.length; i++){
+                    if(elLanguagesDropboxLabelsInputs[i] === el){
+                        validador = true;
+                        break;
+                    }
+                }
+            }
+
+            if(!validador){
+                for(let i = 0; i < elLanguagesDropboxLabelsP.length; i++){
+                    if(elLanguagesDropboxLabelsP[i] === el){
+                        validador = true;
+                        break;
+                    }
+                }
+            }
+
+            if(!validador && (el === elLanguagesBox || el === elLanguagesBoxInput || el === elLanguagesDropbox)){
+                validador = true;
+            }
+
+            if(validador && languagesDropboxRef.current == 0){
+                handleLanguagesDropbox(1);
+            } else if(!validador && languagesDropboxRef.current == 1){
+                handleLanguagesDropbox(0);
+            }
+        };
+    
+        window?.addEventListener('click', handleClick);
+    
+        return () => {
+            window?.removeEventListener('click', handleClick);
+        };
+    }, []); 
 
     const filterLanguages = (values: string[]) => {
         const array: languagesInterface[] = [];
@@ -71,13 +119,12 @@ export default function DivLanguagesAtualizarProfissional(props: DivLanguagesAtu
 
     return (
         <>
-            <div id='languages-box' onMouseLeave={handleInputLanguagesLeave}>
+            <div id='languages-box'>
                 <input type="text"
                 className={formInputs.languages.length !== 0 ? '' : 'error'}
                 onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setLanguagesSearch(e.target.value);
                 }}
-                onFocus={handleInputLanguagesEnter}
                 name="languages-search" ref={inputLanguagesSearch} id="languages-search" 
                 placeholder={
                     formInputs.languages && formInputs.languages.length === 1
