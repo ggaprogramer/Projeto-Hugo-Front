@@ -363,7 +363,7 @@ export default function FilterProfessionals(props: {control: ControlProfessional
                     <div className='filtros-buttons'>
                         <button>Limpar filtros</button>
                         <button ref={buttonSubmit} type='submit'>Filtrar resultados</button>
-                        <span className='loader'></span>
+                        <span ref={loader} className='loader'></span>
                     </div>
                     <ErrorAuth errors={errors} type='system'/>
                 </form>

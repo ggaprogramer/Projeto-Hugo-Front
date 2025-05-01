@@ -18,7 +18,7 @@ export default function ProfessionalsPage(props: ProfessionalsPagePropsInterface
         pageSelected: 0,
         totalPages: 0,
         totalElements: 0,
-        pageSize: 1
+        pageSize: 5
     });
     const [viewFiltroPaginaDropBox, setViewFiltroPaginaDropBox] = useState<boolean>(false);
     const handleFiltroPaginaDropBox = () => {
@@ -65,10 +65,6 @@ export default function ProfessionalsPage(props: ProfessionalsPagePropsInterface
                                 viewFiltroPaginaDropBox
                                 &&
                                 <div className='filtro-pagina-dropbox'>
-                                    <p onClick={() => setControl({...control, pageSize: 1, pageSelected: 0})} 
-                                    className={`${control.pageSize === 1 ? 'selected' : ''}`}>
-                                        1
-                                    </p>
                                     <p onClick={() => setControl({...control, pageSize: 5, pageSelected: 0})} 
                                     className={`${control.pageSize === 5 ? 'selected' : ''}`}>
                                         5
@@ -111,7 +107,7 @@ export default function ProfessionalsPage(props: ProfessionalsPagePropsInterface
                                             {professional.name}
                                         </h3>
                                         <p>
-                                            Psicóloga Clínica - CRP: {professional.crp}
+                                            CRP: {professional.crp}
                                         </p>
                                         <div className='avaliacao'>
                                             <div>
@@ -147,7 +143,7 @@ export default function ProfessionalsPage(props: ProfessionalsPagePropsInterface
                                         </p>
                                         <div>
                                             <Link href=''>Agendar consulta</Link>
-                                            <Link href=''>Ver perfil completo</Link>
+                                            <Link href={`/profissionais/${professional.uuid}`}>Ver perfil completo</Link>
                                         </div>
                                     </div>
                                 </div>
