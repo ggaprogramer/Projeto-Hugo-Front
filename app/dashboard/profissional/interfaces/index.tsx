@@ -128,3 +128,14 @@ export interface optionsClientInterface {
 export interface ResponseGetUrlPhoto {
     urlPhoto: string | undefined;
 }
+
+export interface Dates {
+    day: Date,
+    hours: string[]
+}
+
+export interface ConfigurationAgendamentos {
+    precoAgendamento: string;
+    duracaoAgendamento: string;
+    datasAgendamentos: Dates[];
+}

@@ -9,7 +9,7 @@
         text-align: justify;
     }
 
-    .area-especialidades, .abordagens{
+    .area-especialidades, .area-abordagens, .area-interesses{
         @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 1rem);
 
         div{
@@ -36,10 +36,17 @@
         }
     }
 
-    .abordagens{
+    .area-abordagens{
         span{
             background: $blue-two-color;
             color: $blue-three-color;
+        }
+    }
+
+    .area-interesses{
+        span{
+            background: $black-one-color;
+            color: $white-one-color;
         }
     }
 

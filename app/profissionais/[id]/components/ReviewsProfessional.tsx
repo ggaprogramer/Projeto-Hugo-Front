@@ -1,6 +1,9 @@
 import '../styles/reviews-professional.scss';
+import {ProfessionalInfo} from '@dashboard/profissional/interfaces';
 
-export default function ReviewsProfessional(){
+export default function ReviewsProfessional(props: {professional: ProfessionalInfo}){
+    const professional = props.professional;
+    
     return (
         <div className='info-reviews'>
             <h2>

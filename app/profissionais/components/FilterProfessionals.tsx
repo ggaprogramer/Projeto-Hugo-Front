@@ -11,6 +11,7 @@ import extractProfessionalApproaches from '@dashboard/profissional/functions/ext
 import extractProfessionalSpecialties from '@dashboard/profissional/functions/extractProfessionalSpecialties';
 import extractProfessionalLanguages from '@dashboard/profissional/functions/extractProfessionalLanguages';
 import {ProfessionalInfo} from '@dashboard/profissional/interfaces';
+import '../styles/filters-professionals.scss';
 import {Errors} from '@auth/interfaces';
 import ErrorAuth from '@auth/components/ErrorAuth'
 

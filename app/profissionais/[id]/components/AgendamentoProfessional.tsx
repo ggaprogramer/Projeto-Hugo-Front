@@ -2,6 +2,7 @@
 
 import '../styles/agendamentos-professional.scss';
 import {useRef, useState, useEffect} from 'react';
+import {ProfessionalInfo} from '@dashboard/profissional/interfaces';
 
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
@@ -44,7 +45,9 @@ const dates: Dates[] = [
     ]}
 ];
 
-export default function AgendamentoProfessional(){
+export default function AgendamentoProfessional(props: {professional: ProfessionalInfo}){
+    const professional = props.professional;
+
     const dateNow = new Date();
     const [dateSelected, setDateSelected] = useState(dateNow);
     const [hourSelected, setHourSelected] = useState<string | null>();

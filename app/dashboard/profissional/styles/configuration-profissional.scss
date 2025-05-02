@@ -1,0 +1,87 @@
+@import '@styles/utils.scss';
+
+.configuration-professional{
+    width: 100%;
+    background: $white-one-color;
+    @include padding(2rem, 2rem, 2rem, 2rem);
+    @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
+    @include border-radius(2rem, 2rem, 2rem, 2rem);
+
+    h1, h2{
+        @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: center, $align-items: center, $gap: 1rem);
+    }
+
+    .configuration-agendamentos{
+        @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
+        width: 100%;
+
+        .button-submit{
+            @include padding(1rem, 2rem, 1rem, 2rem);
+            cursor: pointer;
+            transition: .3s;
+            background: $yellow-one-color;
+            color: $black-one-color;
+            font-weight: bold;
+            @include border(0rem,  transparent, solid, 10rem);
+
+            &:hover{
+                @include transform-scale(1.02);
+            }
+        }
+
+        .agendamentos-inputs{
+            @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
+            width: 100%;
+
+            div{
+                @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 1rem);
+                width: 100%;
+
+                input{
+                    @include padding(1rem, 1rem, 1rem, 1rem);
+                    @include border(0.2rem,  $gray-two-color, solid, 2rem);
+                    width: 100%;
+                }
+            }
+        }
+
+        .agendamentos{
+            @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
+            width: 100%;
+
+            .custom-calendar{
+                width: 50%;
+        
+                .selected{
+                    @include border(0.2rem,  $blue-one-color, solid, 0rem);
+                }
+            }
+        
+            .horarios{
+                width: 100%;
+                
+                @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: flex-start, $align-items: center, $gap: 1rem);
+        
+                .horario{
+                    @include padding(1rem, 2rem, 1rem, 2rem);
+                    @include border(0.2rem,  $blue-two-color, solid, 1rem);
+                    color: $blue-three-color;
+                    cursor: pointer;
+                    transition: .3s;
+        
+                    &:hover{
+                        @include transform-scale(1.05);
+                    }
+                }
+        
+                .horario.selecionado{
+                    @include border(0.2rem,  transparent, solid, 1rem);
+                    color: $white-one-color;
+                    background: $blue-one-color;
+                    font-weight: bold;
+                }
+            }
+        }
+    }
+    
+}

@@ -3,7 +3,6 @@
 import {ProfessionalsPagePropsInterface, ControlProfessionals} from '../interfaces';
 import FilterProfessionals from './FilterProfessionals';
 import '../styles/professionals.scss';
-import '../styles/filters-professionals.scss';
 import Link from 'next/link';
 import { FormEvent, useState, useRef, useMemo, useEffect } from 'react';
 import Pagination from './Pagination';
@@ -104,10 +103,13 @@ export default function ProfessionalsPage(props: ProfessionalsPagePropsInterface
                                     </div>
                                     <div className='bio-breve'>
                                         <h3>
-                                            {professional.name}
+                                            {professional.gender === 'MULHER' ? 'Dra. ' : 'Dr. '}  {professional.name}
                                         </h3>
                                         <p>
-                                            CRP: {professional.crp}
+                                            Psicóloga Clínica
+                                        </p>
+                                        <p>
+                                            <strong>CRP: </strong>{professional.crp}
                                         </p>
                                         <div className='avaliacao'>
                                             <div>
