@@ -81,7 +81,18 @@
                     font-weight: bold;
                 }
             }
+
+            .adicionar-agendamento{
+                @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: flex-start, $align-items: center, $gap: 2rem);
+
+                input{
+                    @include padding(1rem, 1rem, 1rem, 1rem);
+                    @include border(0.2rem,  $gray-two-color, solid, 2rem);
+                    width: 30rem;
+                }
+            }
         }
+    
     }
     
 }

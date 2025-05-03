@@ -3,49 +3,82 @@
 import { FaCalendarAlt } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import '../styles/configuration-profissional.scss';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef, FormEvent} from 'react';
 import {ConfigurationAgendamentos, Dates} from '../interfaces';
 
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
-function transformDatetimeToDates(datetimeList: string[]): Dates[] {
-    const datesMap: { [key: string]: string[] } = {}; // Map to hold days and their hours
+import Message from '@app/components/Message';
+import {MessageType} from '@app/interfaces';
 
-    // Iterar sobre a lista de datetimes
-    datetimeList.forEach(datetime => {
-        const dateObj = new Date(datetime); // Convertendo para objeto Date
-        const dayString = dateObj.toISOString().split('T')[0]; // Obtendo o formato 'YYYY-MM-DD'
-        const hourString = dateObj.toISOString().split('T')[1].split('.')[0]; // Obtendo o formato 'HH:mm:ss'
-
-        // Adicionando a hora ao dia correspondente no mapa
-        if (!datesMap[dayString]) {
-            datesMap[dayString] = [];
+function addHourToDateArray(dates: Dates[], newDate: Date, newHour: string): Dates[] {
+    const existingDate = dates.find(d => d.day.toISOString().split('T')[0] === newDate.toISOString().split('T')[0]);
+    
+    if (existingDate) {
+        // Se o dia já existir, adiciona a nova hora
+        if (!existingDate.hours.includes(newHour)) {
+            existingDate.hours.push(newHour);
         }
-        datesMap[dayString].push(hourString);
-    });
+    } else {
+        // Se o dia não existir, cria um novo objeto Dates
+        dates.push({ day: newDate, hours: [newHour] });
+    }
+    
+    return dates;
+}
 
-    // Convertendo o mapa para o formato desejado
-    const result: Dates[] = Object.keys(datesMap).map(day => ({
-        day: new Date(day),
-        hours: datesMap[day],
-    }));
+function formatDate(date: Date): string {
+    const day = String(date.getDate()).padStart(2, '0');  // Adiciona 0 à frente se o dia for menor que 10
+    const month = String(date.getMonth() + 1).padStart(2, '0');  // Meses começam do 0, então somamos 1
+    const year = date.getFullYear();
 
-    return result;
+    return `${day}/${month}/${year}`;
 }
 
 export default function ConfigurationProfissional() {
 
+    // Mensagem - Início
+    const [viewMessageConfig, setViewMessageConfig] = useState<{
+        status: boolean
+        message: string,
+        type: MessageType
+    }>({
+        status: false,
+        message: '',
+        type: 'INFO'
+    });
+    const viewMessage = (message: string, type: MessageType) => {
+        setViewMessageConfig({message: message, type: type, status: true });
+    }
+
+    useEffect(() => {
+        let id: NodeJS.Timeout;
+    
+        if (viewMessageConfig.status) {
+            id = setTimeout(() => {
+                setViewMessageConfig(prev => ({ ...prev, status: false }));
+            }, 5000);
+        }
+    
+        return () => {
+            if (id) clearTimeout(id);
+        };
+    }, [viewMessageConfig]);
+    // Mensagem - Fim
+
     const [formInputsAgendamentos, setFormInputsAgendamentos] = useState<ConfigurationAgendamentos>({
         precoAgendamento: '',
         duracaoAgendamento: '',
-        datasAgendamentos: transformDatetimeToDates([]),
+        datasAgendamentos: [],
     });
 
+    // Configurações Calendário - Início
     const dateNow = new Date();
     const [dateSelected, setDateSelected] = useState(dateNow);
     const [hourSelected, setHourSelected] = useState<string | null>();
     const [hoursOfDate, setHoursOfDate] = useState<string[]>([]);
+    const [reload, setReload] = useState<number>(0);
 
     useEffect(() => {
         for(let i = 0; i < formInputsAgendamentos.datasAgendamentos.length; i++){
@@ -55,7 +88,7 @@ export default function ConfigurationProfissional() {
             }
         }
         setHourSelected(null);
-    }, [dateSelected]);
+    }, [dateSelected, reload]);
 
     // Função para verificar se um dia tem agendamento
     const haveAgendamento = (dateCalendar: any) => {
@@ -87,8 +120,11 @@ export default function ConfigurationProfissional() {
             return dateSelected.toLocaleDateString();
         }
     }
+    // Configurações Calendário - Fim
 
-    const verifyNumberInput = (value: string, name: string) => {
+    const inputAdicionarAgendamento = useRef<HTMLInputElement>(null);
+
+    const handleSubmitAgendamento = (value: string, name: string) => {
         const regex = /^\d{1,10}(\.|\,)?\d{0,2}$/;
         if(name === 'preco-agendamento') {
             if(regex.test(value)){
@@ -96,7 +132,27 @@ export default function ConfigurationProfissional() {
             } else {
                 setFormInputsAgendamentos({...formInputsAgendamentos, precoAgendamento: ''});
             }
+        } else if(name === 'duracao-agendamento'){
+            if(regex.test(value)){
+                setFormInputsAgendamentos({...formInputsAgendamentos, duracaoAgendamento: value});
+            } else {
+                setFormInputsAgendamentos({...formInputsAgendamentos, duracaoAgendamento: ''});
+            }
         } 
+    }
+
+    const handleAdicionarAgendamento = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const value = inputAdicionarAgendamento.current?.value;
+
+        if(value){
+            const dates = addHourToDateArray(formInputsAgendamentos.datasAgendamentos, dateSelected, value);
+            setFormInputsAgendamentos({...formInputsAgendamentos, datasAgendamentos: dates});
+            setReload(reload + 1);
+            viewMessage(`Parabéns, o seu agendamento ${formatDate(dateSelected)} ${value} foi cadastrado com sucesso!`, 'SUCCESS');
+        } else {
+
+        }
     }
 
     return (
@@ -117,67 +173,18 @@ export default function ConfigurationProfissional() {
                             <label htmlFor="preco-agendamento">
                                 Preço do agendamento (R$):
                             </label>
-                            <input onInput={(e) => verifyNumberInput((e.target as HTMLInputElement).value, 'preco-agendamento')}
+                            <input onInput={(e) => handleSubmitAgendamento((e.target as HTMLInputElement).value, 'preco-agendamento')}
                                 value={formInputsAgendamentos.precoAgendamento} type="text" name='preco-agendamento' id='preco-agendamento' placeholder='R$ 00.00' />
                         </div>
                         <div>
                             <label htmlFor="duracao-agendamento">
                                 Duração do agendamento (minutos):
                             </label>
-                            <input onInput={(e) => verifyNumberInput((e.target as HTMLInputElement).value, 'duracao-agendamento')}
+                            <input onInput={(e) => handleSubmitAgendamento((e.target as HTMLInputElement).value, 'duracao-agendamento')}
                                 value={formInputsAgendamentos.duracaoAgendamento} type="text" name='duracao-agendamento' id='duracao-agendamento' placeholder='00 minutos' />
                         </div>
                     </div>
                     <button className="button-submit">Salvar</button>
-
-                    <div className="agendamentos-inputs">
-                        <div>
-                            <label htmlFor="adicionar-um-agendamento">
-                                Criar um agendamento (adicionar data e hora):
-                            </label>
-                            <input type="datetime-local" 
-                                name='adicionar-um-agendamento' id='adicionar-um-agendamento'/>
-                        </div>
-                    </div>
-                    <button className="button-submit">Adicionar agendamento</button>
-
-                    <div className="agendamentos-inputs">
-                        <div>
-                            <p>
-                                Criar vários agendamentos (adicionar datas e hora):
-                            </p>
-                            <div>
-                                <label htmlFor="preco-agendamento">
-                                    Quantos agendamentos você quer criar?
-                                </label>
-                                <input onInput={(e) => verifyNumberInput((e.target as HTMLInputElement).value, 'preco-agendamento')}
-                                    value={formInputsAgendamentos.precoAgendamento} type="text" 
-                                    name='preco-agendamento' id='preco-agendamento' placeholder='10 agendamentos' />
-                            </div>
-                            <label htmlFor="adicionar-varios-agendamentos-data">
-                                <p>Dias úteis</p>
-                                <input type="radio" name="adicionar-varios-agendamentos-data" id="adicionar-varios-agendamentos-data" />
-                            </label>
-                            <label htmlFor="adicionar-varios-agendamentos-data">
-                                <p>Finais de Semana</p>
-                                <input type="radio" name="adicionar-varios-agendamentos-data" id="adicionar-varios-agendamentos-data" />
-                            </label>
-                            <label htmlFor="adicionar-varios-agendamentos-data">
-                                <p>Segunda, Quarta, Sexta</p>
-                                <input type="radio" name="adicionar-varios-agendamentos-data" id="adicionar-varios-agendamentos-data" />
-                            </label>
-                            <label htmlFor="adicionar-varios-agendamentos-data">
-                                <p>Terça, Quinta</p>
-                                <input type="radio" name="adicionar-varios-agendamentos-data" id="adicionar-varios-agendamentos-data" />
-                            </label>
-                            <label htmlFor="adicionar-varios-agendamentos-data">
-                                <p>Escolher um dia</p>
-                                <input type="radio" name="adicionar-varios-agendamentos-data" id="adicionar-varios-agendamentos-data" />
-                            </label>
-
-                        </div>
-                    </div>
-                    <button className="button-submit">Adicionar vários agendamentos</button>
 
                     <h2>
                         <FaCalendarAlt/>
@@ -189,28 +196,45 @@ export default function ConfigurationProfissional() {
                             tileClassName={tileClassName}
                             className='custom-calendar'
                         />
-                        {variableHaveAgendamento && 
-                        <p>
-                            Seus horários disponíveis para {formatDescriptionOne()}
-                        </p>}
-                        {variableHaveAgendamento &&
-                            <div className='horarios'>
-                                {hoursOfDate.map(horario => {
-                                    if(horario === hourSelected){
-                                        return (<span key={horario} onClick={() => setHourSelected(horario)} className='horario selecionado'>
-                                            {horario}
-                                        </span>)
-                                    } else {
-                                        return (<span key={horario} onClick={() => setHourSelected(horario)} className='horario'>
-                                            {horario}
-                                        </span>)
-                                    }
-                                })}
-                            </div>
+                        {
+                            variableHaveAgendamento 
+                            && 
+                            <>
+                                <p>
+                                    Seus horários disponíveis para <strong>{formatDescriptionOne()}</strong>
+                                </p>
+                                <div className='horarios'>
+                                    {hoursOfDate.map(horario => {
+                                        if(horario === hourSelected){
+                                            return (<span key={horario} onClick={() => setHourSelected(horario)} className='horario selecionado'>
+                                                {horario}
+                                            </span>)
+                                        } else {
+                                            return (<span key={horario} onClick={() => setHourSelected(horario)} className='horario'>
+                                                {horario}
+                                            </span>)
+                                        }
+                                    })}
+                                </div>
+                            </>
+                        }
+                        {
+                            dateSelected 
+                            &&
+                            <>
+                                <p>
+                                    Adicionar um horário para <strong>{formatDescriptionOne()}</strong>:
+                                </p>
+                                <form onSubmit={handleAdicionarAgendamento} className="adicionar-agendamento">
+                                    <input ref={inputAdicionarAgendamento} type="time" name="adicionar-time-agendamento" />
+                                    <button type="submit" className="button-submit">Adicionar</button>
+                                </form>
+                            </>
                         }
                     </div>
                 </div>
             </div>
+            {viewMessageConfig.status && <Message message={viewMessageConfig.message} type={viewMessageConfig.type}/>}
         </>
     )
 }
