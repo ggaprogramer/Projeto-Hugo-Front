@@ -5,6 +5,8 @@ import { IoMdSettings } from "react-icons/io";
 import '../styles/configuration-profissional.scss';
 import {useState, useEffect, useRef, FormEvent} from 'react';
 import {ConfigurationAgendamentos, Dates} from '../interfaces';
+import createDayHour from '../functions/createDayHour';
+import getDayHour from '../functions/getDayHour';
 
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
@@ -37,7 +39,6 @@ function formatDate(date: Date): string {
 }
 
 export default function ConfigurationProfissional() {
-
     // Mensagem - Início
     const [viewMessageConfig, setViewMessageConfig] = useState<{
         status: boolean
@@ -122,6 +123,17 @@ export default function ConfigurationProfissional() {
     }
     // Configurações Calendário - Fim
 
+    useEffect(() => {
+
+        const extractDayHour = async () => {
+            const datesExtract = await getDayHour();
+            console.log('EXTRACT AGENDAMENTOS: ', datesExtract);
+        }
+        extractDayHour();
+
+    });
+
+    // Form Agendamento - Início
     const inputAdicionarAgendamento = useRef<HTMLInputElement>(null);
 
     const handleSubmitAgendamento = (value: string, name: string) => {
@@ -141,19 +153,35 @@ export default function ConfigurationProfissional() {
         } 
     }
 
-    const handleAdicionarAgendamento = (e: FormEvent<HTMLFormElement>) => {
+    const handleAdicionarAgendamento = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const value = inputAdicionarAgendamento.current?.value;
 
         if(value){
-            const dates = addHourToDateArray(formInputsAgendamentos.datasAgendamentos, dateSelected, value);
-            setFormInputsAgendamentos({...formInputsAgendamentos, datasAgendamentos: dates});
-            setReload(reload + 1);
-            viewMessage(`Parabéns, o seu agendamento ${formatDate(dateSelected)} ${value} foi cadastrado com sucesso!`, 'SUCCESS');
+            const body: Dates = {
+                day: dateSelected,
+                hours: [value]
+            }
+            //viewLoader();
+            const responseOk = await createDayHour(body);
+            if(responseOk){
+                //disableLoader();
+                //errors.push({type: data.type, description: data.message});
+                //errors.push({type: 'lenErrors', description: '1'});
+                //setErrors(errors);
+                const dates = addHourToDateArray(formInputsAgendamentos.datasAgendamentos, dateSelected, value);
+                setFormInputsAgendamentos({...formInputsAgendamentos, datasAgendamentos: dates});
+                setReload(reload + 1);
+                viewMessage(`Parabéns, o seu agendamento ${formatDate(dateSelected)} ${value} foi cadastrado com sucesso!`, 'SUCCESS');
+            } else{
+                viewMessage(`Ocorreu algum erro no sistema ao cadastrar um novo agendamento. Por favor, falar com o suporte.`, 'ERROR');
+                //disableLoader();
+            }
         } else {
 
         }
     }
+    // Form Agendamento - Fim
 
     return (
         <>
