@@ -7,6 +7,7 @@ import {useState, useEffect, useRef, FormEvent} from 'react';
 import {ConfigurationAgendamentos, Dates} from '../interfaces';
 import createDayHour from '../functions/createDayHour';
 import getDayHour from '../functions/getDayHour';
+import deleteDayHour from '../functions/deleteDayHour';
 
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
@@ -27,6 +28,32 @@ function addHourToDateArray(dates: Dates[], newDate: Date, newHour: string): Dat
         dates.push({ day: newDate, hours: [newHour] });
     }
     
+    return dates;
+}
+
+function removeHourFromDateArray(dates: Dates[], targetDate: Date, targetHour: string): Dates[] {
+    const existingDate = dates.find(d => d.day.toDateString() === targetDate.toDateString());
+
+    if (existingDate) {
+        // Se o dia existe, remove a hora especificada
+        existingDate.hours = existingDate.hours.filter(hour => hour !== targetHour);
+
+        // Se não houver mais horas para o dia, opcionalmente pode-se remover o dia
+        if (existingDate.hours.length === 0) {
+            const index = dates.indexOf(existingDate);
+            if (index !== -1) {
+                dates.splice(index, 1); // Remove o objeto 'day' se não houver mais horas
+            }
+        }
+    }
+
+    return dates;
+}
+
+function sortHoursInDate(dates: Dates): Dates {
+    // Ordena as horas dentro do objeto Dates
+    dates.hours.sort((a, b) => a.localeCompare(b));
+
     return dates;
 }
 
@@ -124,14 +151,15 @@ export default function ConfigurationProfissional() {
     // Configurações Calendário - Fim
 
     useEffect(() => {
-
         const extractDayHour = async () => {
-            const datesExtract = await getDayHour();
-            console.log('EXTRACT AGENDAMENTOS: ', datesExtract);
+            let datesExtract: Dates[] = await getDayHour();
+            datesExtract = datesExtract.map(date => {
+                return sortHoursInDate({day: new Date(date.day), hours: date.hours});
+            });
+            setFormInputsAgendamentos({...formInputsAgendamentos, datasAgendamentos: datesExtract});
         }
         extractDayHour();
-
-    });
+    }, [reload]);
 
     // Form Agendamento - Início
     const inputAdicionarAgendamento = useRef<HTMLInputElement>(null);
@@ -169,7 +197,8 @@ export default function ConfigurationProfissional() {
                 //errors.push({type: data.type, description: data.message});
                 //errors.push({type: 'lenErrors', description: '1'});
                 //setErrors(errors);
-                const dates = addHourToDateArray(formInputsAgendamentos.datasAgendamentos, dateSelected, value);
+                let dates = addHourToDateArray(formInputsAgendamentos.datasAgendamentos, dateSelected, value);
+                dates = dates.map(date => sortHoursInDate(date));
                 setFormInputsAgendamentos({...formInputsAgendamentos, datasAgendamentos: dates});
                 setReload(reload + 1);
                 viewMessage(`Parabéns, o seu agendamento ${formatDate(dateSelected)} ${value} foi cadastrado com sucesso!`, 'SUCCESS');
@@ -179,6 +208,23 @@ export default function ConfigurationProfissional() {
             }
         } else {
 
+        }
+    }
+
+    const handleDeleteDateHour = async (date: Date, time: string) => {
+        const dateFormatted: Dates = {
+            day: date,
+            hours: [time],
+        }
+        const responseOk = await deleteDayHour(dateFormatted);
+        if(responseOk){
+            let dates = removeHourFromDateArray(formInputsAgendamentos.datasAgendamentos, dateSelected, time);
+            dates = dates.map(date => sortHoursInDate(date));
+            setFormInputsAgendamentos({...formInputsAgendamentos, datasAgendamentos: dates});
+            setReload(reload + 1);
+            viewMessage(`O seu agendamento foi excluido!`, 'SUCCESS');
+        } else {
+            viewMessage(`Ocorreu algum erro no sistema ao excluir um novo agendamento. Por favor, falar com o suporte.`, 'ERROR');
         }
     }
     // Form Agendamento - Fim
@@ -234,9 +280,14 @@ export default function ConfigurationProfissional() {
                                 <div className='horarios'>
                                     {hoursOfDate.map(horario => {
                                         if(horario === hourSelected){
-                                            return (<span key={horario} onClick={() => setHourSelected(horario)} className='horario selecionado'>
-                                                {horario}
-                                            </span>)
+                                            return (
+                                                <>
+                                                    <span key={horario} onClick={() => setHourSelected(horario)} className='horario selecionado'>
+                                                        {horario}
+                                                    </span>
+                                                    <button key={`${horario}-delete`} onClick={e => handleDeleteDateHour(dateSelected, horario)}>Excluir</button>
+                                                </>
+                                            )
                                         } else {
                                             return (<span key={horario} onClick={() => setHourSelected(horario)} className='horario'>
                                                 {horario}
