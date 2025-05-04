@@ -134,6 +134,11 @@ export interface Dates {
     hours: string[]
 }
 
+export interface bodyConfigAgendamentos {
+    price: number | undefined;
+    duration: number | undefined;
+}
+
 export interface ConfigurationAgendamentos {
     precoAgendamento: string;
     duracaoAgendamento: string;

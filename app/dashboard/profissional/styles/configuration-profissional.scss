@@ -60,7 +60,24 @@
             .horarios{
                 width: 100%;
                 
-                @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: flex-start, $align-items: center, $gap: 1rem);
+                @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: flex-start, $align-items: flex-start, $gap: 1rem);
+
+                &>div{
+                    @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 1rem);
+
+                    button{
+                        font-weight: bold;
+                        color: red;
+                        background: transparent;
+                        border: none;
+                        cursor: pointer;
+                        transition: .3s;
+
+                        &:hover{
+                            @include transform-scale(1.05);
+                        }
+                    }
+                }
         
                 .horario{
                     @include padding(1rem, 2rem, 1rem, 2rem);

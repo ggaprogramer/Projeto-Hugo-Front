@@ -4,16 +4,20 @@ import { FaCalendarAlt } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import '../styles/configuration-profissional.scss';
 import {useState, useEffect, useRef, FormEvent} from 'react';
-import {ConfigurationAgendamentos, Dates} from '../interfaces';
+import {ConfigurationAgendamentos, Dates, bodyConfigAgendamentos} from '../interfaces';
 import createDayHour from '../functions/createDayHour';
 import getDayHour from '../functions/getDayHour';
 import deleteDayHour from '../functions/deleteDayHour';
+import updateConfig from '../functions/updateConfig';
+import extractConfigProfessional from '../functions/extractConfigProfessional';
 
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
 import Message from '@app/components/Message';
 import {MessageType} from '@app/interfaces';
+import { GiPriceTag } from "react-icons/gi";
+import { config } from "process";
 
 function addHourToDateArray(dates: Dates[], newDate: Date, newHour: string): Dates[] {
     const existingDate = dates.find(d => d.day.toISOString().split('T')[0] === newDate.toISOString().split('T')[0]);
@@ -151,20 +155,23 @@ export default function ConfigurationProfissional() {
     // Configurações Calendário - Fim
 
     useEffect(() => {
-        const extractDayHour = async () => {
+        const extractConfigAndDayHour = async () => {
             let datesExtract: Dates[] = await getDayHour();
             datesExtract = datesExtract.map(date => {
                 return sortHoursInDate({day: new Date(date.day), hours: date.hours});
             });
-            setFormInputsAgendamentos({...formInputsAgendamentos, datasAgendamentos: datesExtract});
-        }
-        extractDayHour();
+            const config = await extractConfigProfessional();
+            let duration = config.duration ? config.duration : ''
+            let price = config.price ? config.price : ''
+            setFormInputsAgendamentos({precoAgendamento: price, duracaoAgendamento: duration, datasAgendamentos: datesExtract});
+        };
+        extractConfigAndDayHour();
     }, [reload]);
 
     // Form Agendamento - Início
     const inputAdicionarAgendamento = useRef<HTMLInputElement>(null);
 
-    const handleSubmitAgendamento = (value: string, name: string) => {
+    const handleConfigAgendamento = (value: string, name: string) => {
         const regex = /^\d{1,10}(\.|\,)?\d{0,2}$/;
         if(name === 'preco-agendamento') {
             if(regex.test(value)){
@@ -181,6 +188,27 @@ export default function ConfigurationProfissional() {
         } 
     }
 
+    const submitConfigAgendamento = async () => {
+        try{
+            if(!formInputsAgendamentos.precoAgendamento || !formInputsAgendamentos.duracaoAgendamento){
+                throw new Error();
+            }
+            const body = {
+                price: formInputsAgendamentos.precoAgendamento ? parseFloat(formInputsAgendamentos.precoAgendamento) : undefined,
+                duration: formInputsAgendamentos.duracaoAgendamento ? parseInt(formInputsAgendamentos.duracaoAgendamento) : undefined,
+            }
+            const responseOk = await updateConfig(body);
+            if(responseOk){
+                setReload(reload + 1);
+                viewMessage(`Parabéns, as suas configurações de agendamentos foram atualizadas!`, 'SUCCESS');
+            } else{
+                viewMessage(`Ocorreu algum erro no sistema ao atualizar as suas configurações de agendamentos. Por favor, falar com o suporte.`, 'ERROR');
+            }
+        } catch{
+            viewMessage(`As configurações de agendamento não podem ficar vazias!`, 'ERROR');
+        }
+    }
+
     const handleAdicionarAgendamento = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const value = inputAdicionarAgendamento.current?.value;
@@ -190,24 +218,20 @@ export default function ConfigurationProfissional() {
                 day: dateSelected,
                 hours: [value]
             }
-            //viewLoader();
-            const responseOk = await createDayHour(body);
-            if(responseOk){
-                //disableLoader();
-                //errors.push({type: data.type, description: data.message});
-                //errors.push({type: 'lenErrors', description: '1'});
-                //setErrors(errors);
+            const responseStatus = await createDayHour(body);
+            if(responseStatus === 200){
                 let dates = addHourToDateArray(formInputsAgendamentos.datasAgendamentos, dateSelected, value);
                 dates = dates.map(date => sortHoursInDate(date));
                 setFormInputsAgendamentos({...formInputsAgendamentos, datasAgendamentos: dates});
                 setReload(reload + 1);
                 viewMessage(`Parabéns, o seu agendamento ${formatDate(dateSelected)} ${value} foi cadastrado com sucesso!`, 'SUCCESS');
+            } else if(responseStatus === 401) {
+                viewMessage(`O agendamento: ${formatDate(dateSelected)} ${value} já existe!`, 'ERROR');
             } else{
                 viewMessage(`Ocorreu algum erro no sistema ao cadastrar um novo agendamento. Por favor, falar com o suporte.`, 'ERROR');
-                //disableLoader();
             }
         } else {
-
+            viewMessage(`O horário não pode ficar vazio!`, 'ERROR');
         }
     }
 
@@ -247,18 +271,18 @@ export default function ConfigurationProfissional() {
                             <label htmlFor="preco-agendamento">
                                 Preço do agendamento (R$):
                             </label>
-                            <input onInput={(e) => handleSubmitAgendamento((e.target as HTMLInputElement).value, 'preco-agendamento')}
+                            <input onInput={(e) => handleConfigAgendamento((e.target as HTMLInputElement).value, 'preco-agendamento')}
                                 value={formInputsAgendamentos.precoAgendamento} type="text" name='preco-agendamento' id='preco-agendamento' placeholder='R$ 00.00' />
                         </div>
                         <div>
                             <label htmlFor="duracao-agendamento">
                                 Duração do agendamento (minutos):
                             </label>
-                            <input onInput={(e) => handleSubmitAgendamento((e.target as HTMLInputElement).value, 'duracao-agendamento')}
+                            <input onInput={(e) => handleConfigAgendamento((e.target as HTMLInputElement).value, 'duracao-agendamento')}
                                 value={formInputsAgendamentos.duracaoAgendamento} type="text" name='duracao-agendamento' id='duracao-agendamento' placeholder='00 minutos' />
                         </div>
                     </div>
-                    <button className="button-submit">Salvar</button>
+                    <button onClick={submitConfigAgendamento} className="button-submit">Salvar</button>
 
                     <h2>
                         <FaCalendarAlt/>
@@ -281,17 +305,21 @@ export default function ConfigurationProfissional() {
                                     {hoursOfDate.map(horario => {
                                         if(horario === hourSelected){
                                             return (
-                                                <>
+                                                <div key={`${horario}-div`}>
                                                     <span key={horario} onClick={() => setHourSelected(horario)} className='horario selecionado'>
                                                         {horario}
                                                     </span>
                                                     <button key={`${horario}-delete`} onClick={e => handleDeleteDateHour(dateSelected, horario)}>Excluir</button>
-                                                </>
+                                                </div>
                                             )
                                         } else {
-                                            return (<span key={horario} onClick={() => setHourSelected(horario)} className='horario'>
-                                                {horario}
-                                            </span>)
+                                            return (
+                                                <div key={`${horario}-div`}>
+                                                    <span key={horario} onClick={() => setHourSelected(horario)} className='horario'>
+                                                        {horario}
+                                                    </span>
+                                                </div>
+                                            )
                                         }
                                     })}
                                 </div>
