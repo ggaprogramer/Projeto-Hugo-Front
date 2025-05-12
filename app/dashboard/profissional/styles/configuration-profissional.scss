@@ -55,6 +55,11 @@
                 .selected{
                     @include border(0.2rem,  $blue-one-color, solid, 0rem);
                 }
+
+                .disabled{
+                    background: $gray-one-color;
+                    color: #ccc;
+                }
             }
         
             .horarios{

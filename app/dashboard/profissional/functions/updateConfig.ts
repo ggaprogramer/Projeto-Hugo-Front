@@ -1,9 +1,9 @@
 "use server";
 
 import { cookies } from 'next/headers';
-import {bodyConfigAgendamentos} from '../interfaces'
+import {ConfigAgendamentos} from '../interfaces'
 
-export default async function updateConfig(config: bodyConfigAgendamentos): Promise<boolean>{
+export default async function updateConfig(config: ConfigAgendamentos): Promise<boolean>{
     const token = cookies().get('auth-token');
     const value = token?.value;
     if(value){

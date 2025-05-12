@@ -4,7 +4,7 @@ import { FormEvent, useState, useRef, useMemo, useEffect } from 'react';
 import {FiltersProfessionals, GeneroFiltersProfessionals, DisponibilidadeFiltersProfessionals, OptionsFiltersInterface, 
     BodyProfessionalFilter, ControlProfessionals} from '../interfaces';
 import DivMultipleSelectProfissional from './DivMultipleSelectProfissional';
-import {approachesInterface, specialtiesInterface, languagesInterface} from '@dashboard/profissional/interfaces';
+import {approachesInterface, specialtiesInterface, languagesInterface, ProfessionalAnyInterface} from '@dashboard/profissional/interfaces';
 import {interestsInterface} from '@auth/register/interfaces';
 import extractProfessionalInterests from '@auth/register/functions/extractProfessionalInterests';
 import extractProfessionalApproaches from '@dashboard/profissional/functions/extractProfessionalApproaches';
@@ -167,9 +167,9 @@ export default function FilterProfessionals(props: {control: ControlProfessional
             else{
                 disableLoader();
                 const json = await response.json();
-                const data: ProfessionalInfo[] = json.content; 
+                const data: ProfessionalAnyInterface[] = json.content; 
                 props.setControl({...props.control, 
-                    professionals: data, 
+                    professionalAny: data, 
                     totalElements: json.totalElements, 
                     pageSelected: json.pageable.pageNumber, 
                     pageSize: json.size,

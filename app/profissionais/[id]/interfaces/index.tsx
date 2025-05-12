@@ -1,6 +1,6 @@
-import {ProfessionalInfo} from '@dashboard/profissional/interfaces';
+import {ProfessionalInfo, ProfessionalAnyInterface} from '@dashboard/profissional/interfaces';
 
 export interface ProfessionalPagePropsInterface {
     userIsAuthenticated: string | undefined;
-    professional: ProfessionalInfo;
+    professional: ProfessionalAnyInterface;
 }

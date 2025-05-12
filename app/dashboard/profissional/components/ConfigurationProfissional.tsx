@@ -4,7 +4,7 @@ import { FaCalendarAlt } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import '../styles/configuration-profissional.scss';
 import {useState, useEffect, useRef, FormEvent} from 'react';
-import {ConfigurationAgendamentos, Dates, bodyConfigAgendamentos} from '../interfaces';
+import {ConfigurationAgendamentos, Dates, ConfigAgendamentos} from '../interfaces';
 import createDayHour from '../functions/createDayHour';
 import getDayHour from '../functions/getDayHour';
 import deleteDayHour from '../functions/deleteDayHour';
@@ -124,15 +124,27 @@ export default function ConfigurationProfissional() {
 
     // Função para verificar se um dia tem agendamento
     const haveAgendamento = (dateCalendar: any) => {
-        return formInputsAgendamentos.datasAgendamentos.some((date) => date.day.toDateString() === dateCalendar.toDateString());
+        const newDate = new Date();
+        const newDateFormatted = new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate());
+
+        return formInputsAgendamentos.datasAgendamentos
+        .some((date) => 
+            date.day.toDateString() === dateCalendar.toDateString() &&
+            dateCalendar >= newDateFormatted
+        );
     };
 
     const variableHaveAgendamento = haveAgendamento(dateSelected);
 
     // Classe CSS para os dias com agendamentos disponíveis
     const tileClassName = ({ date, view }: any) => {
-        if (view === 'month' && haveAgendamento(date)) {
-        return 'selected'; // Adiciona uma classe CSS para dias com agendamento disponível
+        const newDate = new Date();
+        const newDateFormatted = new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate());
+        if(date < newDateFormatted) {
+            return 'disabled';
+        }
+        else if (view === 'month' && haveAgendamento(date)) {
+            return 'selected'; // Adiciona uma classe CSS para dias com agendamento disponível
         }
         return null;
     };
@@ -213,7 +225,9 @@ export default function ConfigurationProfissional() {
         e.preventDefault();
         const value = inputAdicionarAgendamento.current?.value;
 
-        if(value){
+        if(dateSelected < new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())){
+            viewMessage(`Não é possível adicionar um horário em um dia no passado!`, 'ERROR');
+        } else if(value){
             const body: Dates = {
                 day: dateSelected,
                 hours: [value]
@@ -226,7 +240,7 @@ export default function ConfigurationProfissional() {
                 setReload(reload + 1);
                 viewMessage(`Parabéns, o seu agendamento ${formatDate(dateSelected)} ${value} foi cadastrado com sucesso!`, 'SUCCESS');
             } else if(responseStatus === 401) {
-                viewMessage(`O agendamento: ${formatDate(dateSelected)} ${value} já existe!`, 'ERROR');
+                viewMessage(`O agendamento: ${formatDate(dateSelected)} ${value} já existe ou você está tentando adicionar um horário no passado!`, 'ERROR');
             } else{
                 viewMessage(`Ocorreu algum erro no sistema ao cadastrar um novo agendamento. Por favor, falar com o suporte.`, 'ERROR');
             }
@@ -326,8 +340,8 @@ export default function ConfigurationProfissional() {
                             </>
                         }
                         {
-                            dateSelected 
-                            &&
+                            dateSelected  &&
+                            dateSelected >= new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()) &&
                             <>
                                 <p>
                                     Adicionar um horário para <strong>{formatDescriptionOne()}</strong>:

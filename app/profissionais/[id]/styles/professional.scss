@@ -21,6 +21,7 @@
 
                 img{
                     width: 100%;
+                    @include border-radius(2rem, 2rem, 2rem, 2rem);
 
                     @media (max-width: 900px){
                         max-width: 20rem;

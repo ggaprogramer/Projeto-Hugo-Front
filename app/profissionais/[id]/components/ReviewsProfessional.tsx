@@ -1,8 +1,9 @@
 import '../styles/reviews-professional.scss';
-import {ProfessionalInfo} from '@dashboard/profissional/interfaces';
+import {ProfessionalInfo, ProfessionalAnyInterface} from '@dashboard/profissional/interfaces';
 
-export default function ReviewsProfessional(props: {professional: ProfessionalInfo}){
-    const professional = props.professional;
+export default function ReviewsProfessional(props: {professional: ProfessionalAnyInterface}){
+    const professional = props.professional?.professionalInfo;
+    const configAgendamento = props.professional?.configAgendamentoDTO;
     
     return (
         <div className='info-reviews'>

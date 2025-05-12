@@ -102,6 +102,11 @@ export interface ProfessionalInfo {
     registrationCompleted: boolean;
 }
 
+export interface ProfessionalAnyInterface {
+    professionalInfo: ProfessionalInfo;
+    configAgendamentoDTO: ConfigAgendamentos;
+}
+
 export interface approachesInterface {
     value: string;
     label: string;
@@ -134,7 +139,7 @@ export interface Dates {
     hours: string[]
 }
 
-export interface bodyConfigAgendamentos {
+export interface ConfigAgendamentos {
     price: number | undefined;
     duration: number | undefined;
 }

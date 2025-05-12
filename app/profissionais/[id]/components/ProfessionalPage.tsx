@@ -8,7 +8,12 @@ import AgendamentoProfessional from '../components/AgendamentoProfessional';
 import {useRef, useState, useEffect} from 'react';
 
 export default function ProfessionalPage(props: ProfessionalPagePropsInterface){
-    const professional = props.professional;
+    const professional = props.professional?.professionalInfo;
+    const configAgendamento = props.professional?.configAgendamentoDTO;
+
+    const price = configAgendamento?.price ? `${configAgendamento?.price}`.replace('.', ',') : '00,00';
+    const duration = configAgendamento?.duration ? configAgendamento?.duration : 0;
+
     const userIsAuthenticated = props.userIsAuthenticated;
 
     const [navegacao, setNavegacao] = useState(0);
@@ -56,10 +61,10 @@ export default function ProfessionalPage(props: ProfessionalPagePropsInterface){
                                     <img src="/dinheiro.png" alt="" />
                                     <div>
                                         <strong>
-                                            R$ 180,00 / sessão
+                                            R$ {price} / sessão
                                         </strong>
                                         <p>
-                                            Duração: 50 minutos
+                                            Duração: {duration} minutos
                                         </p>
                                     </div>
                                 </div>

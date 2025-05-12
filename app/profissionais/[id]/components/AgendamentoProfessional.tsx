@@ -2,7 +2,7 @@
 
 import '../styles/agendamentos-professional.scss';
 import {useRef, useState, useEffect} from 'react';
-import {ProfessionalInfo} from '@dashboard/profissional/interfaces';
+import {ProfessionalAnyInterface} from '@dashboard/profissional/interfaces';
 
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
@@ -45,8 +45,9 @@ const dates: Dates[] = [
     ]}
 ];
 
-export default function AgendamentoProfessional(props: {professional: ProfessionalInfo}){
-    const professional = props.professional;
+export default function AgendamentoProfessional(props: {professional: ProfessionalAnyInterface}){
+    const professional = props.professional?.professionalInfo;
+    const configAgendamento = props.professional?.configAgendamentoDTO;
 
     const dateNow = new Date();
     const [dateSelected, setDateSelected] = useState(dateNow);

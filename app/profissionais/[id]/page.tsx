@@ -1,7 +1,7 @@
 import functionIsAuthenticated from '@auth/functions/isAuthenticated';
 import {isAuthenticatedInterface} from '@auth/interfaces';
 import ProfessionalPage from './components/ProfessionalPage';
-import {ProfessionalInfo} from '@dashboard/profissional/interfaces';
+import {ProfessionalAnyInterface} from '@dashboard/profissional/interfaces';
 import getAnyProfessional from './functions/getAnyProfessional';
 import { redirect } from 'next/navigation';
 
@@ -12,8 +12,8 @@ interface PageProps {
 }
 
 async function getProfessional(id: string) {
-    const professionalInfo: ProfessionalInfo = await getAnyProfessional(id);
-    return professionalInfo;
+    const professionalAny: ProfessionalAnyInterface = await getAnyProfessional(id);
+    return professionalAny;
 }
 
 export default async function Professional({params}: PageProps) {
