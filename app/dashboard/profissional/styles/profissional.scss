@@ -11,6 +11,10 @@
         width: 100%;
         @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: space-between, $align-items: center, $gap: 2rem);
 
+        h1{
+            @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: center, $align-items: center, $gap: 1rem);
+        }
+
         button{
             @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 1rem);
             @include border-radius(2rem, 2rem, 2rem, 2rem);

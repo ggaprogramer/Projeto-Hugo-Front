@@ -1,54 +1,63 @@
 import '../styles/about-professional.scss';
+import {ProfessionalInfo, ProfessionalAnyInterface} from '@dashboard/profissional/interfaces';
 
-export default function AboutProfessional(){
+export default function AboutProfessional(props: {professional: ProfessionalAnyInterface}){
+    const professional = props.professional?.professionalInfo;
+    const configAgendamento = props.professional?.configAgendamentoDTO;
+
     return (
         <div className='info-bio'>
             <div className='area-description'>
                 <h2>
-                    Sobre a Dra. Sofia Mendes
+                    Sobre {professional.gender === 'MULHER' ? 'a Dra. ' : 'o Dr. '} {professional.name}
                 </h2>
                 <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam inventore, 
-                    cum iste eaque eligendi accusamus consequatur. Natus eos, optio doloribus 
-                    pariatur voluptatem aliquid quasi odio et ad esse tenetur autem?
-                </p>
-                <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam inventore, 
-                    cum iste eaque eligendi accusamus consequatur. Natus eos, optio doloribus 
-                    pariatur voluptatem aliquid quasi odio et ad esse tenetur autem?
-                </p>
-                <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam inventore, 
-                    cum iste eaque eligendi accusamus consequatur. Natus eos, optio doloribus 
-                    pariatur voluptatem aliquid quasi odio et ad esse tenetur autem?
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam inventore, 
-                    cum iste eaque eligendi accusamus consequatur. Natus eos, optio doloribus 
-                    pariatur voluptatem aliquid quasi odio et ad esse tenetur autem?
+                    {professional.description}
                 </p>
             </div>
+            
             <div className='area-especialidades'>
                 <h3>
                     Áreas de especialidade
                 </h3>
                 <div>
-                    <span>Ansiedade</span>
-                    <span>Depressão</span>
-                    <span>Autoestima</span>
-                    <span>Estresse</span>
-                    <span>Psicanálise</span>
+                    {
+                        professional.specialties.map(specialty => {
+                            return (
+                                <span key={specialty.value}>{specialty.label}</span>
+                            )
+                        })   
+                    }
                 </div>
             </div>
 
-            <div className='abordagens'>
+            <div className='area-abordagens'>
                 <h3>
                     Abordagens terapêuticas
                 </h3>
                 <div>
-                    <span>Ansiedade</span>
-                    <span>Depressão</span>
-                    <span>Autoestima</span>
-                    <span>Estresse</span>
-                    <span>Psicanálise</span>
+                    {
+                        professional.approaches.map(approach => {
+                            return (
+                                <span key={approach.value}>{approach.label}</span>
+                            )
+                        })   
+                    }
+                </div>
+            </div>
+
+            <div className='area-interesses'>
+                <h3>
+                    Áreas de interesses
+                </h3>
+                <div>
+                    {
+                        professional.interests.map(interest => {
+                            return (
+                                <span key={interest.value}>{interest.label}</span>
+                            )
+                        })   
+                    }
                 </div>
             </div>
 
@@ -83,24 +92,18 @@ export default function AboutProfessional(){
                     Idiomas
                 </h3>
                 <div className='idiomas'>
-                    <div className='idioma'>
-                        <img src="/translate.png" alt="" />
-                        <p>
-                            Português (Nativo)
-                        </p>
-                    </div>
-                    <div className='idioma'>
-                        <img src="/translate.png" alt="" />
-                        <p>
-                            Inglês (Fluente)
-                        </p>
-                    </div>
-                    <div className='idioma'>
-                        <img src="/translate.png" alt="" />
-                        <p>
-                            Espanhol (Intermediário)
-                        </p>
-                    </div>
+                    {
+                        professional.languages.map(language => {
+                            return (
+                                <div className='idioma' key={language.value}>
+                                    <img src="/translate.png" alt="" />
+                                    <p>
+                                        {language.label} ({language.level})
+                                    </p>
+                                </div>
+                            )
+                        })  
+                    }
                 </div>
             </div>
         </div>

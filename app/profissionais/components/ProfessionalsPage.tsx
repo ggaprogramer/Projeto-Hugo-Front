@@ -3,7 +3,6 @@
 import {ProfessionalsPagePropsInterface, ControlProfessionals} from '../interfaces';
 import FilterProfessionals from './FilterProfessionals';
 import '../styles/professionals.scss';
-import '../styles/filters-professionals.scss';
 import Link from 'next/link';
 import { FormEvent, useState, useRef, useMemo, useEffect } from 'react';
 import Pagination from './Pagination';
@@ -14,7 +13,7 @@ export default function ProfessionalsPage(props: ProfessionalsPagePropsInterface
     const userIsAuthenticated = props.userIsAuthenticated;
 
     const [control, setControl] = useState<ControlProfessionals>({
-        professionals: [],
+        professionalAny: [],
         pageSelected: 0,
         totalPages: 0,
         totalElements: 0,
@@ -90,24 +89,27 @@ export default function ProfessionalsPage(props: ProfessionalsPagePropsInterface
                         </div>
                     </div>
                     <div className='professionals'>
-                        {control.professionals.map(professional => {
+                        {control.professionalAny.map(professional => {
                             return (
-                                <div className='professional' key={professional.uuid}>
+                                <div className='professional' key={professional.professionalInfo.uuid}>
                                     <div className='photo'>
                                         {
-                                            professional.linkPhoto
+                                            professional.professionalInfo.linkPhoto
                                             ?
-                                            <img src={professional.linkPhoto} alt="" />
+                                            <img src={professional.professionalInfo.linkPhoto} alt="" />
                                             :
                                             <img src="/user.png" alt="" />
                                         }
                                     </div>
                                     <div className='bio-breve'>
                                         <h3>
-                                            {professional.name}
+                                            {professional.professionalInfo.gender === 'MULHER' ? 'Dra. ' : 'Dr. '}  {professional.professionalInfo.name}
                                         </h3>
                                         <p>
-                                            CRP: {professional.crp}
+                                            Psicóloga Clínica. 
+                                        </p>
+                                        <p>
+                                            <strong>CRP: </strong>{professional.professionalInfo.crp}
                                         </p>
                                         <div className='avaliacao'>
                                             <div>
@@ -122,10 +124,10 @@ export default function ProfessionalsPage(props: ProfessionalsPagePropsInterface
                                             </p>
                                         </div>
                                         <p className='descricao'>
-                                            {professional.description}
+                                            {professional.professionalInfo.description}
                                         </p>
                                         <div className='categorias'>
-                                            {professional.interests.map(interest => {
+                                            {professional.professionalInfo.interests.map(interest => {
                                                 return (
                                                     <span key={interest.label}>{interest.label}</span>
                                                 )
@@ -133,9 +135,12 @@ export default function ProfessionalsPage(props: ProfessionalsPagePropsInterface
                                         </div>
                                     </div>
                                     <div className='info'>
-                                        <p><strong>R$ 180,00</strong> / sessão</p>
+                                        <p><strong>R$ {professional.configAgendamentoDTO?.price 
+                                        ? `${professional.configAgendamentoDTO?.price}`.replace('.', ',') : '00,00'}</strong> / sessão</p>
                                         <p>
-                                            <strong>Duração:</strong> 50 minutos
+                                            <strong>Duração: </strong> 
+                                            {professional.configAgendamentoDTO?.duration 
+                                            ? professional.configAgendamentoDTO?.duration : 0} minutos
                                         </p>
                                         <p>
                                             <img src="/check-2.png" alt="" />
@@ -143,7 +148,7 @@ export default function ProfessionalsPage(props: ProfessionalsPagePropsInterface
                                         </p>
                                         <div>
                                             <Link href=''>Agendar consulta</Link>
-                                            <Link href={`/profissionais/${professional.uuid}`}>Ver perfil completo</Link>
+                                            <Link href={`/profissionais/${professional.professionalInfo.uuid}`}>Ver perfil completo</Link>
                                         </div>
                                     </div>
                                 </div>

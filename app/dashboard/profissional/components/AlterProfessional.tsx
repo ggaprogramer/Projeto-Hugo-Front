@@ -22,6 +22,7 @@ import {interestsInterface} from '@auth/register/interfaces';
 import {approachesInterface, specialtiesInterface, languagesInterface, optionsClientInterface} from '../interfaces';
 import Message from '@app/components/Message';
 import { MdError } from "react-icons/md";
+import { FaUser } from "react-icons/fa";
 import {MessageType} from '@app/interfaces';
 
 export default function AlterProfessional(props: {professionalInfo: ProfessionalInfo}){
@@ -366,6 +367,7 @@ export default function AlterProfessional(props: {professionalInfo: Professional
             <div className="profissional">
                 <div className="profissional-cabecalho">
                     <h1>
+                        <FaUser/>
                         Meu Perfil de Profissional
                     </h1>
                     {

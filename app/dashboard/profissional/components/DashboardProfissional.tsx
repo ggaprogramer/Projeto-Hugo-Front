@@ -1,6 +1,7 @@
 'use client';
 
 import AlterProfessional from './AlterProfessional';
+import ConfigurationProfissional from './ConfigurationProfissional';
 import { FaUser } from "react-icons/fa";
 import { FaCalendarAlt } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
@@ -10,7 +11,7 @@ import { ProfessionalInfo } from '../interfaces';
 import '../styles/dashboard-profissional.scss';
 
 export default function DashboardProfissional(props: {authToken: string | undefined}) {
-    const [navigation, setNavigation] = useState<Number>(0);
+    const [navigation, setNavigation] = useState<Number>(-1);
     const [professionalInfo, setProfessionalInfo] = useState<ProfessionalInfo>({
         uuid: '',
         name: '',
@@ -38,6 +39,7 @@ export default function DashboardProfissional(props: {authToken: string | undefi
             professionalInfo.specialties = professionalInfo.specialties ? professionalInfo.specialties : [];
             professionalInfo.languages = professionalInfo.languages ? professionalInfo.languages : [];
             setProfessionalInfo(professionalInfo);
+            setNavigation(0);
         };
         extractprofessionalInfoFunction();
     }, []);
@@ -87,10 +89,17 @@ export default function DashboardProfissional(props: {authToken: string | undefi
             </div>
             <div className='barra-principal'>
                 {
-                    navigation === 0 && professionalInfo.uuid
-                    ?
+                    navigation === 0 && professionalInfo.uuid &&
                     <AlterProfessional professionalInfo={professionalInfo}/>
-                    :
+                }
+
+                {
+                    navigation === 2 && professionalInfo.uuid &&
+                    <ConfigurationProfissional uuid={professionalInfo.uuid}/>
+                }
+
+                {
+                    navigation === -1 && 
                     <span className='loader-dashboard'></span>
                 }
             </div>

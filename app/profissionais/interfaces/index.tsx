@@ -1,4 +1,4 @@
-import {ProfessionalInfo} from '@dashboard/profissional/interfaces';
+import {ProfessionalAnyInterface} from '@dashboard/profissional/interfaces';
 
 export interface ProfessionalsPagePropsInterface {
     userIsAuthenticated: string | undefined;
@@ -63,7 +63,7 @@ export interface BodyProfessionalFilter {
 }
 
 export interface ControlProfessionals{
-    professionals: ProfessionalInfo[];
+    professionalAny: ProfessionalAnyInterface[];
     pageSelected: number;
     totalPages: number;
     totalElements: number;

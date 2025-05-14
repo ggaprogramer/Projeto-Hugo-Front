@@ -8,9 +8,13 @@ import AgendamentoProfessional from '../components/AgendamentoProfessional';
 import {useRef, useState, useEffect} from 'react';
 
 export default function ProfessionalPage(props: ProfessionalPagePropsInterface){
+    const professional = props.professional?.professionalInfo;
+    const configAgendamento = props.professional?.configAgendamentoDTO;
+
+    const price = configAgendamento?.price ? `${configAgendamento?.price}`.replace('.', ',') : '00,00';
+    const duration = configAgendamento?.duration ? configAgendamento?.duration : 0;
+
     const userIsAuthenticated = props.userIsAuthenticated;
-    const professional = props.professional;
-    console.log(professional);
 
     const [navegacao, setNavegacao] = useState(0);
 
@@ -20,18 +24,24 @@ export default function ProfessionalPage(props: ProfessionalPagePropsInterface){
                 <div>
                     <div className='info-professional-one'>
                         <div className='photo'>
-                            <img src="/user.png" alt="" />
+                            {
+                                professional.linkPhoto
+                                ?
+                                <img src={professional.linkPhoto} alt="" />
+                                :
+                                <img src="/user.png" alt="" />
+                            }
                         </div>
                         <div className='info-one-intern'>
                             <div className='info-first'>
                                 <h2>
-                                    Dra. {professional.name}
+                                    {professional.gender === 'MULHER' ? 'Dra. ' : 'Dr. '} {professional.name}
                                 </h2>
                                 <p>
                                     Psicóloga Clínica
                                 </p>
                                 <p>
-                                    <strong>CRP:</strong> 06/12345
+                                    <strong>CRP:</strong> {professional.crp}
                                 </p>
                             </div>
                             <div className='avaliacao'>
@@ -51,10 +61,10 @@ export default function ProfessionalPage(props: ProfessionalPagePropsInterface){
                                     <img src="/dinheiro.png" alt="" />
                                     <div>
                                         <strong>
-                                            R$ 180,00 / sessão
+                                            R$ {price} / sessão
                                         </strong>
                                         <p>
-                                            Duração: 50 minutos
+                                            Duração: {duration} minutos
                                         </p>
                                     </div>
                                 </div>
@@ -140,9 +150,9 @@ export default function ProfessionalPage(props: ProfessionalPagePropsInterface){
                                 </button>
                             }     
                         </div>              
-                        {navegacao === 0 && <AboutProfessional/>}
-                        {navegacao === 1 && <ReviewsProfessional/>}
-                        {navegacao === 2 && <AgendamentoProfessional/>}
+                        {navegacao === 0 && <AboutProfessional professional={props.professional}/>}
+                        {navegacao === 1 && <ReviewsProfessional professional={props.professional}/>}
+                        {navegacao === 2 && <AgendamentoProfessional professional={props.professional}/>}
                     </div>
                 </div>
             </div>
