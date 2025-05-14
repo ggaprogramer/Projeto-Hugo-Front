@@ -95,7 +95,7 @@ export default function DashboardProfissional(props: {authToken: string | undefi
 
                 {
                     navigation === 2 && professionalInfo.uuid &&
-                    <ConfigurationProfissional/>
+                    <ConfigurationProfissional uuid={professionalInfo.uuid}/>
                 }
 
                 {

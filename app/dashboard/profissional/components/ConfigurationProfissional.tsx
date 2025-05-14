@@ -69,7 +69,7 @@ function formatDate(date: Date): string {
     return `${day}/${month}/${year}`;
 }
 
-export default function ConfigurationProfissional() {
+export default function ConfigurationProfissional(props: {uuid: string}) {
     // Mensagem - Início
     const [viewMessageConfig, setViewMessageConfig] = useState<{
         status: boolean
@@ -168,14 +168,16 @@ export default function ConfigurationProfissional() {
 
     useEffect(() => {
         const extractConfigAndDayHour = async () => {
-            let datesExtract: Dates[] = await getDayHour();
-            datesExtract = datesExtract.map(date => {
-                return sortHoursInDate({day: new Date(date.day), hours: date.hours});
-            });
-            const config = await extractConfigProfessional();
-            let duration = config.duration ? config.duration : ''
-            let price = config.price ? config.price : ''
-            setFormInputsAgendamentos({precoAgendamento: price, duracaoAgendamento: duration, datasAgendamentos: datesExtract});
+            if(props.uuid){
+                let datesExtract: Dates[] = await getDayHour(props.uuid);
+                datesExtract = datesExtract.map(date => {
+                    return sortHoursInDate({day: new Date(date.day), hours: date.hours});
+                });
+                const config = await extractConfigProfessional();
+                let duration = config.duration ? config.duration : ''
+                let price = config.price ? config.price : ''
+                setFormInputsAgendamentos({precoAgendamento: price, duracaoAgendamento: duration, datasAgendamentos: datesExtract});
+            }
         };
         extractConfigAndDayHour();
     }, [reload]);
@@ -313,7 +315,7 @@ export default function ConfigurationProfissional() {
                             && 
                             <>
                                 <p>
-                                    Seus horários disponíveis para <strong>{formatDescriptionOne()}</strong>
+                                    Seus horários disponíveis para <strong>{formatDescriptionOne()}</strong>:
                                 </p>
                                 <div className='horarios'>
                                     {hoursOfDate.map(horario => {

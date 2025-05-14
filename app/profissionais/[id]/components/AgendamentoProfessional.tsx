@@ -3,6 +3,7 @@
 import '../styles/agendamentos-professional.scss';
 import {useRef, useState, useEffect} from 'react';
 import {ProfessionalAnyInterface} from '@dashboard/profissional/interfaces';
+import getDayHour from '@dashboard/profissional/functions/getDayHour';
 
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
@@ -12,38 +13,12 @@ interface Dates {
     hours: string[]
 }
 
-const dates: Dates[] = [
-    { day: new Date(2025, 2, 15), hours: [
-        '08:00',
-        '09:00',
-        '10:00',
-        '11:00',
-    ]},
-    { day: new Date(2025, 2, 16), hours: [
-        '08:00',
-        '09:00',
-        '10:00',
-        '11:00',
-    ]},
-    { day: new Date(2025, 2, 17), hours: [
-        '08:00',
-        '09:00',
-        '10:00',
-        '11:00',
-    ]},
-    { day: new Date(2025, 2, 20), hours: [
-        '12:00',
-        '13:00',
-        '14:00',
-        '15:00',
-    ]},
-    { day: new Date(2025, 2, 22), hours: [
-        '16:00',
-        '17:00',
-        '18:00',
-        '19:00',
-    ]}
-];
+function sortHoursInDate(dates: Dates): Dates {
+    // Ordena as horas dentro do objeto Dates
+    dates.hours.sort((a, b) => a.localeCompare(b));
+
+    return dates;
+}
 
 export default function AgendamentoProfessional(props: {professional: ProfessionalAnyInterface}){
     const professional = props.professional?.professionalInfo;
@@ -53,28 +28,49 @@ export default function AgendamentoProfessional(props: {professional: Profession
     const [dateSelected, setDateSelected] = useState(dateNow);
     const [hourSelected, setHourSelected] = useState<string | null>();
     const [hoursOfDate, setHoursOfDate] = useState<string[]>([]);
+    const [datesAndHoursOfProfessional, setDatesAndHoursOfProfessional] = useState<Dates[]>([]);
 
     useEffect(() => {
-        for(let i = 0; i < dates.length; i++){
-            if(dates[i].day.toDateString() === dateSelected.toDateString()){
-                setHoursOfDate([...dates[i].hours]);
+        for(let i = 0; i < datesAndHoursOfProfessional.length; i++){
+            if(datesAndHoursOfProfessional[i].day.toDateString() === dateSelected.toDateString()){
+                setHoursOfDate([...datesAndHoursOfProfessional[i].hours]);
                 break;
             }
         }
         setHourSelected(null);
     }, [dateSelected]);
 
+    useEffect(() => {
+        const extractConfigAndDayHour = async () => {
+            if(professional){
+                let datesExtract: Dates[] = await getDayHour(professional.uuid);
+                if(datesExtract){
+                    datesExtract = datesExtract.map(date => {
+                        return sortHoursInDate({day: new Date(date.day), hours: date.hours});
+                    });
+                    setDatesAndHoursOfProfessional(datesExtract);
+                }
+            }
+        };
+        extractConfigAndDayHour();
+    }, []);
+
     // Função para verificar se um dia tem agendamento
     const haveAgendamento = (dateCalendar: any) => {
-        return dates.some((date) => date.day.toDateString() === dateCalendar.toDateString());
+        return datesAndHoursOfProfessional.some((date) => date.day.toDateString() === dateCalendar.toDateString());
     };
 
     const variableHaveAgendamento = haveAgendamento(dateSelected);
 
     // Classe CSS para os dias com agendamentos disponíveis
     const tileClassName = ({ date, view }: any) => {
-        if (view === 'month' && haveAgendamento(date)) {
-        return 'selected'; // Adiciona uma classe CSS para dias com agendamento disponível
+        const newDate = new Date();
+        const newDateFormatted = new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate());
+        if(date < newDateFormatted) {
+            return 'disabled';
+        }
+        else if (view === 'month' && haveAgendamento(date)) {
+            return 'selected'; // Adiciona uma classe CSS para dias com agendamento disponível
         }
         return null;
     };
@@ -110,7 +106,7 @@ export default function AgendamentoProfessional(props: {professional: Profession
             />
             {variableHaveAgendamento && 
             <p>
-                Horários disponíveis para {formatDescriptionOne()}
+                Horários disponíveis para {formatDescriptionOne()}:
             </p>}
             {variableHaveAgendamento &&
                 <div className='horarios'>
