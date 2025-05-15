@@ -3,7 +3,6 @@ import {isAuthenticatedInterface} from '@auth/interfaces';
 import ProfessionalPage from './components/ProfessionalPage';
 import {ProfessionalAnyInterface} from '@dashboard/profissional/interfaces';
 import getAnyProfessional from './functions/getAnyProfessional';
-import { redirect } from 'next/navigation';
 
 interface PageProps {
     params: {

@@ -136,7 +136,8 @@ export default function ProfessionalsPage(props: ProfessionalsPagePropsInterface
                                     </div>
                                     <div className='info'>
                                         <p><strong>R$ {professional.configAgendamentoDTO?.price 
-                                        ? `${professional.configAgendamentoDTO?.price}`.replace('.', ',') : '00,00'}</strong> / sessão</p>
+                                        ? `${professional.configAgendamentoDTO?.price}`.replace('.', ',') : '00,00'}
+                                        </strong> / sessão</p>
                                         <p>
                                             <strong>Duração: </strong> 
                                             {professional.configAgendamentoDTO?.duration 
@@ -147,7 +148,7 @@ export default function ProfessionalsPage(props: ProfessionalsPagePropsInterface
                                             Próxima disponibilidade: Hoje
                                         </p>
                                         <div>
-                                            <Link href=''>Agendar consulta</Link>
+                                            <Link href={`/profissionais/${professional.professionalInfo.uuid}?navegation=2`}>Agendar consulta</Link>
                                             <Link href={`/profissionais/${professional.professionalInfo.uuid}`}>Ver perfil completo</Link>
                                         </div>
                                     </div>

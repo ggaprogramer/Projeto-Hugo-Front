@@ -6,6 +6,7 @@ import AboutProfessional from '../components/AboutProfessional';
 import ReviewsProfessional from '../components/ReviewsProfessional';
 import AgendamentoProfessional from '../components/AgendamentoProfessional';
 import {useRef, useState, useEffect} from 'react';
+import { useSearchParams } from "next/navigation";
 
 export default function ProfessionalPage(props: ProfessionalPagePropsInterface){
     const professional = props.professional?.professionalInfo;
@@ -16,7 +17,16 @@ export default function ProfessionalPage(props: ProfessionalPagePropsInterface){
 
     const userIsAuthenticated = props.userIsAuthenticated;
 
-    const [navegacao, setNavegacao] = useState(0);
+    const searchParams = useSearchParams();
+    let navegationParam = searchParams.get("navegation") || '0';
+    let navegation = 0;
+    try{
+        navegation = parseInt(navegationParam);
+    } catch{
+        navegation = 0;
+    }
+
+    const [navegacao, setNavegacao] = useState(navegation);
 
     return (
         <>
@@ -152,7 +162,7 @@ export default function ProfessionalPage(props: ProfessionalPagePropsInterface){
                         </div>              
                         {navegacao === 0 && <AboutProfessional professional={props.professional}/>}
                         {navegacao === 1 && <ReviewsProfessional professional={props.professional}/>}
-                        {navegacao === 2 && <AgendamentoProfessional professional={props.professional}/>}
+                        {navegacao === 2 && <AgendamentoProfessional professional={props.professional} userIsAuthenticated={userIsAuthenticated}/>}
                     </div>
                 </div>
             </div>
