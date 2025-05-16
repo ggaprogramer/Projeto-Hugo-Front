@@ -1,6 +1,7 @@
 'use client';
 
 import AlterPerfil from './AlterPerfil';
+import AgendamentosPerfil from './AgendamentosPerfil';
 import { FaUser } from "react-icons/fa";
 import { FaCalendarAlt } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
@@ -10,7 +11,7 @@ import { ProfileInfo } from '../interfaces';
 import '../styles/dashboard-perfil.scss';
 
 export default function DashboardPerfil(props: {authToken: string | undefined}) {
-    const [navigation, setNavigation] = useState<Number>(0);
+    const [navigation, setNavigation] = useState<Number>(1);
     const [profileInfo, setProfileInfo] = useState<ProfileInfo | null>(null);
 
     useEffect(() => {
@@ -42,12 +43,12 @@ export default function DashboardPerfil(props: {authToken: string | undefined}) 
                     ?
                     <button className='selected'>
                         <FaCalendarAlt/>
-                        Meus Agendamentos
+                        Minhas Consultas
                     </button>
                     :
                     <button onClick={() => setNavigation(1)}>
                         <FaCalendarAlt/>
-                        Meus Agendamentos
+                        Minhas Consultas
                     </button>
                 }
                 {
@@ -65,13 +66,10 @@ export default function DashboardPerfil(props: {authToken: string | undefined}) 
                 }
             </div>
             <div className='barra-principal'>
-                {
-                    navigation === 0 && profileInfo
-                    ?
-                    <AlterPerfil profileInfo={profileInfo}/>
-                    :
-                    <span className='loader-dashboard'></span>
-                }
+                {navigation === 0 && !profileInfo && <span className='loader-dashboard'></span>}
+                {navigation === 0 && profileInfo && <AlterPerfil profileInfo={profileInfo}/>}
+
+                {navigation === 1 && profileInfo && <AgendamentosPerfil/>}
             </div>
         </div>
     )

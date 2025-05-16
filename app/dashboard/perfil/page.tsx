@@ -1,4 +1,3 @@
-import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import functionIsAuthenticated from '@auth/functions/isAuthenticated';
 import {isAuthenticatedInterface} from '@auth/interfaces';

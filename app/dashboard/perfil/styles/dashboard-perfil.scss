@@ -3,25 +3,16 @@
 .container-dashboard{
     width: 100%;
     min-height: 85vh;
-    @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 2rem);
+    @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 2rem);
     @include padding(2rem, 2rem, 2rem, 2rem);
     background: $gray-two-color;
 
-    @media(max-width: 1080px){
-        flex-direction: column;
-    }
-
     .barra-lateral{
-        width: 40rem;
+        width: 100%;
         background: $white-one-color;
         @include padding(2rem, 2rem, 2rem, 2rem);
-        @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
+        @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 2rem);
         @include border-radius(2rem, 2rem, 2rem, 2rem);
-
-        @media(max-width: 1080px){
-            flex-direction: row;
-            width: 100%;
-        }
 
         @media(max-width: 880px){
             flex-direction: column;
@@ -29,7 +20,7 @@
 
         button{
             width: 100%;
-            @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: center, $gap: 1rem);
+            @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 1rem);
             transition: .3s;
             cursor: pointer;
             background: transparent;
