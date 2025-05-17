@@ -1,3 +1,5 @@
+'use client';
+
 import '../styles/agendamentos-perfil.scss';
 import { FaCalendarAlt } from "react-icons/fa";
 import { FaClock } from "react-icons/fa";
@@ -7,9 +9,95 @@ import { MdAutoGraph } from "react-icons/md";
 import { IoEyeSharp } from "react-icons/io5";
 import { SlOptionsVertical } from "react-icons/sl";
 import { AiOutlineVideoCamera } from "react-icons/ai";
+import { IoSearch } from "react-icons/io5";
+import { useState, useRef } from 'react';
+import {ControlSessionFilterProfile, SessionFilterProfile, SessionProfile} from '../interfaces';
+import {Errors} from '@auth/interfaces';
+import ErrorAuth from '@auth/components/ErrorAuth'
+import getSessionProfile from '../functions/getSessionProfile';
 
 export default function AgendamentosPerfil(){
+    const [control, setControl] = useState<ControlSessionFilterProfile>({
+        sessionsProfile: [],
+        pageSelected: 0,
+        totalPages: 0,
+        totalElements: 0,
+        pageSize: 5
+    });
 
+    const [formInputs, setFormInputs] = useState<{
+        name: string | null;
+        date: Date | null;
+        status: string;
+    }>({
+        name: null,
+        date: null,
+        status: 'TODOS',
+    });
+
+    const [errors, setErrors] = useState<Errors[]>([]);
+    
+    const buttonFilter = useRef<HTMLButtonElement>(null);
+    const loader = useRef<HTMLSpanElement>(null);
+
+    const viewLoader = () => {
+        buttonFilter?.current?.setAttribute('style', 'display: none');
+        loader?.current?.setAttribute('style', 'display: inline-block');
+    }
+    const disableLoader = () => {
+        buttonFilter?.current?.setAttribute('style', 'display: inline-block');
+        loader?.current?.setAttribute('style', 'display: none');
+    }
+
+    const handleFormInputs = (name: string, e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
+        const input = e.target as HTMLInputElement;
+
+        if(name === 'nome') {
+            setFormInputs({...formInputs, name: input.value});
+        } else if(name === 'date') {
+            setFormInputs({...formInputs, date: new Date(input.value)});
+        } 
+        else if(name === 'status') {
+            setFormInputs({...formInputs, status: input.value});
+        }
+    }
+
+    const makeFilter = async () => {
+        const body: SessionFilterProfile = {
+            pagina: control.pageSelected,
+            tamanho: control.pageSize,
+            ordenarPor: "name",
+            direcao: "ASC",
+            nomeProfessional: formInputs.name ? formInputs.name : "",
+            date: formInputs.date,
+            status: formInputs.status,
+        }
+
+        let errors: Errors[] = [];
+        try{
+            viewLoader();
+            const response = await getSessionProfile(body);
+            console.log(response);
+            if(response?.ok){
+                const json = await response.json();
+                console.log(json);
+                const data: SessionProfile[] = json.content; 
+                setControl({...control, 
+                    sessionsProfile: data, 
+                    totalElements: json.totalElements, 
+                    pageSelected: json.pageable.pageNumber, 
+                    pageSize: json.size,
+                    totalPages: json.totalPages});
+                setErrors([]);
+                disableLoader();
+            } 
+        } catch(e){
+            console.log(e);
+            disableLoader();
+            errors.push({type: 'system', description: 'Houve um erro na comunicação com o servidor.'});
+            setErrors(errors);
+        }
+    }
 
     return (
         <>
@@ -65,7 +153,7 @@ export default function AgendamentosPerfil(){
                                 </p>
                             </div>
                             <span>
-                                <span></span>
+                                <span className='processing'></span>
                             </span>
                         </div>
                         <div className='progresso'>
@@ -78,7 +166,7 @@ export default function AgendamentosPerfil(){
                                 </p>
                             </div>
                             <span>
-                                <span></span>
+                                <span className='approved'></span>
                             </span>
                         </div>
                         <div className='progresso'>
@@ -91,7 +179,7 @@ export default function AgendamentosPerfil(){
                                 </p>
                             </div>
                             <span>
-                                <span></span>
+                                <span className='finished'></span>
                             </span>
                         </div>
                         <div className='progresso'>
@@ -104,7 +192,7 @@ export default function AgendamentosPerfil(){
                                 </p>
                             </div>
                             <span>
-                                <span></span>
+                                <span className='canceled'></span>
                             </span>
                         </div>
                     </div>
@@ -114,66 +202,97 @@ export default function AgendamentosPerfil(){
                         Minhas Consultas
                         <FaCalendarAlt/>
                     </h2>
+                    <div className='filtros'>
+                        <label>
+                            <p>Busca por nome:</p>
+                            <input type="text" name='name' placeholder='Nome do profissional'
+                            onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('name', e)}  />
+                        </label>
+                        <label>
+                            <p>Busca por data:</p>
+                            <input type="date" name='date' onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('date', e)}  />
+                        </label>
+                        <label>
+                            <p>Busca por status:</p>
+                            <select name="status" onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleFormInputs('status', e)} >
+                                <option value="TODOS">Todos</option>
+                                <option value="PROCESSING">Processando</option>
+                                <option value="APPROVED">Aprovado</option>
+                                <option value="FINISHED">Finalizado</option>
+                                <option value="CANCELLED">Cancelado</option>
+                            </select>
+                        </label>
+                        <button ref={buttonFilter} onClick={makeFilter}>
+                            <IoSearch/>
+                            Pesquisar
+                        </button>
+                        <span ref={loader} className='loader'></span>
+                    </div>
+                    <ErrorAuth errors={errors} type='system'/>
                     <div className='tabela'>
                         <table>
-                            <tr>
-                                <th>
-                                    Terapeuta
-                                </th>
-                                <th>
-                                    Data
-                                </th>
-                                <th>
-                                    Horário
-                                </th>
-                                <th>
-                                    Tipo
-                                </th>
-                                <th>
-                                    Status
-                                </th>
-                                <th>
-                                    Ações
-                                </th>
-                            </tr>
-                            <tr>
-                                <td className='terapeuta'>
-                                    <img src="/user.png" alt="" />
-                                    <div>
-                                        <p>
-                                            Dra. Mariana da Silva
-                                        </p>
-                                        <p>
-                                            Psicóloga Clínica
-                                        </p>
-                                    </div>
-                                </td>
-                                <td>
-                                    15 de junho de 2025
-                                </td>
-                                <td>
-                                    14:30 - 15:30
-                                </td>
-                                <td className='tipo'>
-                                    <span>Online</span>
-                                </td>
-                                <td className='status'>
-                                    <span className='approved'>Confirmado</span>
-                                </td>
-                                <td className='acoes'>
-                                    <div>
-                                        <button>
-                                            <IoEyeSharp/>
-                                        </button>
-                                        <button>
-                                            <AiOutlineVideoCamera/>
-                                        </button>
-                                        <button>
-                                            <SlOptionsVertical/>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Terapeuta
+                                    </th>
+                                    <th>
+                                        Data
+                                    </th>
+                                    <th>
+                                        Horário
+                                    </th>
+                                    <th>
+                                        Tipo
+                                    </th>
+                                    <th>
+                                        Status
+                                    </th>
+                                    <th>
+                                        Ações
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td className='terapeuta'>
+                                        <img src="/user.png" alt="" />
+                                        <div>
+                                            <p>
+                                                Dra. Mariana da Silva
+                                            </p>
+                                            <p>
+                                                Psicóloga Clínica
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        15 de junho de 2025
+                                    </td>
+                                    <td>
+                                        14:30 - 15:30
+                                    </td>
+                                    <td className='tipo'>
+                                        <span>Online</span>
+                                    </td>
+                                    <td className='status'>
+                                        <span className='approved'>Confirmado</span>
+                                    </td>
+                                    <td className='acoes'>
+                                        <div>
+                                            <button>
+                                                <IoEyeSharp/>
+                                            </button>
+                                            <button>
+                                                <AiOutlineVideoCamera/>
+                                            </button>
+                                            <button>
+                                                <SlOptionsVertical/>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                     <div>

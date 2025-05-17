@@ -2,13 +2,18 @@
 
 .container-agendamentos{
     width: 100%;
-    border: 1px solid red;
     @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
     @include padding(2rem, 2rem, 2rem, 2rem);
 
+    .error{
+        font-weight: bold;
+        color: red;
+        text-align: left;
+        width: 100%;
+    }
+
     .metricas{
         width: 100%;
-        border: 1px solid red;
         @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 2rem);
 
         @media(max-width: 1130px){
@@ -122,23 +127,23 @@
                         span{
                             display: inline-block;
                             width: 50%;
+                        }
+
+                        &.processing{
+                            background: #978d69;
+                        }
+
+                        &.approved{
                             background: #4f7d61;
                         }
 
-                        /* &.info{
-                            background: #fff3cd;
-                            color: #978d69;
+                        &.finished{
+                            background: #18a2ac;
                         }
 
-                        &.success{
-                            background: #d4edda;
-                            color: #4f7d61;
+                        &.canceled{
+                            background: #7b434d;
                         }
-
-                        &.error{
-                            background: #f7d7da;
-                            color: #7b434d;
-                        } */
                     }
                 }
             }
@@ -169,7 +174,6 @@
 
     .agendamentos{
         width: 100%;
-        border: 1px solid red;
         background: $white-one-color;
         @include padding(2rem, 2rem, 2rem, 2rem);
         @include border-radius(2rem, 2rem, 2rem, 2rem);
@@ -182,9 +186,54 @@
                 font-size: 2.5rem;
             }
         }
+        
+        .filtros{
+            @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: flex-start, $align-items: flex-end, $gap: 3rem);
+            @include padding(0rem, 0rem, 1rem, 0rem);
+
+            label{
+                @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 1rem);
+
+                input, select{
+                    @include border(0.18rem, $black-one-color, solid, 10rem);
+                    @include padding(1rem, 1rem, 1rem, 1rem);
+                    width: 30rem;
+
+                    @media(max-width: 350px){
+                        width: 100%;
+                    }
+                }
+            }
+
+            button{
+                @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 0.8rem);
+                cursor: pointer;
+                background: transparent;
+                @include padding(1rem, 2rem, 1rem, 1.5rem);
+                font-weight: bold;
+                font-size: 1.4rem;
+                transition: .3s;
+
+                svg{
+                    font-size: 2rem;
+                }
+
+                @include border-radius(10rem, 10rem, 10rem, 10rem);
+                background: $yellow-three-color;
+                color: $white-one-color;
+
+                &:hover{
+                    @include transform-scale(1.05);
+                }
+            }
+
+            .loader{
+                @include loader($side: 5rem, $thickness: 0.5rem, $color: $blue-one-color, $top-color: white);
+                display: none;
+            } 
+        }
 
         .tabela{
-            border: 1px solid red;
             width: 100%;
             @media(max-width: 1220px){
                 overflow-x: auto;
@@ -292,6 +341,7 @@
                 }
             }
         }
+        
 
         &>div{
             width: 100%;
