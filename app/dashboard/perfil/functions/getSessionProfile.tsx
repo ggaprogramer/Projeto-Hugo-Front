@@ -18,6 +18,7 @@ export default async function getSessionProfile(body: SessionFilterProfile){
             cache: 'no-store',
             body: JSON.stringify(body)
         });
-        return response
+        const json = await response.json();
+        return json;
     }
 }

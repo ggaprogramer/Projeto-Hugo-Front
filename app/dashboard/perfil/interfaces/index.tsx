@@ -83,16 +83,16 @@ export interface SessionFilterProfile{
 }
 
 export interface SessionProfile{
-        id: string;
-        linkSession: string;
-        professionalId: string;
-        professionalName: string;
-        linkPhotoProfessional: string;
-        active: boolean;
-        amount: number;
-        statusPayment: string;
-        duration: number;
-        dateHourSession: Date;
-        dateHourSessionFinallized: Date;
-        status: string;    
+    id: string;
+    linkSession: string;
+    professionalId: string;
+    professionalName: string;
+    linkPhotoProfessional: string;
+    active: boolean;
+    amount: number;
+    statusPayment: string;
+    duration: number;
+    dateHourSession: Date;
+    dateHourSessionFinallized: Date;
+    status: string;    
 }

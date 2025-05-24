@@ -126,7 +126,6 @@
 
                         span{
                             display: inline-block;
-                            width: 50%;
                         }
 
                         &.processing{
@@ -208,7 +207,6 @@
             button{
                 @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 0.8rem);
                 cursor: pointer;
-                background: transparent;
                 @include padding(1rem, 2rem, 1rem, 1.5rem);
                 font-weight: bold;
                 font-size: 1.4rem;
@@ -219,12 +217,22 @@
                 }
 
                 @include border-radius(10rem, 10rem, 10rem, 10rem);
-                background: $yellow-three-color;
-                color: $white-one-color;
 
                 &:hover{
                     @include transform-scale(1.05);
                 }
+
+                &:nth-of-type(1){
+                    background: transparent;
+                    color: $yellow-three-color;
+                    @include border(0.18rem, $yellow-three-color, solid, 10rem);
+                }
+
+                &:nth-of-type(2){
+                    background: $yellow-three-color;
+                    color: $white-one-color;
+                }
+
             }
 
             .loader{

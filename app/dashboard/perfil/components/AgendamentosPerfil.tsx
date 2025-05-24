@@ -9,8 +9,9 @@ import { MdAutoGraph } from "react-icons/md";
 import { IoEyeSharp } from "react-icons/io5";
 import { SlOptionsVertical } from "react-icons/sl";
 import { AiOutlineVideoCamera } from "react-icons/ai";
+import { FaTrashAlt } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {ControlSessionFilterProfile, SessionFilterProfile, SessionProfile} from '../interfaces';
 import {Errors} from '@auth/interfaces';
 import ErrorAuth from '@auth/components/ErrorAuth'
@@ -35,6 +36,46 @@ export default function AgendamentosPerfil(){
         status: 'TODOS',
     });
 
+    function formatSessionDateTime(
+        dateHourSession: Date,
+        dateHourSessionFinallized: Date
+        ): { formattedDate: string; formattedTime: string } {
+
+        // Lista de meses em português
+        const monthsPT = [
+            "janeiro", "fevereiro", "março", "abril", "maio", "junho",
+            "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"
+        ];
+
+        const dateHourSessionFormatted = new Date(dateHourSession);
+        const dateHourSessionFinallizedFormatted = new Date(dateHourSessionFinallized);
+        
+        const day = dateHourSessionFormatted.getDate()
+        const month = monthsPT[dateHourSessionFormatted.getMonth()];
+        const year = dateHourSessionFormatted.getFullYear();
+
+        const formattedDate = `${day} de ${month} de ${year}`;
+
+        const pad = (num: number) => String(num).padStart(2, "0");
+
+        const startHour = `${pad(dateHourSessionFormatted.getHours())}:${pad(dateHourSessionFormatted.getMinutes())}`;
+        const endHour = `${pad(dateHourSessionFinallizedFormatted.getHours())}:${pad(dateHourSessionFinallizedFormatted.getMinutes())}`;
+
+        const formattedTime = `${startHour} - ${endHour}`;
+
+        return {
+            formattedDate,
+            formattedTime
+        };
+    }
+
+    useEffect(() => {
+        const makeFilterInitial = async () => {
+            await makeFilter();
+        }
+        makeFilterInitial();
+    }, [])
+
     const [errors, setErrors] = useState<Errors[]>([]);
     
     const buttonFilter = useRef<HTMLButtonElement>(null);
@@ -42,17 +83,17 @@ export default function AgendamentosPerfil(){
 
     const viewLoader = () => {
         buttonFilter?.current?.setAttribute('style', 'display: none');
-        loader?.current?.setAttribute('style', 'display: inline-block');
+        loader?.current?.setAttribute('style', 'display: flex');
     }
     const disableLoader = () => {
-        buttonFilter?.current?.setAttribute('style', 'display: inline-block');
+        buttonFilter?.current?.setAttribute('style', 'display: flex');
         loader?.current?.setAttribute('style', 'display: none');
     }
 
     const handleFormInputs = (name: string, e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
         const input = e.target as HTMLInputElement;
 
-        if(name === 'nome') {
+        if(name === 'name') {
             setFormInputs({...formInputs, name: input.value});
         } else if(name === 'date') {
             setFormInputs({...formInputs, date: new Date(input.value)});
@@ -66,8 +107,8 @@ export default function AgendamentosPerfil(){
         const body: SessionFilterProfile = {
             pagina: control.pageSelected,
             tamanho: control.pageSize,
-            ordenarPor: "name",
-            direcao: "ASC",
+            ordenarPor: "dateHourSession",
+            direcao: "DESC",
             nomeProfessional: formInputs.name ? formInputs.name : "",
             date: formInputs.date,
             status: formInputs.status,
@@ -76,27 +117,64 @@ export default function AgendamentosPerfil(){
         let errors: Errors[] = [];
         try{
             viewLoader();
-            const response = await getSessionProfile(body);
-            console.log(response);
-            if(response?.ok){
-                const json = await response.json();
-                console.log(json);
-                const data: SessionProfile[] = json.content; 
-                setControl({...control, 
-                    sessionsProfile: data, 
-                    totalElements: json.totalElements, 
-                    pageSelected: json.pageable.pageNumber, 
-                    pageSize: json.size,
-                    totalPages: json.totalPages});
-                setErrors([]);
-                disableLoader();
-            } 
+            const json = await getSessionProfile(body);
+            const data: SessionProfile[] = json.content; 
+            setControl({...control, 
+                sessionsProfile: data, 
+                totalElements: json.totalElements, 
+                pageSelected: json.pageable.pageNumber, 
+                pageSize: json.size,
+                totalPages: json.totalPages});
+            setErrors([]);
+            disableLoader();
         } catch(e){
-            console.log(e);
             disableLoader();
             errors.push({type: 'system', description: 'Houve um erro na comunicação com o servidor.'});
             setErrors(errors);
         }
+    }
+
+    const makeCleanFilter = () => {
+        setFormInputs({...formInputs,
+            name: null,
+            date: null,
+            status: 'TODOS',
+        });
+    }
+
+    const percentProgress = (name: string) => {
+        if(control && control?.sessionsProfile && control?.sessionsProfile.length > 0){
+            let count = 0;
+            for(let i = 0; i <= control.sessionsProfile.length; i++){
+                if(name === 'PROCESSING' && control?.sessionsProfile[i]?.status === 'PROCESSING'){
+                    count+=1;
+                } else if(name === 'APPROVED' && control?.sessionsProfile[i]?.status === 'APPROVED'){
+                    count+=1;
+                } else if(name === 'FINISHED' && control?.sessionsProfile[i]?.status === 'FINISHED'){
+                    count+=1;
+                } else if(name === 'CANCELLED' && control?.sessionsProfile[i]?.status === 'CANCELLED'){
+                    count+=1;
+                }
+            }
+            if(control && control?.sessionsProfile && control?.sessionsProfile.length > 0) {
+                return `${count / control.sessionsProfile.length * 100}%`;
+            } 
+            return '0%';
+        } 
+        return '0%';
+    }
+
+    const percentProgressSpan = (name: string) => {
+        const porcent = percentProgress(name);
+        if(name === 'PROCESSING'){
+            return (<span style={{width: porcent}} className='processing'></span>)
+        } else if(name === 'APPROVED'){
+            return (<span style={{width: porcent}} className='approved'></span>)
+        } else if(name === 'FINISHED'){
+            return (<span style={{width: porcent}} className='finished'></span>)
+        } else if(name === 'CANCELLED'){
+            return (<span style={{width: porcent}} className='canceled'></span>)
+        } 
     }
 
     return (
@@ -132,7 +210,7 @@ export default function AgendamentosPerfil(){
                             <LuBrain/>
                         </h3>
                         <h2>
-                            12
+                            {control?.sessionsProfile?.length}
                         </h2>
                         <p>
                             Nos últimos 6 meses
@@ -149,11 +227,11 @@ export default function AgendamentosPerfil(){
                                     Pendentes
                                 </p>
                                 <p>
-                                    70%
+                                    {percentProgress('PROCESSING')}
                                 </p>
                             </div>
                             <span>
-                                <span className='processing'></span>
+                                {percentProgressSpan('PROCESSING')}
                             </span>
                         </div>
                         <div className='progresso'>
@@ -162,11 +240,11 @@ export default function AgendamentosPerfil(){
                                     Aprovados
                                 </p>
                                 <p>
-                                    70%
+                                    {percentProgress('APPROVED')}
                                 </p>
                             </div>
                             <span>
-                                <span className='approved'></span>
+                                {percentProgressSpan('APPROVED')}
                             </span>
                         </div>
                         <div className='progresso'>
@@ -175,11 +253,11 @@ export default function AgendamentosPerfil(){
                                     Concluídos
                                 </p>
                                 <p>
-                                    70%
+                                    {percentProgress('FINISHED')}
                                 </p>
                             </div>
                             <span>
-                                <span className='finished'></span>
+                                {percentProgressSpan('FINISHED')}
                             </span>
                         </div>
                         <div className='progresso'>
@@ -188,11 +266,11 @@ export default function AgendamentosPerfil(){
                                     Cancelados
                                 </p>
                                 <p>
-                                    70%
+                                    {percentProgress('CANCELLED')}
                                 </p>
                             </div>
                             <span>
-                                <span className='canceled'></span>
+                                {percentProgressSpan('CANCELLED')}
                             </span>
                         </div>
                     </div>
@@ -222,6 +300,10 @@ export default function AgendamentosPerfil(){
                                 <option value="CANCELLED">Cancelado</option>
                             </select>
                         </label>
+                        <button onClick={makeCleanFilter}>
+                            <FaTrashAlt/>
+                            Limpar
+                        </button>
                         <button ref={buttonFilter} onClick={makeFilter}>
                             <IoSearch/>
                             Pesquisar
@@ -254,44 +336,77 @@ export default function AgendamentosPerfil(){
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td className='terapeuta'>
-                                        <img src="/user.png" alt="" />
-                                        <div>
-                                            <p>
-                                                Dra. Mariana da Silva
-                                            </p>
-                                            <p>
-                                                Psicóloga Clínica
-                                            </p>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        15 de junho de 2025
-                                    </td>
-                                    <td>
-                                        14:30 - 15:30
-                                    </td>
-                                    <td className='tipo'>
-                                        <span>Online</span>
-                                    </td>
-                                    <td className='status'>
-                                        <span className='approved'>Confirmado</span>
-                                    </td>
-                                    <td className='acoes'>
-                                        <div>
-                                            <button>
-                                                <IoEyeSharp/>
-                                            </button>
-                                            <button>
-                                                <AiOutlineVideoCamera/>
-                                            </button>
-                                            <button>
-                                                <SlOptionsVertical/>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+                                {control.sessionsProfile.map(session => {
+                                    return (
+                                        <tr key={session.id}>
+                                            <td className='terapeuta'>
+                                                {
+                                                    session.linkPhotoProfessional
+                                                    ?
+                                                    <img src={session.linkPhotoProfessional} alt="" />
+                                                    :
+                                                    <img src="/user.png" alt="" />
+                                                }
+                                                <div>
+                                                    <p>
+                                                        {session.professionalName}
+                                                    </p>
+                                                    <p>
+                                                        Psicóloga Clínica
+                                                    </p>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                {formatSessionDateTime(session.dateHourSession, session.dateHourSessionFinallized).formattedDate}
+                                            </td>
+                                            <td>
+                                                {formatSessionDateTime(session.dateHourSession, session.dateHourSessionFinallized).formattedTime}
+                                            </td>
+                                            <td className='tipo'>
+                                                <span>Online</span>
+                                            </td>
+                                            <td className='status'>
+                                                {
+                                                    session.status === 'PROCESSING'
+                                                    &&
+                                                    <span className='processing'>Processando</span>
+                                                }
+
+                                                {
+                                                    session.status === 'APPROVED'
+                                                    &&
+                                                    <span className='approved'>Aprovado</span>
+                                                }
+
+                                                {
+                                                    session.status === 'FINISHED'
+                                                    &&
+                                                    <span className='finished'>Finalizado</span>
+                                                }
+
+                                                {
+                                                    session.status === 'CANCELED'
+                                                    &&
+                                                    <span className='canceled'>Cancelado</span>
+                                                }
+
+                                            </td>
+                                            <td className='acoes'>
+                                                <div>
+                                                    <button>
+                                                        <IoEyeSharp/>
+                                                    </button>
+                                                    <button>
+                                                        <AiOutlineVideoCamera/>
+                                                    </button>
+                                                    <button>
+                                                        <SlOptionsVertical/>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
                             </tbody>
                         </table>
                     </div>
