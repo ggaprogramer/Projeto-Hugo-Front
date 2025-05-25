@@ -171,6 +171,40 @@
         }
     }
 
+    .filtro-pagina{
+        position: relative;
+
+        p{
+            @include padding(1rem, 1rem, 1rem, 1rem);
+            @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 0.5rem);
+            background: $white-one-color;
+            cursor: pointer;
+            @include border(0.18rem, $black-one-color, solid, 0rem);
+        }
+
+        .filtro-pagina-dropbox{
+            @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 0rem);
+            position: absolute;
+            top: 5rem;
+            @include border(0.18rem, $black-one-color, solid, 0rem);
+            width: 23.9rem;
+
+            p{
+                width: 100%;
+
+                &:not(:last-child){
+                    border-bottom: 0.18rem solid $black-one-color;
+                }
+
+                &.selected{
+                    background: $black-one-color;
+                    color: $white-one-color;
+                }
+
+            }
+        }
+    }
+
     .agendamentos{
         width: 100%;
         background: $white-one-color;

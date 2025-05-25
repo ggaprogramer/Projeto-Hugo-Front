@@ -43,11 +43,10 @@ export default function ProfessionalsPage(props: ProfessionalsPagePropsInterface
                             {
                                 control.totalElements === 1
                                 ?
-                                ` Foi encontrado 1 profissional`
+                                ` Foi encontrado 1 profissional:`
                                 :
-                                ` Foram encontrados ${control.totalElements} profissionais`
+                                ` Foram encontrados ${control.totalElements} profissionais:`
                             }
-                            :
                         </h2>
                         <div className='filtro-pagina'>
                             <p onClick={() => handleFiltroPaginaDropBox()}>

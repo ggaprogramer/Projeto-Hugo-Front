@@ -95,4 +95,5 @@ export interface SessionProfile{
     dateHourSession: Date;
     dateHourSessionFinallized: Date;
     status: string;    
+    gender: string;
 }

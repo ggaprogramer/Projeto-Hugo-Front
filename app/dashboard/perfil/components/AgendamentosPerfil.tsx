@@ -16,6 +16,9 @@ import {ControlSessionFilterProfile, SessionFilterProfile, SessionProfile} from 
 import {Errors} from '@auth/interfaces';
 import ErrorAuth from '@auth/components/ErrorAuth'
 import getSessionProfile from '../functions/getSessionProfile';
+import Pagination from '../components/Pagination';
+import { GoChevronDown } from "react-icons/go";
+import { GoChevronUp } from "react-icons/go";
 
 export default function AgendamentosPerfil(){
     const [control, setControl] = useState<ControlSessionFilterProfile>({
@@ -74,12 +77,40 @@ export default function AgendamentosPerfil(){
             await makeFilter();
         }
         makeFilterInitial();
-    }, [])
+    }, []);
+
+    useEffect(() => {
+        const reloadFilter = async () => {
+            await makeFilter();
+        };
+        reloadFilter();
+    }, [control.pageSelected, control.pageSize]);
+
+    const [viewFiltroPaginaDropBox, setViewFiltroPaginaDropBox] = useState<boolean>(false);
+    const handleFiltroPaginaDropBox = () => {
+        if(viewFiltroPaginaDropBox) {
+            setViewFiltroPaginaDropBox(false);
+        } else {
+            setViewFiltroPaginaDropBox(true);
+        }
+    }
 
     const [errors, setErrors] = useState<Errors[]>([]);
     
     const buttonFilter = useRef<HTMLButtonElement>(null);
     const loader = useRef<HTMLSpanElement>(null);
+
+    const [proximaConsulta, setProximaConsulta] = useState<SessionProfile | null>(null);
+    useEffect(() => {
+        if(control?.sessionsProfile && control?.sessionsProfile?.length > 0){
+            for(let i = 0; i < control?.sessionsProfile?.length; i++){
+                if(control?.sessionsProfile[i]?.status === 'APPROVED'){
+                    setProximaConsulta(control.sessionsProfile[i]);
+                    break;
+                }
+            }
+        };
+    }, [control.sessionsProfile]);
 
     const viewLoader = () => {
         buttonFilter?.current?.setAttribute('style', 'display: none');
@@ -142,6 +173,10 @@ export default function AgendamentosPerfil(){
         });
     }
 
+    const formatDateForInput = (date: Date): string => {
+        return date.toISOString().split("T")[0]; // yyyy-MM-dd
+    };
+
     const percentProgress = (name: string) => {
         if(control && control?.sessionsProfile && control?.sessionsProfile.length > 0){
             let count = 0;
@@ -181,36 +216,44 @@ export default function AgendamentosPerfil(){
         <>
             <div className="container-agendamentos">
                 <div className='metricas'>
-                    <div className='proxima-consultas'>
-                        <h3>
-                            Próxima Consulta
-                            <FaCalendarAlt/>
-                        </h3>
-                        <div>
-                            <img src="/user.png" alt="" />
+                    {proximaConsulta &&
+                        <div className='proxima-consultas'>
+                            <h3>
+                                Próxima Consulta Confirmada
+                                <FaCalendarAlt/>
+                            </h3>
                             <div>
-                                <h4>
-                                    Dra. Maria Betânia
-                                </h4>
-                                <p>
-                                    <FaClock/>
-                                    Quarta feira, 15 de junho
-                                </p>
-                                <p>
-                                    <FaClock/>
-                                    14:30 - 15:30
-                                </p>
+                                {
+                                    proximaConsulta.linkPhotoProfessional
+                                    ?
+                                    <img src={proximaConsulta.linkPhotoProfessional} alt="" />
+                                    :
+                                    <img src="/user.png" alt="" />
+                                }
+                                <div>
+                                    <h4>
+                                        {proximaConsulta.gender === 'MULHER' ? 'Dra. ' : 'Dr. '}  {proximaConsulta.professionalName}
+                                    </h4>
+                                    <p>
+                                        <FaClock/>
+                                        {formatSessionDateTime(proximaConsulta.dateHourSession, proximaConsulta.dateHourSessionFinallized).formattedDate}
+                                    </p>
+                                    <p>
+                                        <FaClock/>
+                                        {formatSessionDateTime(proximaConsulta.dateHourSession, proximaConsulta.dateHourSessionFinallized).formattedTime}
+                                    </p>
+                                </div>
                             </div>
+                            <button><HiCursorClick/>Ver detalhes</button>
                         </div>
-                        <button><HiCursorClick/>Ver detalhes</button>
-                    </div>
+                    }
                     <div className='quantidade-consultas'>
                         <h3>
                             Total de Consultas
                             <LuBrain/>
                         </h3>
                         <h2>
-                            {control?.sessionsProfile?.length}
+                            {control?.totalElements}
                         </h2>
                         <p>
                             Nos últimos 6 meses
@@ -283,16 +326,18 @@ export default function AgendamentosPerfil(){
                     <div className='filtros'>
                         <label>
                             <p>Busca por nome:</p>
-                            <input type="text" name='name' placeholder='Nome do profissional'
+                            <input type="text" value={formInputs.name ? formInputs.name : ''} name='name' placeholder='Nome do profissional'
                             onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('name', e)}  />
                         </label>
                         <label>
                             <p>Busca por data:</p>
-                            <input type="date" name='date' onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('date', e)}  />
+                            <input type="date" name='date' value={formInputs.date ? formatDateForInput(formInputs.date) : ''} 
+                            onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleFormInputs('date', e)}  />
                         </label>
                         <label>
                             <p>Busca por status:</p>
-                            <select name="status" onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleFormInputs('status', e)} >
+                            <select name="status" value={formInputs.status}
+                            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleFormInputs('status', e)} >
                                 <option value="TODOS">Todos</option>
                                 <option value="PROCESSING">Processando</option>
                                 <option value="APPROVED">Aprovado</option>
@@ -309,6 +354,44 @@ export default function AgendamentosPerfil(){
                             Pesquisar
                         </button>
                         <span ref={loader} className='loader'></span>
+                    </div>
+                    <div className='filtro-pagina'>
+                        <p onClick={() => handleFiltroPaginaDropBox()}>
+                            Quantidade por página: {control.pageSize} 
+                            {
+                                !viewFiltroPaginaDropBox
+                                ?
+                                <GoChevronDown/>
+                                :
+                                <GoChevronUp/>
+                            }
+                        </p>
+                        {
+                            viewFiltroPaginaDropBox
+                            &&
+                            <div className='filtro-pagina-dropbox'>
+                                <p onClick={() => setControl({...control, pageSize: 5, pageSelected: 0})} 
+                                className={`${control.pageSize === 5 ? 'selected' : ''}`}>
+                                    5
+                                </p>
+                                <p onClick={() => setControl({...control, pageSize: 10, pageSelected: 0})} 
+                                className={`${control.pageSize === 10 ? 'selected' : ''}`}>
+                                    10
+                                </p>
+                                <p onClick={() => setControl({...control, pageSize: 15, pageSelected: 0})} 
+                                className={`${control.pageSize === 15 ? 'selected' : ''}`}>
+                                    15
+                                </p>
+                                <p onClick={() => setControl({...control, pageSize: 20, pageSelected: 0})} 
+                                className={`${control.pageSize === 20 ? 'selected' : ''}`}>
+                                    20
+                                </p>
+                                <p onClick={() => setControl({...control, pageSize: 25, pageSelected: 0})} 
+                                className={`${control.pageSize === 25 ? 'selected' : ''}`}>
+                                    25
+                                </p>
+                            </div>
+                        }
                     </div>
                     <ErrorAuth errors={errors} type='system'/>
                     <div className='tabela'>
@@ -349,7 +432,7 @@ export default function AgendamentosPerfil(){
                                                 }
                                                 <div>
                                                     <p>
-                                                        {session.professionalName}
+                                                        {session.gender === 'MULHER' ? 'Dra. ' : 'Dr. '}  {session.professionalName}
                                                     </p>
                                                     <p>
                                                         Psicóloga Clínica
@@ -412,15 +495,19 @@ export default function AgendamentosPerfil(){
                     </div>
                     <div>
                         <p>
-                            Mostrando 4 de 12 consultas
+                            {
+                                control.totalElements === 1
+                                ?
+                                ` Foi encontrada 1 consulta:`
+                                :
+                                ` Foram encontradas ${control.totalElements} consultas:`
+                            }
                         </p>
-                        <div className='navegacao'>
-                            <button>&laquo;</button>
-                            <button>&lsaquo;</button>
-                            <button className='selected'>1</button>
-                            <button>&rsaquo;</button>
-                            <button>&raquo;</button>
-                        </div>
+                        {   
+                            control.totalElements > control.pageSize
+                            &&
+                            <Pagination control={control} setControl={setControl}/>
+                        }
                     </div>
                 </div>
             </div>
