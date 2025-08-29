@@ -2,6 +2,7 @@
 
 import AlterProfessional from './AlterProfessional';
 import ConfigurationProfissional from './ConfigurationProfissional';
+import AgendamentosProfissional from './AgendamentosProfissional';
 import { FaUser } from "react-icons/fa";
 import { FaCalendarAlt } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
@@ -91,6 +92,11 @@ export default function DashboardProfissional(props: {authToken: string | undefi
                 {
                     navigation === 0 && professionalInfo.uuid &&
                     <AlterProfessional professionalInfo={professionalInfo}/>
+                }
+
+                {
+                    navigation === 1 && professionalInfo.uuid &&
+                    <AgendamentosProfissional/>
                 }
 
                 {

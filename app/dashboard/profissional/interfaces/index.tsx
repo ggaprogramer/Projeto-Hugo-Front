@@ -149,3 +149,37 @@ export interface ConfigurationAgendamentos {
     duracaoAgendamento: string;
     datasAgendamentos: Dates[];
 }
+
+export interface ControlSessionFilterProfessional{
+    sessionsProfessional: SessionProfessional[];
+    pageSelected: number;
+    totalPages: number;
+    totalElements: number;
+    pageSize: number;
+}
+
+export interface SessionFilterProfessional{
+    pagina: number;
+    tamanho: number;
+    ordenarPor: string;
+    direcao: string;
+    nomeProfessional: string | null;
+    date: Date | null;
+    status: string;
+}
+
+export interface SessionProfessional{
+    id: string;
+    linkSession: string;
+    professionalId: string;
+    profileName: string;
+    linkPhotoProfile: string;
+    active: boolean;
+    amount: number;
+    statusPayment: string;
+    duration: number;
+    dateHourSession: Date;
+    dateHourSessionFinallized: Date;
+    status: string;    
+    gender: string;
+}

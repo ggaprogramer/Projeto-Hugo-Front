@@ -302,7 +302,7 @@ export default function ConfigurationProfissional(props: {uuid: string}) {
 
                     <h2>
                         <FaCalendarAlt/>
-                        Datas e horários escolhidos
+                        Adicionar ou excluir uma data e horário
                     </h2>
                     <div className="agendamentos">
                         <Calendar onChange={onChange}

@@ -1,0 +1,436 @@
+@import '@styles/utils.scss';
+
+.container-agendamentos{
+    width: 100%;
+    @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
+    @include padding(2rem, 2rem, 2rem, 2rem);
+
+    .error{
+        font-weight: bold;
+        color: red;
+        text-align: left;
+        width: 100%;
+    }
+
+    .metricas{
+        width: 100%;
+        @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: flex-start, $gap: 2rem);
+
+        @media(max-width: 1130px){
+            flex-direction: column;
+        }
+
+        &>div{
+            width: 50%;
+            height: 35rem;
+            background: $white-one-color;
+            @include padding(2rem, 2rem, 2rem, 2rem);
+            @include border-radius(2rem, 2rem, 2rem, 2rem);
+            @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
+            
+            @media(max-width: 1470px){
+                height: 47rem;
+            }
+
+            @media(max-width: 1130px){
+                width: 100%;
+                height: 35rem;
+            }
+
+            h3{
+                @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: center, $gap: 1rem);
+
+                svg{
+                    color: $yellow-three-color;
+                    font-size: 2rem;
+                    position: relative;
+                    bottom: 0.2rem
+                }
+            }
+
+            &.proxima-consultas{
+                @media(max-width: 440px){
+                    height: 47rem;
+                }
+
+                div{
+                    @include border-radius(2rem, 2rem, 2rem, 2rem);
+                    width: 100%;
+                    background: $yellow-two-color;
+                    @include padding(2rem, 2rem, 2rem, 2rem);
+                    @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 2rem);
+
+                    @media(max-width: 1470px){
+                        flex-direction: column;
+                    }
+
+                    @media(max-width: 1130px){
+                        flex-direction: row;
+                    }
+
+                    @media(max-width: 440px){
+                        flex-direction: column;
+                    }
+
+                    div{
+                        @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
+
+                        p{
+                            @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: center, $gap: 0.8rem);
+
+                            svg{
+                                color: $yellow-three-color;
+                            }
+                        }
+                    }
+
+                    img{
+                        width: 10rem;
+                        height: 10rem;
+                        border-radius: 50%;
+                    }
+                }
+            }
+
+            &.quantidade-consultas{
+                @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 1rem);
+
+                h2{
+                    font-size: 6rem;
+                }
+
+                @media(max-width: 1130px){
+                    height: 20rem;
+                }
+            }
+
+            &.progresso-consultas{
+                @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 1rem);
+
+                .progresso{
+                    @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 1rem);
+                    @include padding(1rem, 1rem, 1rem, 1rem);
+                    width: 100%;
+                    div{
+                        width: 100%;
+
+                        @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: space-between, $align-items: center, $gap: 2rem);
+                    }
+                    span{
+                        @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: center, $gap: 2rem);
+                        display: inline-block;
+                        height: 1.5rem;
+                        width: 100%;
+                        background: #ccc;
+                        @include border-radius(2rem, 2rem, 2rem, 2rem);
+
+                        span{
+                            display: inline-block;
+                        }
+
+                        &.processing{
+                            background: #978d69;
+                        }
+
+                        &.approved{
+                            background: #4f7d61;
+                        }
+
+                        &.finished{
+                            background: #18a2ac;
+                        }
+
+                        &.canceled{
+                            background: #7b434d;
+                        }
+                    }
+                }
+            }
+
+            button{
+                @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 0.8rem);
+                cursor: pointer;
+                width: 100%;
+                background: transparent;
+                @include padding(1.5rem, 2rem, 1.5rem, 2rem);
+                font-weight: bold;
+                font-size: 1.4rem;
+                transition: .3s;
+
+                svg{
+                    font-size: 2rem;
+                }
+
+                @include border(0.2rem, $yellow-three-color, solid, 10rem);
+                color: $yellow-three-color;
+
+                &:hover{
+                    @include transform-scale(1.01);
+                }
+            }
+        }
+    }
+
+    .filtro-pagina{
+        position: relative;
+
+        p{
+            @include padding(1rem, 1rem, 1rem, 1rem);
+            @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 0.5rem);
+            background: $white-one-color;
+            cursor: pointer;
+            @include border(0.18rem, $black-one-color, solid, 0rem);
+        }
+
+        .filtro-pagina-dropbox{
+            @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 0rem);
+            position: absolute;
+            top: 5rem;
+            @include border(0.18rem, $black-one-color, solid, 0rem);
+            width: 23.9rem;
+
+            p{
+                width: 100%;
+
+                &:not(:last-child){
+                    border-bottom: 0.18rem solid $black-one-color;
+                }
+
+                &.selected{
+                    background: $black-one-color;
+                    color: $white-one-color;
+                }
+
+            }
+        }
+    }
+
+    .agendamentos{
+        width: 100%;
+        background: $white-one-color;
+        @include padding(2rem, 2rem, 2rem, 2rem);
+        @include border-radius(2rem, 2rem, 2rem, 2rem);
+        @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 2rem);
+
+        h2{
+            @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 1rem);
+
+            svg{
+                font-size: 2.5rem;
+            }
+        }
+        
+        .filtros{
+            @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: flex-start, $align-items: flex-end, $gap: 3rem);
+            @include padding(0rem, 0rem, 1rem, 0rem);
+
+            label{
+                @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 1rem);
+
+                input, select{
+                    @include border(0.18rem, $black-one-color, solid, 10rem);
+                    @include padding(1rem, 1rem, 1rem, 1rem);
+                    width: 30rem;
+
+                    @media(max-width: 350px){
+                        width: 100%;
+                    }
+                }
+            }
+
+            button{
+                @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: center, $align-items: center, $gap: 0.8rem);
+                cursor: pointer;
+                @include padding(1rem, 2rem, 1rem, 1.5rem);
+                font-weight: bold;
+                font-size: 1.4rem;
+                transition: .3s;
+
+                svg{
+                    font-size: 2rem;
+                }
+
+                @include border-radius(10rem, 10rem, 10rem, 10rem);
+
+                &:hover{
+                    @include transform-scale(1.05);
+                }
+
+                &:nth-of-type(1){
+                    background: transparent;
+                    color: $yellow-three-color;
+                    @include border(0.18rem, $yellow-three-color, solid, 10rem);
+                }
+
+                &:nth-of-type(2){
+                    background: $yellow-three-color;
+                    color: $white-one-color;
+                }
+
+            }
+
+            .loader{
+                @include loader($side: 5rem, $thickness: 0.5rem, $color: $blue-one-color, $top-color: white);
+                display: none;
+            } 
+        }
+
+        .tabela{
+            width: 100%;
+            @media(max-width: 1220px){
+                overflow-x: auto;
+                display: block;
+            }
+
+            table{
+                border: 1px solid black;
+                width: 100%;
+                @media(max-width: 1220px){
+                    width: 150rem;
+                }
+                
+                th{
+                    text-align: left;
+                    border-bottom: 0.2rem solid $gray-two-color;
+                    @include padding(1rem, 2rem, 1rem, 2rem);
+                }
+
+                tr{
+                    border-bottom: 0.2rem solid $gray-two-color;
+                }
+
+                td{
+                    @include padding(1rem, 2rem, 1rem, 2rem);
+                }
+
+                .terapeuta{
+                    @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: flex-start, $align-items: flex-start, $gap: 1rem);
+
+                    img{
+                        width: 5rem;
+                        height: 5rem;
+                        border-radius: 50%;
+                    }
+
+                    div{
+                        @include display-flex($flex-direction: column, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 1rem);
+
+                        p:nth-of-type(1){
+                            font-size: 1.7rem;
+                        }
+
+                        p:nth-of-type(2){
+                            font-size: 1.3rem;
+                        }
+                    }
+                }
+
+                .tipo{
+                    span{
+                        @include padding(1rem, 2rem, 1rem, 2rem);
+                        background: #eef5fd;
+                        color: #315194;
+                        @include border-radius(2rem, 2rem, 2rem, 2rem);
+                    }
+                }
+
+                .status{
+                    span{
+                        @include padding(1rem, 2rem, 1rem, 2rem);
+                        @include border-radius(2rem, 2rem, 2rem, 2rem);
+
+                        &.processing{
+                            background: #fff3cd;
+                            color: #978d69;
+                        }
+
+                        &.approved{
+                            background: #d4edda;
+                            color: #4f7d61;
+                        }
+
+                        &.finished{
+                            background: #eef5fd;
+                            color: #315194;
+                        }
+
+                        &.cancelled{
+                            background: #f7d7da;
+                            color: #7b434d;
+                        }
+                    }
+                }
+
+                .acoes{
+                    div{
+                        @include display-flex($flex-direction: row, $flex-wrap: nowrap, $justify-content: flex-start, $align-items: flex-start, $gap: 1rem);
+
+                        button{
+                            cursor: pointer;
+                            width: 5rem;
+                            height: 5rem;
+                            @include padding(1rem, 1rem, 1rem, 1rem);
+                            border-radius: 50%;
+                            background: $gray-three-color;
+                            font-size: 2rem;
+                            transition: .3s;
+
+                            &:hover{
+                                @include transform-scale(1.05);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+
+        &>div{
+            width: 100%;
+            @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: space-between, $align-items: center, $gap: 2rem);
+
+            .navegacao{
+                @include display-flex($flex-direction: row, $flex-wrap: wrap, $justify-content: center, $align-items: center, $gap: 0rem);
+
+                button{
+                    @include padding(1rem, 2rem, 1rem, 2rem);
+                    background: transparent;
+                    @include border(0.2rem, $blue-one-color, solid, 0rem);
+                    color: $blue-one-color;
+                    @include font-weight(500);
+                    transition: .3s;
+                    cursor: pointer;
+
+                    &:hover{
+                        transform: scale(1.05);
+                    }
+
+                    &.selected{
+                        background: $blue-one-color;
+                        color: $white-one-color;
+                    }
+                }
+
+                &>button:nth-of-type(1){
+                    @include border-radius(10rem, 0rem, 10rem, 0rem);
+                }
+
+                &>button:last-child{
+                    @include border-radius(0rem, 10rem, 0rem, 10rem);
+                }
+            }
+        }
+    }
+}
+
+.html{
+    @media(max-width: 540px){
+        font-size: 50% !important;
+    }
+}
+
+.html{
+    @media(max-width: 330px){
+        font-size: 45% !important;
+    }
+}
